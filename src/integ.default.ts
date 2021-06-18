@@ -86,7 +86,23 @@ new DualAlbFargateService(stack, 'Service', {
         targetCpuUtilization: 50,
       },
     },
-    { listenerPort: 8080, task: customerTask, desiredCount: 2 },
+    {
+      listenerPort: 8080,
+      task: customerTask,
+      desiredCount: 10,
+      capacityProviderStretegy: [
+        {
+          capacityProvider: 'FARGATE',
+          base: 1,
+          weight: 1,
+        },
+        {
+          capacityProvider: 'FARGATE_SPOT',
+          base: 0,
+          weight: 3,
+        },
+      ],
+    },
     { listenerPort: 9090, task: productTask, desiredCount: 2 },
   ],
   route53Ops: {

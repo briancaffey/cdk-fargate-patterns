@@ -13,7 +13,6 @@ CDK patterns for serverless container with AWS Fargate
 
 The sample below will create 3 fargate services associated with both external and internal ALBs. The internal ALB will have an alias(`internal.svc.local`) auto-configured from Route 53 so services can communite through the private ALB endpoint.
 
-By enabling the `spot` property, you will provision spot-only fargate tasks to help you save up to 70%. Check more details about [Fargate Spot](https://aws.amazon.com/about-aws/whats-new/2019/12/aws-launches-fargate-spot-save-up-to-70-for-fault-tolerant-applications/?nc1=h_ls).
 
 ```ts
 new DualAlbFargateService(stack, 'Service', {
@@ -40,6 +39,39 @@ new DualAlbFargateService(stack, 'Service', {
   },
 });
 ```
+
+## Fargate Spot Support
+
+By enabling the `spot` property, 100% fargate spot tasks will be provisioned to help you save up to 70%. Check more details about [Fargate Spot](https://aws.amazon.com/about-aws/whats-new/2019/12/aws-launches-fargate-spot-save-up-to-70-for-fault-tolerant-applications/?nc1=h_ls). This is a handy catch-all flag to force all tasks to be `FARGATE_SPOT` only.
+
+To specify mixed strategy with partial `FARGATE` and partial `FARGATE_SPOT`, specify the `capacityProviderStrategy` for individual tasks like
+
+```ts
+new DualAlbFargateService(stack, 'Service', {
+  tasks: [
+    {
+      listenerPort: 8080,
+      task: customerTask,
+      desiredCount: 2,
+      capacityProviderStretegy: [
+        {
+          capacityProvider: 'FARGATE',
+          base: 1,
+          weight: 1,
+        },
+        {
+          capacityProvider: 'FARGATE_SPOT',
+          base: 0,
+          weight: 3,
+        },
+      ],
+    },
+  ],
+});
+```
+The custom capacity provider strategy will be applied if `capacityProviderStretegy` is specified, otherwise, 100% spot will be used when `spot: true`. The default policy is 100% Fargate on-demand.
+
+
 
 ## Sample Application
 
