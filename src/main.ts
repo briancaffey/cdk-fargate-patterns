@@ -110,7 +110,7 @@ export class DualAlbFargateService extends cdk.Construct {
       const svc = new ecs.FargateService(this, `${defaultContainerName}Service`, {
         taskDefinition: t.task,
         cluster,
-        capacityProviderStrategies: t.capacityProviderStretegy ?? props.spot ? spotOnlyStrategy : undefined,
+        capacityProviderStrategies: t.capacityProviderStretegy ?? ( props.spot ? spotOnlyStrategy : undefined ),
         desiredCount: t.desiredCount,
       });
 
