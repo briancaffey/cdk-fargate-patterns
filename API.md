@@ -82,6 +82,7 @@ Name | Type | Description
 -----|------|-------------
 **listenerPort** | <code>number</code> | <span></span>
 **task** | <code>[FargateTaskDefinition](#aws-cdk-aws-ecs-fargatetaskdefinition)</code> | <span></span>
+**capacityProviderStretegy**? | <code>Array<[CapacityProviderStrategy](#aws-cdk-aws-ecs-capacityproviderstrategy)></code> | __*Optional*__
 **desiredCount**? | <code>number</code> | desired number of tasks for the service.<br/>__*Default*__: 1
 **scalingPolicy**? | <code>[ServiceScalingPolicy](#cdk-fargate-patterns-servicescalingpolicy)</code> | service autoscaling policy.<br/>__*Optional*__
 
