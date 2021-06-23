@@ -78,10 +78,15 @@ export class DualAlbFargateService extends cdk.Construct {
   readonly externalAlb: elbv2.ApplicationLoadBalancer
   readonly internalAlb: elbv2.ApplicationLoadBalancer
   readonly vpc: ec2.IVpc;
+  /**
+   * The service(s) created from the task(s)
+   */
+  readonly service: ecs.FargateService[];
   constructor(scope: cdk.Construct, id: string, props: DualAlbFargateServiceProps) {
     super(scope, id);
 
     this.vpc = props.vpc ?? getOrCreateVpc(this),
+    this.service = [];
 
     this.externalAlb = new elbv2.ApplicationLoadBalancer(this, 'ExternalAlb', {
       vpc: this.vpc,
@@ -120,6 +125,7 @@ export class DualAlbFargateService extends cdk.Construct {
         desiredCount: t.desiredCount,
         enableExecuteCommand: props.enableExecuteCommand ?? false,
       });
+      this.service.push(svc);
 
       const exttg = new elbv2.ApplicationTargetGroup(this, `${defaultContainerName}ExtTG`, {
         protocol: elbv2.ApplicationProtocol.HTTP,
