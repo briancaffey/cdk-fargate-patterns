@@ -38,6 +38,7 @@ new DualAlbFargateService(scope: Construct, id: string, props: DualAlbFargateSer
 * **id** (<code>string</code>)  *No description*
 * **props** (<code>[DualAlbFargateServiceProps](#cdk-fargate-patterns-dualalbfargateserviceprops)</code>)  *No description*
   * **tasks** (<code>Array<[FargateTaskProps](#cdk-fargate-patterns-fargatetaskprops)></code>)  *No description* 
+  * **enableExecuteCommand** (<code>boolean</code>)  Whether to enable ECS Exec support. __*Default*__: false
   * **route53Ops** (<code>[Route53Options](#cdk-fargate-patterns-route53options)</code>)  *No description* __*Optional*__
   * **spot** (<code>boolean</code>)  create a FARGATE_SPOT only cluster. __*Default*__: false
   * **vpc** (<code>[IVpc](#aws-cdk-aws-ec2-ivpc)</code>)  *No description* __*Optional*__
@@ -65,6 +66,7 @@ Name | Type | Description
 Name | Type | Description 
 -----|------|-------------
 **tasks** | <code>Array<[FargateTaskProps](#cdk-fargate-patterns-fargatetaskprops)></code> | <span></span>
+**enableExecuteCommand**? | <code>boolean</code> | Whether to enable ECS Exec support.<br/>__*Default*__: false
 **route53Ops**? | <code>[Route53Options](#cdk-fargate-patterns-route53options)</code> | __*Optional*__
 **spot**? | <code>boolean</code> | create a FARGATE_SPOT only cluster.<br/>__*Default*__: false
 **vpc**? | <code>[IVpc](#aws-cdk-aws-ec2-ivpc)</code> | __*Optional*__
