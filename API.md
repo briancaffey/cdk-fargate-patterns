@@ -52,6 +52,7 @@ Name | Type | Description
 -----|------|-------------
 **externalAlb** | <code>[ApplicationLoadBalancer](#aws-cdk-aws-elasticloadbalancingv2-applicationloadbalancer)</code> | <span></span>
 **internalAlb** | <code>[ApplicationLoadBalancer](#aws-cdk-aws-elasticloadbalancingv2-applicationloadbalancer)</code> | <span></span>
+**service** | <code>Array<[FargateService](#aws-cdk-aws-ecs-fargateservice)></code> | The service(s) created from the task(s).
 **vpc** | <code>[IVpc](#aws-cdk-aws-ec2-ivpc)</code> | <span></span>
 
 

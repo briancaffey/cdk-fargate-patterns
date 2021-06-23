@@ -1,4 +1,5 @@
 import * as path from 'path';
+import * as ec2 from '@aws-cdk/aws-ec2';
 import * as ecs from '@aws-cdk/aws-ecs';
 import * as cdk from '@aws-cdk/core';
 import { DualAlbFargateService } from './index';
@@ -84,7 +85,7 @@ nginxTask.addContainer('nginx', {
   ],
 });
 
-new DualAlbFargateService(stack, 'Service', {
+const svc = new DualAlbFargateService(stack, 'Service', {
   spot: true, // FARGATE_SPOT only cluster
   enableExecuteCommand: true,
   tasks: [
@@ -125,3 +126,14 @@ new DualAlbFargateService(stack, 'Service', {
     internalAlbRecordName, // internal.svc.local
   },
 });
+
+
+// create a dummy sg
+const dummySg = new ec2.SecurityGroup(stack, 'DummySG', {
+  vpc: svc.vpc,
+});
+
+// allow all traffic from dummy sg to all the services
+for (let i =0; i < svc.service.length; i++) {
+  svc.service[i].connections.allowFrom(dummySg, ec2.Port.allTraffic());
+}
