@@ -72,8 +72,21 @@ productTask.addContainer('product', {
   },
 });
 
+const nginxTask = new ecs.FargateTaskDefinition(stack, 'nginxTask', {
+  cpu: 256,
+  memoryLimitMiB: 512,
+});
+
+nginxTask.addContainer('nginx', {
+  image: ecs.ContainerImage.fromRegistry('nginx:latest'),
+  portMappings: [
+    { containerPort: 80 },
+  ],
+});
+
 new DualAlbFargateService(stack, 'Service', {
   spot: true, // FARGATE_SPOT only cluster
+  enableExecuteCommand: true,
   tasks: [
     {
       listenerPort: 80,
@@ -104,6 +117,7 @@ new DualAlbFargateService(stack, 'Service', {
       ],
     },
     { listenerPort: 9090, task: productTask, desiredCount: 2 },
+    { listenerPort: 9091, task: nginxTask, desiredCount: 1 },
   ],
   route53Ops: {
     zoneName, // svc.local

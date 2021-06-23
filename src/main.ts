@@ -15,6 +15,12 @@ export interface DualAlbFargateServiceProps {
    * @default false
    */
   readonly spot?: boolean;
+  /**
+   * Whether to enable ECS Exec support
+   * @see https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html
+   * @default false
+   */
+  readonly enableExecuteCommand?: boolean;
 }
 
 export interface FargateTaskProps {
@@ -112,6 +118,7 @@ export class DualAlbFargateService extends cdk.Construct {
         cluster,
         capacityProviderStrategies: t.capacityProviderStretegy ?? ( props.spot ? spotOnlyStrategy : undefined ),
         desiredCount: t.desiredCount,
+        enableExecuteCommand: props.enableExecuteCommand ?? false,
       });
 
       const exttg = new elbv2.ApplicationTargetGroup(this, `${defaultContainerName}ExtTG`, {
