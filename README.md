@@ -71,7 +71,9 @@ new DualAlbFargateService(stack, 'Service', {
 ```
 The custom capacity provider strategy will be applied if `capacityProviderStretegy` is specified, otherwise, 100% spot will be used when `spot: true`. The default policy is 100% Fargate on-demand.
 
+## ECS Exec support
 
+Simply turn on the `enableExecuteCommand` property to enable the [ECS Exec](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html) support for all services.
 
 ## Sample Application
 

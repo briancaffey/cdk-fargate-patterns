@@ -1003,6 +1003,7 @@ Object {
         },
         "DesiredCount": 2,
         "EnableECSManagedTags": false,
+        "EnableExecuteCommand": false,
         "HealthCheckGracePeriodSeconds": 60,
         "LoadBalancers": Array [
           Object {
@@ -1354,6 +1355,7 @@ Object {
         },
         "DesiredCount": 2,
         "EnableECSManagedTags": false,
+        "EnableExecuteCommand": false,
         "HealthCheckGracePeriodSeconds": 60,
         "LoadBalancers": Array [
           Object {
@@ -1705,6 +1707,7 @@ Object {
         },
         "DesiredCount": 2,
         "EnableECSManagedTags": false,
+        "EnableExecuteCommand": false,
         "HealthCheckGracePeriodSeconds": 60,
         "LoadBalancers": Array [
           Object {
