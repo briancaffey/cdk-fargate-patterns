@@ -35,7 +35,7 @@ export interface FargateTaskProps {
    * service autoscaling policy
    */
   readonly scalingPolicy?: ServiceScalingPolicy;
-  readonly capacityProviderStretegy?: ecs.CapacityProviderStrategy[];
+  readonly capacityProviderStrategy?: ecs.CapacityProviderStrategy[];
 }
 
 export interface ServiceScalingPolicy {
@@ -121,7 +121,7 @@ export class DualAlbFargateService extends cdk.Construct {
       const svc = new ecs.FargateService(this, `${defaultContainerName}Service`, {
         taskDefinition: t.task,
         cluster,
-        capacityProviderStrategies: t.capacityProviderStretegy ?? ( props.spot ? spotOnlyStrategy : undefined ),
+        capacityProviderStrategies: t.capacityProviderStrategy ?? ( props.spot ? spotOnlyStrategy : undefined ),
         desiredCount: t.desiredCount,
         enableExecuteCommand: props.enableExecuteCommand ?? false,
       });

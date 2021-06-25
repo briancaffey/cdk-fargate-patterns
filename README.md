@@ -53,7 +53,7 @@ new DualAlbFargateService(stack, 'Service', {
       listenerPort: 8080,
       task: customerTask,
       desiredCount: 2,
-      capacityProviderStretegy: [
+      capacityProviderStrategy: [
         {
           capacityProvider: 'FARGATE',
           base: 1,
