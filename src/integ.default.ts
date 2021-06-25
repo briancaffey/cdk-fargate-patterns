@@ -104,7 +104,7 @@ const svc = new DualAlbFargateService(stack, 'Service', {
       listenerPort: 8080,
       task: customerTask,
       desiredCount: 10,
-      capacityProviderStretegy: [
+      capacityProviderStrategy: [
         {
           capacityProvider: 'FARGATE',
           base: 1,
