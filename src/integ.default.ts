@@ -89,6 +89,7 @@ const svc = new DualAlbFargateService(stack, 'Service', {
   spot: true, // FARGATE_SPOT only cluster
   enableExecuteCommand: true,
   tasks: [
+    // The order service with both external/internal access
     {
       listenerPort: 80,
       task: orderTask,
@@ -101,6 +102,8 @@ const svc = new DualAlbFargateService(stack, 'Service', {
       },
     },
     {
+      // The customer service(internal only)
+      internalOnly: true,
       listenerPort: 8080,
       task: customerTask,
       desiredCount: 10,
@@ -117,7 +120,9 @@ const svc = new DualAlbFargateService(stack, 'Service', {
         },
       ],
     },
-    { listenerPort: 9090, task: productTask, desiredCount: 2 },
+    // The produce service(internal only)
+    { listenerPort: 9090, task: productTask, desiredCount: 2, internalOnly: true },
+    // The nginx service(external/internal)
     { listenerPort: 9091, task: nginxTask, desiredCount: 1 },
   ],
   route53Ops: {

@@ -123,7 +123,7 @@ Object {
                 "dualstack.",
                 Object {
                   "Fn::GetAtt": Array [
-                    "ServiceInternalAlbF1A10042",
+                    "ServiceExternalAlbC648C006",
                     "DNSName",
                   ],
                 },
@@ -132,7 +132,7 @@ Object {
           },
           "HostedZoneId": Object {
             "Fn::GetAtt": Array [
-              "ServiceInternalAlbF1A10042",
+              "ServiceExternalAlbC648C006",
               "CanonicalHostedZoneID",
             ],
           },

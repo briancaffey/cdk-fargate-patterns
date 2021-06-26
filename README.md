@@ -71,9 +71,26 @@ new DualAlbFargateService(stack, 'Service', {
 ```
 The custom capacity provider strategy will be applied if `capacityProviderStretegy` is specified, otherwise, 100% spot will be used when `spot: true`. The default policy is 100% Fargate on-demand.
 
-## ECS Exec support
+## ECS Exec
 
 Simply turn on the `enableExecuteCommand` property to enable the [ECS Exec](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html) support for all services.
+
+## Internal Only
+
+By default, all task(s) defined in the `DualAlbFargateService` will be registered to both external and internal ALBs. To make it internal only without external access, specify `internalOnly: true` like
+
+```ts
+new DualAlbFargateService(stack, 'Service', {
+    tasks: [
+      // this task is internal only
+      { listenerPort: 8080, task: task1, internalOnly: true },
+      // this task is both external and internal facing
+      { listenerPort: 80, task: task2 },
+    ],
+  });
+```
+
+Please note if all tasks are defined as `intenralOnly`, no external ALB will be created.
 
 ## Sample Application
 
