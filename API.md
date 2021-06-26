@@ -50,10 +50,10 @@ new DualAlbFargateService(scope: Construct, id: string, props: DualAlbFargateSer
 
 Name | Type | Description 
 -----|------|-------------
-**externalAlb** | <code>[ApplicationLoadBalancer](#aws-cdk-aws-elasticloadbalancingv2-applicationloadbalancer)</code> | <span></span>
 **internalAlb** | <code>[ApplicationLoadBalancer](#aws-cdk-aws-elasticloadbalancingv2-applicationloadbalancer)</code> | <span></span>
 **service** | <code>Array<[FargateService](#aws-cdk-aws-ecs-fargateservice)></code> | The service(s) created from the task(s).
 **vpc** | <code>[IVpc](#aws-cdk-aws-ec2-ivpc)</code> | <span></span>
+**externalAlb**? | <code>[ApplicationLoadBalancer](#aws-cdk-aws-elasticloadbalancingv2-applicationloadbalancer)</code> | __*Optional*__
 
 
 
@@ -87,6 +87,7 @@ Name | Type | Description
 **task** | <code>[FargateTaskDefinition](#aws-cdk-aws-ecs-fargatetaskdefinition)</code> | <span></span>
 **capacityProviderStrategy**? | <code>Array<[CapacityProviderStrategy](#aws-cdk-aws-ecs-capacityproviderstrategy)></code> | __*Optional*__
 **desiredCount**? | <code>number</code> | desired number of tasks for the service.<br/>__*Default*__: 1
+**internalOnly**? | <code>boolean</code> | Internal only.<br/>__*Default*__: false
 **scalingPolicy**? | <code>[ServiceScalingPolicy](#cdk-fargate-patterns-servicescalingpolicy)</code> | service autoscaling policy.<br/>__*Optional*__
 
 
