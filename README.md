@@ -87,6 +87,8 @@ This repository comes with a sample applicaiton with 3 services in Golang. On de
 To deploy the sample application in you default VPC:
 
 ```sh
+// install first
+$ yarn install
 // compile the ts to js
 $ yarn build
 $ npx cdk --app lib/integ.default.js -c use_default_vpc=1 diff
