@@ -36,6 +36,11 @@ export interface FargateTaskProps {
    */
   readonly scalingPolicy?: ServiceScalingPolicy;
   readonly capacityProviderStrategy?: ecs.CapacityProviderStrategy[];
+  /**
+   * Internal only. Do not expose the service on the internet-facing load balancer.
+   * @default false
+   */
+  readonly internalOnly?: boolean;
 }
 
 export interface ServiceScalingPolicy {
@@ -75,23 +80,31 @@ export interface Route53Options {
 }
 
 export class DualAlbFargateService extends cdk.Construct {
-  readonly externalAlb: elbv2.ApplicationLoadBalancer
+  readonly externalAlb?: elbv2.ApplicationLoadBalancer
   readonly internalAlb: elbv2.ApplicationLoadBalancer
   readonly vpc: ec2.IVpc;
   /**
    * The service(s) created from the task(s)
    */
   readonly service: ecs.FargateService[];
+  private hasExternalLoadBalancer: boolean = false;
   constructor(scope: cdk.Construct, id: string, props: DualAlbFargateServiceProps) {
     super(scope, id);
 
     this.vpc = props.vpc ?? getOrCreateVpc(this),
     this.service = [];
 
-    this.externalAlb = new elbv2.ApplicationLoadBalancer(this, 'ExternalAlb', {
-      vpc: this.vpc,
-      internetFacing: true,
+    // determine whether we need the external LB
+    props.tasks.forEach(t => {
+      if (!t.internalOnly) { this.hasExternalLoadBalancer = true; }
     });
+
+    if (this.hasExternalLoadBalancer) {
+      this.externalAlb = new elbv2.ApplicationLoadBalancer(this, 'ExternalAlb', {
+        vpc: this.vpc,
+        internetFacing: true,
+      });
+    }
 
     this.internalAlb = new elbv2.ApplicationLoadBalancer(this, 'InternalAlb', {
       vpc: this.vpc,
@@ -127,23 +140,36 @@ export class DualAlbFargateService extends cdk.Construct {
       });
       this.service.push(svc);
 
-      const exttg = new elbv2.ApplicationTargetGroup(this, `${defaultContainerName}ExtTG`, {
-        protocol: elbv2.ApplicationProtocol.HTTP,
-        vpc: this.vpc,
+      // default scaling policy
+      const scaling = svc.autoScaleTaskCount({ maxCapacity: t.scalingPolicy?.maxCapacity ?? 10 });
+      scaling.scaleOnCpuUtilization('CpuScaling', {
+        targetUtilizationPercent: t.scalingPolicy?.targetCpuUtilization ?? 50,
       });
+
+      // not internalOnly
+      if (!t.internalOnly) {
+        const exttg = new elbv2.ApplicationTargetGroup(this, `${defaultContainerName}ExtTG`, {
+          protocol: elbv2.ApplicationProtocol.HTTP,
+          vpc: this.vpc,
+        });
+        // listener for the external ALB
+        new elbv2.ApplicationListener(this, `ExtAlbListener${t.listenerPort}`, {
+          loadBalancer: this.externalAlb!,
+          open: true,
+          port: t.listenerPort,
+          protocol: elbv2.ApplicationProtocol.HTTP,
+          defaultTargetGroups: [exttg],
+        });
+        scaling.scaleOnRequestCount('RequestScaling', {
+          requestsPerTarget: t.scalingPolicy?.requestPerTarget ?? 1000,
+          targetGroup: exttg,
+        });
+        exttg.addTarget(svc);
+      }
 
       const inttg = new elbv2.ApplicationTargetGroup(this, `${defaultContainerName}IntTG`, {
         protocol: elbv2.ApplicationProtocol.HTTP,
         vpc: this.vpc,
-      });
-
-      // listener for the external ALB
-      new elbv2.ApplicationListener(this, `ExtAlbListener${t.listenerPort}`, {
-        loadBalancer: this.externalAlb,
-        open: true,
-        port: t.listenerPort,
-        protocol: elbv2.ApplicationProtocol.HTTP,
-        defaultTargetGroups: [exttg],
       });
 
       // listener for the internal ALB
@@ -155,23 +181,13 @@ export class DualAlbFargateService extends cdk.Construct {
         defaultTargetGroups: [inttg],
       });
 
-      // default scaling policy
-      const scaling = svc.autoScaleTaskCount({ maxCapacity: t.scalingPolicy?.maxCapacity ?? 10 });
-      scaling.scaleOnCpuUtilization('CpuScaling', {
-        targetUtilizationPercent: t.scalingPolicy?.targetCpuUtilization ?? 50,
-      });
-      scaling.scaleOnRequestCount('RequestScaling', {
-        requestsPerTarget: t.scalingPolicy?.requestPerTarget ?? 1000,
-        targetGroup: exttg,
-      });
+
       // extra scaling policy
       scaling.scaleOnRequestCount('RequestScaling2', {
         requestsPerTarget: t.scalingPolicy?.requestPerTarget ?? 1000,
         targetGroup: inttg,
       });
 
-
-      exttg.addTarget(svc);
       inttg.addTarget(svc);
     });
 
@@ -190,15 +206,20 @@ export class DualAlbFargateService extends cdk.Construct {
       target: route53.RecordTarget.fromAlias(new targets.LoadBalancerTarget(this.internalAlb)),
     });
 
-    new route53.ARecord(this, 'ExternalAlbAlias', {
-      zone,
-      recordName: externalAlbRecordName,
-      target: route53.RecordTarget.fromAlias(new targets.LoadBalancerTarget(this.internalAlb)),
-    });
+    if (this.externalAlb) {
+      new route53.ARecord(this, 'ExternalAlbAlias', {
+        zone,
+        recordName: externalAlbRecordName,
+        target: route53.RecordTarget.fromAlias(new targets.LoadBalancerTarget(this.externalAlb)),
+      });
+    }
 
-    new cdk.CfnOutput(this, 'ExternalEndpoint', { value: `http://${this.externalAlb.loadBalancerDnsName}` });
+
+    if (this.externalAlb) {
+      new cdk.CfnOutput(this, 'ExternalEndpoint', { value: `http://${this.externalAlb.loadBalancerDnsName}` });
+      new cdk.CfnOutput(this, 'ExternalEndpointPrivate', { value: `http://${externalAlbRecordName}.${zoneName}` });
+    }
     new cdk.CfnOutput(this, 'InternalEndpoint', { value: `http://${this.internalAlb.loadBalancerDnsName}` });
-    new cdk.CfnOutput(this, 'ExternalEndpointPrivate', { value: `http://${externalAlbRecordName}.${zoneName}` });
     new cdk.CfnOutput(this, 'InternalEndpointPrivate', { value: `http://${internalAlbRecordName}.${zoneName}` });
   }
 }

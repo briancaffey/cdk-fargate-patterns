@@ -143,3 +143,104 @@ test('DualAlbFargateService - minimal setup', () => {
     LaunchType: 'FARGATE',
   });
 });
+
+test('DualAlbFargateService - internal only', () => {
+  // GIVEN
+  const app = new cdk.App();
+
+  const env = {
+    region: 'us-east-1',
+    account: '123456789012',
+  };
+
+  const stack = new cdk.Stack(app, 'demo-stack', { env });
+
+  // WHEN
+  const task = new ecs.FargateTaskDefinition(stack, 'task', {
+    cpu: 256,
+    memoryLimitMiB: 512,
+  });
+
+  task.addContainer('nginx', {
+    image: ecs.ContainerImage.fromRegistry('nginx'),
+    portMappings: [{ containerPort: 80 }],
+  });
+
+  new DualAlbFargateService(stack, 'Service', {
+    tasks: [{ listenerPort: 80, task, internalOnly: true }],
+  });
+
+  // THEN
+  // we should NOT have the external ALB
+  expect(stack).not.toHaveResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {
+    Scheme: 'internet-facing',
+    Type: 'application',
+  });
+  // we should have the internal ALB
+  expect(stack).toHaveResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {
+    Scheme: 'internal',
+    Type: 'application',
+  });
+  // We should have fargate service
+  expect(stack).toHaveResource('AWS::ECS::Service', {
+    LaunchType: 'FARGATE',
+  });
+});
+
+
+test('DualAlbFargateService - partial internal only', () => {
+  // GIVEN
+  const app = new cdk.App();
+
+  const env = {
+    region: 'us-east-1',
+    account: '123456789012',
+  };
+
+  const stack = new cdk.Stack(app, 'demo-stack', { env });
+
+  // WHEN
+  const task = new ecs.FargateTaskDefinition(stack, 'task', {
+    cpu: 256,
+    memoryLimitMiB: 512,
+  });
+
+  task.addContainer('nginx', {
+    image: ecs.ContainerImage.fromRegistry('nginx'),
+    portMappings: [{ containerPort: 80 }],
+  });
+
+  const task2 = new ecs.FargateTaskDefinition(stack, 'task2', {
+    cpu: 256,
+    memoryLimitMiB: 512,
+  });
+
+  task2.addContainer('caddy', {
+    image: ecs.ContainerImage.fromRegistry('caddy'),
+    portMappings: [{ containerPort: 2015 }],
+  });
+
+  new DualAlbFargateService(stack, 'Service', {
+    tasks: [
+      { listenerPort: 80, task, internalOnly: true },
+      { listenerPort: 8080, task: task2 },
+    ],
+  });
+
+  // THEN
+  // we should still have the external ALB
+  expect(stack).toHaveResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {
+    Scheme: 'internet-facing',
+    Type: 'application',
+  });
+  // we should have the internal ALB
+  expect(stack).toHaveResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {
+    Scheme: 'internal',
+    Type: 'application',
+  });
+  // We should have fargate service
+  expect(stack).toHaveResource('AWS::ECS::Service', {
+    LaunchType: 'FARGATE',
+  });
+});
+
