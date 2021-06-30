@@ -12,7 +12,7 @@ const env = {
   account: process.env.CDK_DEFAULT_ACCOUNT,
 };
 
-const stack = new cdk.Stack(app, 'demo-stack', { env });
+const stack = new cdk.Stack(app, 'demo-stack2', { env });
 
 const orderTask = new ecs.FargateTaskDefinition(stack, 'orderTask', {
   cpu: 256,
@@ -85,6 +85,18 @@ nginxTask.addContainer('nginx', {
   ],
 });
 
+const phpTask = new ecs.FargateTaskDefinition(stack, 'phpTask', {
+  cpu: 256,
+  memoryLimitMiB: 512,
+});
+
+phpTask.addContainer('php', {
+  image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/nginx-php')),
+  portMappings: [
+    { containerPort: 80 },
+  ],
+});
+
 const svc = new DualAlbFargateService(stack, 'Service', {
   spot: true, // FARGATE_SPOT only cluster
   enableExecuteCommand: true,
@@ -106,7 +118,7 @@ const svc = new DualAlbFargateService(stack, 'Service', {
       internalOnly: true,
       listenerPort: 8080,
       task: customerTask,
-      desiredCount: 10,
+      desiredCount: 1,
       capacityProviderStrategy: [
         {
           capacityProvider: 'FARGATE',
@@ -121,9 +133,11 @@ const svc = new DualAlbFargateService(stack, 'Service', {
       ],
     },
     // The produce service(internal only)
-    { listenerPort: 9090, task: productTask, desiredCount: 2, internalOnly: true },
+    { listenerPort: 9090, task: productTask, desiredCount: 1, internalOnly: true },
     // The nginx service(external/internal)
     { listenerPort: 9091, task: nginxTask, desiredCount: 1 },
+    // The nginx-php-fpm service(external/internal)
+    { listenerPort: 9092, task: phpTask, desiredCount: 1 },
   ],
   route53Ops: {
     zoneName, // svc.local
