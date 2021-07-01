@@ -5,17 +5,23 @@ import * as ecs from '@aws-cdk/aws-ecs';
 import * as cdk from '@aws-cdk/core';
 import { DualAlbFargateService } from '../src/index';
 
-// match snapshot
-test('Snapshot', () => {
-  const app = new cdk.App();
+let app: cdk.App;
+let env: { region: string; account: string };
+let stack: cdk.Stack;
 
-  const env = {
+
+beforeEach(() => {
+  app = new cdk.App();
+  env = {
     region: 'us-east-1',
     account: '123456789012',
   };
+  stack = new cdk.Stack(app, 'demo-stack', { env });
+});
 
-  const stack = new cdk.Stack(app, 'demo-stack', { env });
 
+// match snapshot
+test('Snapshot', () => {
   const orderTask = new ecs.FargateTaskDefinition(stack, 'orderTask', {
     cpu: 256,
     memoryLimitMiB: 512,
@@ -103,15 +109,6 @@ test('Snapshot', () => {
 
 test('DualAlbFargateService - minimal setup', () => {
   // GIVEN
-  const app = new cdk.App();
-
-  const env = {
-    region: 'us-east-1',
-    account: '123456789012',
-  };
-
-  const stack = new cdk.Stack(app, 'demo-stack', { env });
-
   // WHEN
   const task = new ecs.FargateTaskDefinition(stack, 'task', {
     cpu: 256,
@@ -147,15 +144,6 @@ test('DualAlbFargateService - minimal setup', () => {
 
 test('DualAlbFargateService - internal only', () => {
   // GIVEN
-  const app = new cdk.App();
-
-  const env = {
-    region: 'us-east-1',
-    account: '123456789012',
-  };
-
-  const stack = new cdk.Stack(app, 'demo-stack', { env });
-
   // WHEN
   const task = new ecs.FargateTaskDefinition(stack, 'task', {
     cpu: 256,
@@ -191,15 +179,6 @@ test('DualAlbFargateService - internal only', () => {
 
 test('DualAlbFargateService - partial internal only', () => {
   // GIVEN
-  const app = new cdk.App();
-
-  const env = {
-    region: 'us-east-1',
-    account: '123456789012',
-  };
-
-  const stack = new cdk.Stack(app, 'demo-stack', { env });
-
   // WHEN
   const task = new ecs.FargateTaskDefinition(stack, 'task', {
     cpu: 256,
@@ -247,15 +226,6 @@ test('DualAlbFargateService - partial internal only', () => {
 
 test('DualAlbFargateService - vpc subnet select default select private subnet', () => {
   // GIVEN
-  const app = new cdk.App();
-
-  const env = {
-    region: 'us-east-1',
-    account: '123456789012',
-  };
-
-  const stack = new cdk.Stack(app, 'demo-stack', { env });
-
   // WHEN
   const task = new ecs.FargateTaskDefinition(stack, 'task', {
     cpu: 256,
@@ -306,15 +276,6 @@ test('DualAlbFargateService - vpc subnet select default select private subnet', 
 
 test('DualAlbFargateService - vpc subnet select test select public subnet', () => {
   // GIVEN
-  const app = new cdk.App();
-
-  const env = {
-    region: 'us-east-1',
-    account: '123456789012',
-  };
-
-  const stack = new cdk.Stack(app, 'demo-stack', { env });
-
   // WHEN
   const task = new ecs.FargateTaskDefinition(stack, 'task', {
     cpu: 256,

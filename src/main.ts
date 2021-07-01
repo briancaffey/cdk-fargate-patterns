@@ -97,6 +97,10 @@ export class DualAlbFargateService extends cdk.Construct {
   readonly service: ecs.FargateService[];
   private hasExternalLoadBalancer: boolean = false;
   private vpcSubnets: ec2.SubnetSelection = { subnetType: ec2.SubnetType.PRIVATE };
+  /**
+   * determine if vpcSubnets are all public ones
+   */
+  private isPublicSubnets: boolean = false;
   constructor(scope: cdk.Construct, id: string, props: DualAlbFargateServiceProps) {
     super(scope, id);
 
@@ -104,8 +108,8 @@ export class DualAlbFargateService extends cdk.Construct {
     this.service = [];
     if (props.vpcSubnets) {
       this.vpcSubnets = props.vpcSubnets;
+      this.validateSubnets(this.vpc, this.vpcSubnets);
     }
-
     // determine whether we need the external LB
     props.tasks.forEach(t => {
       if (!t.internalOnly) { this.hasExternalLoadBalancer = true; }
@@ -150,7 +154,7 @@ export class DualAlbFargateService extends cdk.Construct {
         desiredCount: t.desiredCount,
         enableExecuteCommand: props.enableExecuteCommand ?? false,
         vpcSubnets: this.vpcSubnets,
-        assignPublicIp: isPublicSubnet(this.vpcSubnets.subnetType),
+        assignPublicIp: this.isPublicSubnets,
       });
       this.service.push(svc);
 
@@ -236,6 +240,27 @@ export class DualAlbFargateService extends cdk.Construct {
     new cdk.CfnOutput(this, 'InternalEndpoint', { value: `http://${this.internalAlb.loadBalancerDnsName}` });
     new cdk.CfnOutput(this, 'InternalEndpointPrivate', { value: `http://${internalAlbRecordName}.${zoneName}` });
   }
+
+  private validateSubnets(vpc: ec2.IVpc, vpcSubnets: ec2.SubnetSelection) {
+    const subnets = vpc.selectSubnets(vpcSubnets);
+    // get all subnets in the VPC
+    const allsubnetIds = vpc.publicSubnets.concat(vpc.privateSubnets).concat(vpc.isolatedSubnets).map(x => x.subnetId);
+    // validate the given subnets
+    subnets.subnetIds.forEach(s => {
+      if (!allsubnetIds.includes(s)) {
+        throw new Error(`${s} does not exist in the VPC`);
+      }
+      if (vpc.isolatedSubnets.map(i => i.subnetId).includes(s)) {
+        throw new Error(`Isolated subnet ${s} is not allowed`);
+      }
+    });
+    const hasPublic = subnets.subnetIds.some(s => new Set(vpc.publicSubnets.map(x => x.subnetId)).has(s));
+    const hasPrivate = subnets.subnetIds.some(s => new Set(vpc.privateSubnets.map(x => x.subnetId)).has(s));
+    if (hasPublic && hasPrivate) {
+      throw new Error('You should provide either all public or all private subnets, not both.');
+    }
+    this.isPublicSubnets = subnets.subnetIds.some(s => new Set(vpc.publicSubnets.map(x => x.subnetId)).has(s));
+  }
 }
 
 function getOrCreateVpc(scope: cdk.Construct): ec2.IVpc {
@@ -245,16 +270,4 @@ function getOrCreateVpc(scope: cdk.Construct): ec2.IVpc {
     scope.node.tryGetContext('use_vpc_id') ?
       ec2.Vpc.fromLookup(scope, 'Vpc', { vpcId: scope.node.tryGetContext('use_vpc_id') }) :
       new ec2.Vpc(scope, 'Vpc', { maxAzs: 3, natGateways: 1 });
-}
-
-function isPublicSubnet(vpcSubnetType: ec2.SubnetType | undefined): any {
-  if (vpcSubnetType === ec2.SubnetType.PUBLIC) {
-    return true;
-  } else if (vpcSubnetType === ec2.SubnetType.PRIVATE) {
-    return false;
-  } else if (vpcSubnetType === ec2.SubnetType.ISOLATED) {
-    return false;
-  } else {
-    return false;
-  }
 }
