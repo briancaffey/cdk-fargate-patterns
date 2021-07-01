@@ -97,6 +97,19 @@ phpTask.addContainer('php', {
   ],
 });
 
+// NuxtJS service
+const nuxtTask = new ecs.FargateTaskDefinition(stack, 'nuxtTask', {
+  cpu: 256,
+  memoryLimitMiB: 512,
+});
+
+nuxtTask.addContainer('nuxt', {
+  image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/nuxt')),
+  portMappings: [
+    { containerPort: 80 },
+  ],
+});
+
 const svc = new DualAlbFargateService(stack, 'Service', {
   spot: true, // FARGATE_SPOT only cluster
   enableExecuteCommand: true,
@@ -136,8 +149,9 @@ const svc = new DualAlbFargateService(stack, 'Service', {
     { listenerPort: 9090, task: productTask, desiredCount: 1, internalOnly: true },
     // The nginx service(external/internal)
     { listenerPort: 9091, task: nginxTask, desiredCount: 1 },
-    // The nginx-php-fpm service(external/internal)
+    // The NuxtJS service(external/internal)
     { listenerPort: 9092, task: phpTask, desiredCount: 1 },
+    { listenerPort: 9093, task: nuxtTask, desiredCount: 1 },
   ],
   route53Ops: {
     zoneName, // svc.local
