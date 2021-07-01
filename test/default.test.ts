@@ -1,5 +1,6 @@
 import '@aws-cdk/assert/jest';
 import * as path from 'path';
+import * as ec2 from '@aws-cdk/aws-ec2';
 import * as ecs from '@aws-cdk/aws-ecs';
 import * as cdk from '@aws-cdk/core';
 import { DualAlbFargateService } from '../src/index';
@@ -244,3 +245,122 @@ test('DualAlbFargateService - partial internal only', () => {
   });
 });
 
+test('DualAlbFargateService - vpc subnet select default select private subnet', () => {
+  // GIVEN
+  const app = new cdk.App();
+
+  const env = {
+    region: 'us-east-1',
+    account: '123456789012',
+  };
+
+  const stack = new cdk.Stack(app, 'demo-stack', { env });
+
+  // WHEN
+  const task = new ecs.FargateTaskDefinition(stack, 'task', {
+    cpu: 256,
+    memoryLimitMiB: 512,
+  });
+
+  task.addContainer('nginx', {
+    image: ecs.ContainerImage.fromRegistry('nginx'),
+    portMappings: [{ containerPort: 80 }],
+  });
+
+  new DualAlbFargateService(stack, 'Service', {
+    tasks: [
+      { listenerPort: 8080, task },
+    ],
+  });
+
+  // THEN
+  // we should still have the assgin public Ip.
+  expect(stack).toHaveResource('AWS::ECS::Service', {
+    NetworkConfiguration: {
+      AwsvpcConfiguration: {
+        AssignPublicIp: 'DISABLED',
+        SecurityGroups: [
+          {
+            'Fn::GetAtt': [
+              'ServicenginxServiceSecurityGroupD362365D',
+              'GroupId',
+            ],
+          },
+        ],
+        Subnets: [
+          {
+            Ref: 'ServiceVpcPrivateSubnet1Subnet5DB98340',
+          },
+          {
+            Ref: 'ServiceVpcPrivateSubnet2Subnet0A0B778B',
+          },
+          {
+            Ref: 'ServiceVpcPrivateSubnet3SubnetFED5903C',
+          },
+        ],
+      },
+    },
+  });
+});
+
+
+test('DualAlbFargateService - vpc subnet select test select public subnet', () => {
+  // GIVEN
+  const app = new cdk.App();
+
+  const env = {
+    region: 'us-east-1',
+    account: '123456789012',
+  };
+
+  const stack = new cdk.Stack(app, 'demo-stack', { env });
+
+  // WHEN
+  const task = new ecs.FargateTaskDefinition(stack, 'task', {
+    cpu: 256,
+    memoryLimitMiB: 512,
+  });
+
+  task.addContainer('nginx', {
+    image: ecs.ContainerImage.fromRegistry('nginx'),
+    portMappings: [{ containerPort: 80 }],
+  });
+
+  new DualAlbFargateService(stack, 'Service', {
+    tasks: [
+      { listenerPort: 8080, task },
+    ],
+    vpcSubnets: {
+      subnetType: ec2.SubnetType.PUBLIC,
+    },
+  });
+
+  // THEN
+  // we should still have the assgin public Ip.
+  expect(stack).toHaveResource('AWS::ECS::Service', {
+    NetworkConfiguration: {
+      AwsvpcConfiguration: {
+        AssignPublicIp: 'ENABLED',
+        SecurityGroups: [
+          {
+            'Fn::GetAtt': [
+              'ServicenginxServiceSecurityGroupD362365D',
+              'GroupId',
+            ],
+          },
+        ],
+        Subnets: [
+          {
+            Ref: 'ServiceVpcPublicSubnet1Subnet7B418339',
+          },
+          {
+            Ref: 'ServiceVpcPublicSubnet2SubnetDE1A00CE',
+          },
+          {
+            Ref: 'ServiceVpcPublicSubnet3SubnetDDA2D85D',
+          },
+        ],
+      },
+    },
+  });
+});

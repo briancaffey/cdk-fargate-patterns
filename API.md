@@ -42,6 +42,7 @@ new DualAlbFargateService(scope: Construct, id: string, props: DualAlbFargateSer
   * **route53Ops** (<code>[Route53Options](#cdk-fargate-patterns-route53options)</code>)  *No description* __*Optional*__
   * **spot** (<code>boolean</code>)  create a FARGATE_SPOT only cluster. __*Default*__: false
   * **vpc** (<code>[IVpc](#aws-cdk-aws-ec2-ivpc)</code>)  *No description* __*Optional*__
+  * **vpcSubnets** (<code>[SubnetSelection](#aws-cdk-aws-ec2-subnetselection)</code>)  The subnets to associate with the service. __*Default*__: { subnetType: ec2.SubnetType.PRIVATE, }
 
 
 
@@ -71,6 +72,7 @@ Name | Type | Description
 **route53Ops**? | <code>[Route53Options](#cdk-fargate-patterns-route53options)</code> | __*Optional*__
 **spot**? | <code>boolean</code> | create a FARGATE_SPOT only cluster.<br/>__*Default*__: false
 **vpc**? | <code>[IVpc](#aws-cdk-aws-ec2-ivpc)</code> | __*Optional*__
+**vpcSubnets**? | <code>[SubnetSelection](#aws-cdk-aws-ec2-subnetselection)</code> | The subnets to associate with the service.<br/>__*Default*__: { subnetType: ec2.SubnetType.PRIVATE, }
 
 
 

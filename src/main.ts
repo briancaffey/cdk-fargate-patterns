@@ -21,6 +21,14 @@ export interface DualAlbFargateServiceProps {
    * @default false
    */
   readonly enableExecuteCommand?: boolean;
+  /**
+   * The subnets to associate with the service.
+   * @default -
+   * {
+   *       subnetType: ec2.SubnetType.PRIVATE,
+   * }
+   */
+  readonly vpcSubnets?: ec2.SubnetSelection;
 }
 
 export interface FargateTaskProps {
@@ -88,11 +96,15 @@ export class DualAlbFargateService extends cdk.Construct {
    */
   readonly service: ecs.FargateService[];
   private hasExternalLoadBalancer: boolean = false;
+  private vpcSubnets: ec2.SubnetSelection = { subnetType: ec2.SubnetType.PRIVATE };
   constructor(scope: cdk.Construct, id: string, props: DualAlbFargateServiceProps) {
     super(scope, id);
 
     this.vpc = props.vpc ?? getOrCreateVpc(this),
     this.service = [];
+    if (props.vpcSubnets) {
+      this.vpcSubnets = props.vpcSubnets;
+    }
 
     // determine whether we need the external LB
     props.tasks.forEach(t => {
@@ -137,6 +149,8 @@ export class DualAlbFargateService extends cdk.Construct {
         capacityProviderStrategies: t.capacityProviderStrategy ?? ( props.spot ? spotOnlyStrategy : undefined ),
         desiredCount: t.desiredCount,
         enableExecuteCommand: props.enableExecuteCommand ?? false,
+        vpcSubnets: this.vpcSubnets,
+        assignPublicIp: isPublicSubnet(this.vpcSubnets.subnetType),
       });
       this.service.push(svc);
 
@@ -231,4 +245,16 @@ function getOrCreateVpc(scope: cdk.Construct): ec2.IVpc {
     scope.node.tryGetContext('use_vpc_id') ?
       ec2.Vpc.fromLookup(scope, 'Vpc', { vpcId: scope.node.tryGetContext('use_vpc_id') }) :
       new ec2.Vpc(scope, 'Vpc', { maxAzs: 3, natGateways: 1 });
+}
+
+function isPublicSubnet(vpcSubnetType: ec2.SubnetType | undefined): any {
+  if (vpcSubnetType === ec2.SubnetType.PUBLIC) {
+    return true;
+  } else if (vpcSubnetType === ec2.SubnetType.PRIVATE) {
+    return false;
+  } else if (vpcSubnetType === ec2.SubnetType.ISOLATED) {
+    return false;
+  } else {
+    return false;
+  }
 }
