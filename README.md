@@ -92,6 +92,41 @@ new DualAlbFargateService(stack, 'Service', {
 
 Please note if all tasks are defined as `intenralOnly`, no external ALB will be created.
 
+## VPC Subnets
+
+By default, all tasks will be deployed in the private subnets. You will need the NAT gateway for the default route associated with the private subnets to ensure the task can successfully pull the container images.
+
+However, you are allowed to specify `vpcSubnets` to customize the subnet selection.
+
+To deploy all tasks in public subnets, one per AZ:
+
+```ts
+new DualAlbFargateService(stack, 'Service', {
+    vpcSubnets: {
+      subnetType: ec2.SubnetType.PUBLIC,
+      onePerAz: true,
+  },
+  ...
+});
+```
+This will implicitly enable the `auto assign public IP` for each fargate task so the task can successfully pull the container images from external registry. However, the ingress traffic will still be balanced via the external ALB.
+
+To deploy all tasks in specific subnets:
+
+```ts
+new DualAlbFargateService(stack, 'Service', {
+  vpcSubnets: { 
+      subnets: [
+        ec2.Subnet.fromSubnetId(stack, 'sub-1a', 'subnet-0e9460dbcfc4cf6ee'),
+        ec2.Subnet.fromSubnetId(stack, 'sub-1b', 'subnet-0562f666bdf5c29af'),
+        ec2.Subnet.fromSubnetId(stack, 'sub-1c', 'subnet-00ab15c0022872f06'),
+      ],
+    },
+  ...
+});
+```
+
+
 ## Sample Application
 
 This repository comes with a sample applicaiton with 3 services in Golang. On deployment, the `Order` service will be exposed externally on external ALB port `80` and all requests to the `Order` service will trigger sub-requests internally to another other two services(`product` and `customer`) through the internal ALB and eventually aggregate the response back to the client.
