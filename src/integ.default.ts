@@ -110,6 +110,19 @@ nuxtTask.addContainer('nuxt', {
   ],
 });
 
+// Node.js service
+const nodeTask = new ecs.FargateTaskDefinition(stack, 'nodeTask', {
+  cpu: 256,
+  memoryLimitMiB: 512,
+});
+
+nodeTask.addContainer('node', {
+  image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/node')),
+  portMappings: [
+    { containerPort: 80 },
+  ],
+});
+
 const svc = new DualAlbFargateService(stack, 'Service', {
   spot: true, // FARGATE_SPOT only cluster
   enableExecuteCommand: true,
@@ -152,6 +165,7 @@ const svc = new DualAlbFargateService(stack, 'Service', {
     // The NuxtJS service(external/internal)
     { listenerPort: 9092, task: phpTask, desiredCount: 1 },
     { listenerPort: 9093, task: nuxtTask, desiredCount: 1 },
+    { listenerPort: 9094, task: nodeTask, desiredCount: 1 },
   ],
   route53Ops: {
     zoneName, // svc.local
@@ -167,6 +181,6 @@ const dummySg = new ec2.SecurityGroup(stack, 'DummySG', {
 });
 
 // allow all traffic from dummy sg to all the services
-for (let i =0; i < svc.service.length; i++) {
+for (let i = 0; i < svc.service.length; i++) {
   svc.service[i].connections.allowFrom(dummySg, ec2.Port.allTraffic());
 }
