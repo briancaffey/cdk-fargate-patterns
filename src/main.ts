@@ -31,6 +31,20 @@ export interface DualAlbFargateServiceProps {
   readonly vpcSubnets?: ec2.SubnetSelection;
 }
 
+/**
+ * The load balancer accessibility.
+ */
+export enum LoadBalancerAccessibility {
+  /**
+   * register to external load balancer only
+   */
+  EXTERNAL_ONLY = 'EXTERNAL_ONLY',
+  /**
+   * register to internal load balancer only
+   */
+  INTERNAL_ONLY = 'INTERNAL_ONLY',
+}
+
 export interface FargateTaskProps {
   readonly task: ecs.FargateTaskDefinition;
   readonly listenerPort: number;
@@ -41,15 +55,17 @@ export interface FargateTaskProps {
   readonly desiredCount?: number;
   /**
    * service autoscaling policy
+   * @default - { maxCapacity: 10, targetCpuUtilization: 50, requestsPerTarget: 1000 }
    */
   readonly scalingPolicy?: ServiceScalingPolicy;
   readonly capacityProviderStrategy?: ecs.CapacityProviderStrategy[];
   /**
-   * Internal only. Do not expose the service on the internet-facing load balancer.
-   * @default false
+   * Register the service to internal ALB, external ALB or both.
+   * @default both
    */
-  readonly internalOnly?: boolean;
+  readonly accessibility?: LoadBalancerAccessibility;
 }
+
 
 export interface ServiceScalingPolicy {
   /**
@@ -89,13 +105,14 @@ export interface Route53Options {
 
 export class DualAlbFargateService extends cdk.Construct {
   readonly externalAlb?: elbv2.ApplicationLoadBalancer
-  readonly internalAlb: elbv2.ApplicationLoadBalancer
+  readonly internalAlb?: elbv2.ApplicationLoadBalancer
   readonly vpc: ec2.IVpc;
   /**
    * The service(s) created from the task(s)
    */
   readonly service: ecs.FargateService[];
   private hasExternalLoadBalancer: boolean = false;
+  private hasInternalLoadBalancer: boolean = false;
   private vpcSubnets: ec2.SubnetSelection = { subnetType: ec2.SubnetType.PRIVATE };
   /**
    * determine if vpcSubnets are all public ones
@@ -110,9 +127,17 @@ export class DualAlbFargateService extends cdk.Construct {
       this.vpcSubnets = props.vpcSubnets;
       this.validateSubnets(this.vpc, this.vpcSubnets);
     }
+
+
     // determine whether we need the external LB
     props.tasks.forEach(t => {
-      if (!t.internalOnly) { this.hasExternalLoadBalancer = true; }
+      // determine the accessibility
+      if (t.accessibility != LoadBalancerAccessibility.INTERNAL_ONLY ) {
+        this.hasExternalLoadBalancer = true;
+      }
+      if (t.accessibility != LoadBalancerAccessibility.EXTERNAL_ONLY) {
+        this.hasInternalLoadBalancer = true;
+      }
     });
 
     if (this.hasExternalLoadBalancer) {
@@ -122,10 +147,12 @@ export class DualAlbFargateService extends cdk.Construct {
       });
     }
 
-    this.internalAlb = new elbv2.ApplicationLoadBalancer(this, 'InternalAlb', {
-      vpc: this.vpc,
-      internetFacing: false,
-    });
+    if (this.hasInternalLoadBalancer) {
+      this.internalAlb = new elbv2.ApplicationLoadBalancer(this, 'InternalAlb', {
+        vpc: this.vpc,
+        internetFacing: false,
+      });
+    }
 
     const cluster = new ecs.Cluster(this, 'Cluster', {
       vpc: this.vpc,
@@ -164,8 +191,7 @@ export class DualAlbFargateService extends cdk.Construct {
         targetUtilizationPercent: t.scalingPolicy?.targetCpuUtilization ?? 50,
       });
 
-      // not internalOnly
-      if (!t.internalOnly) {
+      if (t.accessibility != LoadBalancerAccessibility.INTERNAL_ONLY) {
         const exttg = new elbv2.ApplicationTargetGroup(this, `${defaultContainerName}ExtTG`, {
           protocol: elbv2.ApplicationProtocol.HTTP,
           vpc: this.vpc,
@@ -185,28 +211,29 @@ export class DualAlbFargateService extends cdk.Construct {
         exttg.addTarget(svc);
       }
 
-      const inttg = new elbv2.ApplicationTargetGroup(this, `${defaultContainerName}IntTG`, {
-        protocol: elbv2.ApplicationProtocol.HTTP,
-        vpc: this.vpc,
-      });
+      if (t.accessibility != LoadBalancerAccessibility.EXTERNAL_ONLY) {
+        const inttg = new elbv2.ApplicationTargetGroup(this, `${defaultContainerName}IntTG`, {
+          protocol: elbv2.ApplicationProtocol.HTTP,
+          vpc: this.vpc,
+        });
 
-      // listener for the internal ALB
-      new elbv2.ApplicationListener(this, `IntAlbListener${t.listenerPort}`, {
-        loadBalancer: this.internalAlb,
-        open: true,
-        port: t.listenerPort,
-        protocol: elbv2.ApplicationProtocol.HTTP,
-        defaultTargetGroups: [inttg],
-      });
+        // listener for the internal ALB
+        new elbv2.ApplicationListener(this, `IntAlbListener${t.listenerPort}`, {
+          loadBalancer: this.internalAlb!,
+          open: true,
+          port: t.listenerPort,
+          protocol: elbv2.ApplicationProtocol.HTTP,
+          defaultTargetGroups: [inttg],
+        });
 
+        // extra scaling policy
+        scaling.scaleOnRequestCount('RequestScaling2', {
+          requestsPerTarget: t.scalingPolicy?.requestPerTarget ?? 1000,
+          targetGroup: inttg,
+        });
+        inttg.addTarget(svc);
+      }
 
-      // extra scaling policy
-      scaling.scaleOnRequestCount('RequestScaling2', {
-        requestsPerTarget: t.scalingPolicy?.requestPerTarget ?? 1000,
-        targetGroup: inttg,
-      });
-
-      inttg.addTarget(svc);
     });
 
     // Route53
@@ -218,27 +245,32 @@ export class DualAlbFargateService extends cdk.Construct {
       vpc: this.vpc,
     });
 
-    new route53.ARecord(this, 'InternalAlbAlias', {
-      zone,
-      recordName: internalAlbRecordName,
-      target: route53.RecordTarget.fromAlias(new targets.LoadBalancerTarget(this.internalAlb)),
-    });
-
-    if (this.externalAlb) {
-      new route53.ARecord(this, 'ExternalAlbAlias', {
+    if (this.hasInternalLoadBalancer) {
+      new route53.ARecord(this, 'InternalAlbAlias', {
         zone,
-        recordName: externalAlbRecordName,
-        target: route53.RecordTarget.fromAlias(new targets.LoadBalancerTarget(this.externalAlb)),
+        recordName: internalAlbRecordName,
+        target: route53.RecordTarget.fromAlias(new targets.LoadBalancerTarget(this.internalAlb!)),
       });
     }
 
 
-    if (this.externalAlb) {
-      new cdk.CfnOutput(this, 'ExternalEndpoint', { value: `http://${this.externalAlb.loadBalancerDnsName}` });
+    if (this.hasExternalLoadBalancer) {
+      new route53.ARecord(this, 'ExternalAlbAlias', {
+        zone,
+        recordName: externalAlbRecordName,
+        target: route53.RecordTarget.fromAlias(new targets.LoadBalancerTarget(this.externalAlb!)),
+      });
+    }
+
+    if (this.hasExternalLoadBalancer) {
+      new cdk.CfnOutput(this, 'ExternalEndpoint', { value: `http://${this.externalAlb!.loadBalancerDnsName}` });
       new cdk.CfnOutput(this, 'ExternalEndpointPrivate', { value: `http://${externalAlbRecordName}.${zoneName}` });
     }
-    new cdk.CfnOutput(this, 'InternalEndpoint', { value: `http://${this.internalAlb.loadBalancerDnsName}` });
-    new cdk.CfnOutput(this, 'InternalEndpointPrivate', { value: `http://${internalAlbRecordName}.${zoneName}` });
+    if (this.hasInternalLoadBalancer) {
+      new cdk.CfnOutput(this, 'InternalEndpoint', { value: `http://${this.internalAlb!.loadBalancerDnsName}` });
+      new cdk.CfnOutput(this, 'InternalEndpointPrivate', { value: `http://${internalAlbRecordName}.${zoneName}` });
+    }
+
   }
 
   private validateSubnets(vpc: ec2.IVpc, vpcSubnets: ec2.SubnetSelection) {

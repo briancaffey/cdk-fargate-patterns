@@ -3,6 +3,7 @@ import * as ec2 from '@aws-cdk/aws-ec2';
 import * as ecs from '@aws-cdk/aws-ecs';
 import * as cdk from '@aws-cdk/core';
 import { DualAlbFargateService } from './index';
+import { LoadBalancerAccessibility } from './main';
 
 
 const app = new cdk.App();
@@ -130,6 +131,7 @@ const svc = new DualAlbFargateService(stack, 'Service', {
     // The order service with both external/internal access
     {
       listenerPort: 80,
+      accessibility: LoadBalancerAccessibility.EXTERNAL_ONLY,
       task: orderTask,
       desiredCount: 2,
       // customize the service autoscaling policy
@@ -141,7 +143,7 @@ const svc = new DualAlbFargateService(stack, 'Service', {
     },
     {
       // The customer service(internal only)
-      internalOnly: true,
+      accessibility: LoadBalancerAccessibility.INTERNAL_ONLY,
       listenerPort: 8080,
       task: customerTask,
       desiredCount: 1,
@@ -159,12 +161,14 @@ const svc = new DualAlbFargateService(stack, 'Service', {
       ],
     },
     // The produce service(internal only)
-    { listenerPort: 9090, task: productTask, desiredCount: 1, internalOnly: true },
-    // The nginx service(external/internal)
-    { listenerPort: 9091, task: nginxTask, desiredCount: 1 },
-    // The NuxtJS service(external/internal)
+    { listenerPort: 9090, task: productTask, desiredCount: 1, accessibility: LoadBalancerAccessibility.INTERNAL_ONLY },
+    // The nginx service(external only)
+    { listenerPort: 9091, task: nginxTask, desiredCount: 1, accessibility: LoadBalancerAccessibility.EXTERNAL_ONLY },
+    // The nginx-php-fpm service(external/internal)
     { listenerPort: 9092, task: phpTask, desiredCount: 1 },
+    // The NuxtJS service(external/internal)
     { listenerPort: 9093, task: nuxtTask, desiredCount: 1 },
+    // The node service(external/internal)
     { listenerPort: 9094, task: nodeTask, desiredCount: 1 },
   ],
   route53Ops: {

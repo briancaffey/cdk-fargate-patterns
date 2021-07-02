@@ -17,6 +17,13 @@ Name|Description
 [ServiceScalingPolicy](#cdk-fargate-patterns-servicescalingpolicy)|*No description*
 
 
+**Enums**
+
+Name|Description
+----|-----------
+[LoadBalancerAccessibility](#cdk-fargate-patterns-loadbalanceraccessibility)|The load balancer accessibility.
+
+
 
 ## class DualAlbFargateService  <a id="cdk-fargate-patterns-dualalbfargateservice"></a>
 
@@ -51,10 +58,10 @@ new DualAlbFargateService(scope: Construct, id: string, props: DualAlbFargateSer
 
 Name | Type | Description 
 -----|------|-------------
-**internalAlb** | <code>[ApplicationLoadBalancer](#aws-cdk-aws-elasticloadbalancingv2-applicationloadbalancer)</code> | <span></span>
 **service** | <code>Array<[FargateService](#aws-cdk-aws-ecs-fargateservice)></code> | The service(s) created from the task(s).
 **vpc** | <code>[IVpc](#aws-cdk-aws-ec2-ivpc)</code> | <span></span>
 **externalAlb**? | <code>[ApplicationLoadBalancer](#aws-cdk-aws-elasticloadbalancingv2-applicationloadbalancer)</code> | __*Optional*__
+**internalAlb**? | <code>[ApplicationLoadBalancer](#aws-cdk-aws-elasticloadbalancingv2-applicationloadbalancer)</code> | __*Optional*__
 
 
 
@@ -87,10 +94,10 @@ Name | Type | Description
 -----|------|-------------
 **listenerPort** | <code>number</code> | <span></span>
 **task** | <code>[FargateTaskDefinition](#aws-cdk-aws-ecs-fargatetaskdefinition)</code> | <span></span>
+**accessibility**? | <code>[LoadBalancerAccessibility](#cdk-fargate-patterns-loadbalanceraccessibility)</code> | Register the service to internal ALB, external ALB or both.<br/>__*Default*__: both
 **capacityProviderStrategy**? | <code>Array<[CapacityProviderStrategy](#aws-cdk-aws-ecs-capacityproviderstrategy)></code> | __*Optional*__
 **desiredCount**? | <code>number</code> | desired number of tasks for the service.<br/>__*Default*__: 1
-**internalOnly**? | <code>boolean</code> | Internal only.<br/>__*Default*__: false
-**scalingPolicy**? | <code>[ServiceScalingPolicy](#cdk-fargate-patterns-servicescalingpolicy)</code> | service autoscaling policy.<br/>__*Optional*__
+**scalingPolicy**? | <code>[ServiceScalingPolicy](#cdk-fargate-patterns-servicescalingpolicy)</code> | service autoscaling policy.<br/>__*Default*__: { maxCapacity: 10, targetCpuUtilization: 50, requestsPerTarget: 1000 }
 
 
 
@@ -122,5 +129,15 @@ Name | Type | Description
 **requestPerTarget**? | <code>number</code> | request per target.<br/>__*Default*__: 1000
 **targetCpuUtilization**? | <code>number</code> | target cpu utilization.<br/>__*Default*__: 50
 
+
+
+## enum LoadBalancerAccessibility  <a id="cdk-fargate-patterns-loadbalanceraccessibility"></a>
+
+The load balancer accessibility.
+
+Name | Description
+-----|-----
+**EXTERNAL_ONLY** |register to external load balancer only.
+**INTERNAL_ONLY** |register to internal load balancer only.
 
 

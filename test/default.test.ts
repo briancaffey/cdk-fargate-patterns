@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as ec2 from '@aws-cdk/aws-ec2';
 import * as ecs from '@aws-cdk/aws-ecs';
 import * as cdk from '@aws-cdk/core';
-import { DualAlbFargateService } from '../src/index';
+import { DualAlbFargateService, LoadBalancerAccessibility } from '../src/index';
 
 let app: cdk.App;
 let env: { region: string; account: string };
@@ -156,7 +156,7 @@ test('DualAlbFargateService - internal only', () => {
   });
 
   new DualAlbFargateService(stack, 'Service', {
-    tasks: [{ listenerPort: 80, task, internalOnly: true }],
+    tasks: [{ listenerPort: 80, task, accessibility: LoadBalancerAccessibility.INTERNAL_ONLY }],
   });
 
   // THEN
@@ -168,6 +168,40 @@ test('DualAlbFargateService - internal only', () => {
   // we should have the internal ALB
   expect(stack).toHaveResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {
     Scheme: 'internal',
+    Type: 'application',
+  });
+  // We should have fargate service
+  expect(stack).toHaveResource('AWS::ECS::Service', {
+    LaunchType: 'FARGATE',
+  });
+});
+
+test('DualAlbFargateService - external only', () => {
+  // GIVEN
+  // WHEN
+  const task = new ecs.FargateTaskDefinition(stack, 'task', {
+    cpu: 256,
+    memoryLimitMiB: 512,
+  });
+
+  task.addContainer('nginx', {
+    image: ecs.ContainerImage.fromRegistry('nginx'),
+    portMappings: [{ containerPort: 80 }],
+  });
+
+  new DualAlbFargateService(stack, 'Service', {
+    tasks: [{ listenerPort: 80, task, accessibility: LoadBalancerAccessibility.EXTERNAL_ONLY }],
+  });
+
+  // THEN
+  // we should NOT have the internal ALB
+  expect(stack).not.toHaveResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {
+    Scheme: 'internal',
+    Type: 'application',
+  });
+  // we should have the external ALB
+  expect(stack).toHaveResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {
+    Scheme: 'internet-facing',
     Type: 'application',
   });
   // We should have fargate service
@@ -202,7 +236,7 @@ test('DualAlbFargateService - partial internal only', () => {
 
   new DualAlbFargateService(stack, 'Service', {
     tasks: [
-      { listenerPort: 80, task, internalOnly: true },
+      { listenerPort: 80, task, accessibility: LoadBalancerAccessibility.INTERNAL_ONLY },
       { listenerPort: 8080, task: task2 },
     ],
   });
@@ -223,6 +257,54 @@ test('DualAlbFargateService - partial internal only', () => {
     LaunchType: 'FARGATE',
   });
 });
+
+test('DualAlbFargateService - partial external only', () => {
+  // GIVEN
+  // WHEN
+  const task = new ecs.FargateTaskDefinition(stack, 'task', {
+    cpu: 256,
+    memoryLimitMiB: 512,
+  });
+
+  task.addContainer('nginx', {
+    image: ecs.ContainerImage.fromRegistry('nginx'),
+    portMappings: [{ containerPort: 80 }],
+  });
+
+  const task2 = new ecs.FargateTaskDefinition(stack, 'task2', {
+    cpu: 256,
+    memoryLimitMiB: 512,
+  });
+
+  task2.addContainer('caddy', {
+    image: ecs.ContainerImage.fromRegistry('caddy'),
+    portMappings: [{ containerPort: 2015 }],
+  });
+
+  new DualAlbFargateService(stack, 'Service', {
+    tasks: [
+      { listenerPort: 80, task, accessibility: LoadBalancerAccessibility.EXTERNAL_ONLY },
+      { listenerPort: 8080, task: task2 },
+    ],
+  });
+
+  // THEN
+  // we should still have the external ALB
+  expect(stack).toHaveResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {
+    Scheme: 'internet-facing',
+    Type: 'application',
+  });
+  // we should have the internal ALB
+  expect(stack).toHaveResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {
+    Scheme: 'internal',
+    Type: 'application',
+  });
+  // We should have fargate service
+  expect(stack).toHaveResource('AWS::ECS::Service', {
+    LaunchType: 'FARGATE',
+  });
+});
+
 
 test('DualAlbFargateService - vpc subnet select default select private subnet', () => {
   // GIVEN

@@ -75,22 +75,26 @@ The custom capacity provider strategy will be applied if `capacityProviderStrete
 
 Simply turn on the `enableExecuteCommand` property to enable the [ECS Exec](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html) support for all services.
 
-## Internal Only
+## Internal or External Only
 
-By default, all task(s) defined in the `DualAlbFargateService` will be registered to both external and internal ALBs. To make it internal only without external access, specify `internalOnly: true` like
+By default, all task(s) defined in the `DualAlbFargateService` will be registered to both external and internal ALBs. 
+Set `accessibility` to make it internal only, external only, or both.
 
 ```ts
 new DualAlbFargateService(stack, 'Service', {
     tasks: [
       // this task is internal only
-      { listenerPort: 8080, task: task1, internalOnly: true },
-      // this task is both external and internal facing
-      { listenerPort: 80, task: task2 },
+      { listenerPort: 8080, task: task1, accessibility: LoadBalancerAccessibility.INTERNAL_ONLY},
+      // this task is external only
+      { listenerPort: 8081, task: task2, accessibility: LoadBalancerAccessibility.EXTERNAL_ONLY},
+      // this task is both external and internal facing(default behavior)
+      { listenerPort: 8082, task: task3 },
     ],
   });
 ```
 
-Please note if all tasks are defined as `intenralOnly`, no external ALB will be created.
+Please note if all tasks are defined as `INTERNAL_ONLY`, no external ALB will be created. Similarly, no internal ALB
+will be created if all defined as `EXTERNAL_ONLY`.
 
 ## VPC Subnets
 
