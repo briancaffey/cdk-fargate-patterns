@@ -100,7 +100,27 @@
       "type": "peer"
     },
     {
+      "name": "@aws-cdk/aws-efs",
+      "version": "^1.95.2",
+      "type": "peer"
+    },
+    {
       "name": "@aws-cdk/aws-elasticloadbalancingv2",
+      "version": "^1.95.2",
+      "type": "peer"
+    },
+    {
+      "name": "@aws-cdk/aws-iam",
+      "version": "^1.95.2",
+      "type": "peer"
+    },
+    {
+      "name": "@aws-cdk/aws-logs",
+      "version": "^1.95.2",
+      "type": "peer"
+    },
+    {
+      "name": "@aws-cdk/aws-rds",
       "version": "^1.95.2",
       "type": "peer"
     },
@@ -111,6 +131,11 @@
     },
     {
       "name": "@aws-cdk/aws-route53",
+      "version": "^1.95.2",
+      "type": "peer"
+    },
+    {
+      "name": "@aws-cdk/aws-secretsmanager",
       "version": "^1.95.2",
       "type": "peer"
     },
@@ -135,7 +160,27 @@
       "type": "runtime"
     },
     {
+      "name": "@aws-cdk/aws-efs",
+      "version": "^1.95.2",
+      "type": "runtime"
+    },
+    {
       "name": "@aws-cdk/aws-elasticloadbalancingv2",
+      "version": "^1.95.2",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-cdk/aws-iam",
+      "version": "^1.95.2",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-cdk/aws-logs",
+      "version": "^1.95.2",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-cdk/aws-rds",
       "version": "^1.95.2",
       "type": "runtime"
     },
@@ -146,6 +191,11 @@
     },
     {
       "name": "@aws-cdk/aws-route53",
+      "version": "^1.95.2",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-cdk/aws-secretsmanager",
       "version": "^1.95.2",
       "type": "runtime"
     },

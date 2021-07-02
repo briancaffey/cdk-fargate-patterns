@@ -14,8 +14,13 @@ const project = new AwsCdkConstructLibrary({
     '@aws-cdk/core',
     '@aws-cdk/aws-ec2',
     '@aws-cdk/aws-ecs',
+    '@aws-cdk/aws-efs',
+    '@aws-cdk/aws-iam',
+    '@aws-cdk/aws-logs',
+    '@aws-cdk/aws-rds',
     '@aws-cdk/aws-route53',
     '@aws-cdk/aws-route53-targets',
+    '@aws-cdk/aws-secretsmanager',
     '@aws-cdk/aws-elasticloadbalancingv2',
   ],
   depsUpgrade: DependenciesUpgradeMechanism.githubWorkflow({
