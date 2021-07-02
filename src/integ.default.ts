@@ -15,15 +15,16 @@ const env = {
 
 const stack = new cdk.Stack(app, 'demo-stack2', { env });
 
-const orderTask = new ecs.FargateTaskDefinition(stack, 'orderTask', {
-  cpu: 256,
-  memoryLimitMiB: 512,
-});
-
 const zoneName = 'svc.local';
 const internalAlbRecordName = 'internal';
 const externalAlbRecordName = 'external';
 const internalALBEndpoint = `http://${internalAlbRecordName}.${zoneName}`;
+
+// order service
+const orderTask = new ecs.FargateTaskDefinition(stack, 'orderTask', {
+  cpu: 256,
+  memoryLimitMiB: 512,
+});
 
 orderTask.addContainer('order', {
   image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/OrderService')),
@@ -38,6 +39,7 @@ orderTask.addContainer('order', {
   },
 });
 
+// customer service
 const customerTask = new ecs.FargateTaskDefinition(stack, 'customerTask', {
   cpu: 256,
   memoryLimitMiB: 512,
@@ -56,6 +58,7 @@ customerTask.addContainer('customer', {
   },
 });
 
+// product service
 const productTask = new ecs.FargateTaskDefinition(stack, 'productTask', {
   cpu: 256,
   memoryLimitMiB: 512,
@@ -74,6 +77,7 @@ productTask.addContainer('product', {
   },
 });
 
+// nginx service
 const nginxTask = new ecs.FargateTaskDefinition(stack, 'nginxTask', {
   cpu: 256,
   memoryLimitMiB: 512,
@@ -86,6 +90,7 @@ nginxTask.addContainer('nginx', {
   ],
 });
 
+// php service
 const phpTask = new ecs.FargateTaskDefinition(stack, 'phpTask', {
   cpu: 256,
   memoryLimitMiB: 512,
@@ -93,6 +98,19 @@ const phpTask = new ecs.FargateTaskDefinition(stack, 'phpTask', {
 
 phpTask.addContainer('php', {
   image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/nginx-php')),
+  portMappings: [
+    { containerPort: 80 },
+  ],
+});
+
+// laravel service
+const laravelTask = new ecs.FargateTaskDefinition(stack, 'laravelTask', {
+  cpu: 256,
+  memoryLimitMiB: 512,
+});
+
+laravelTask.addContainer('laravel', {
+  image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/laravel')),
   portMappings: [
     { containerPort: 80 },
   ],
@@ -170,6 +188,8 @@ const svc = new DualAlbFargateService(stack, 'Service', {
     { listenerPort: 9093, task: nuxtTask, desiredCount: 1 },
     // The node service(external/internal)
     { listenerPort: 9094, task: nodeTask, desiredCount: 1 },
+    // The laravel service(external/internal)
+    { listenerPort: 9095, task: laravelTask, desiredCount: 1 },
   ],
   route53Ops: {
     zoneName, // svc.local
