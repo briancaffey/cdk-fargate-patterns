@@ -142,6 +142,19 @@ nodeTask.addContainer('node', {
   ],
 });
 
+// java spring boot  service
+const javaTask = new ecs.FargateTaskDefinition(stack, 'javaTask', {
+  cpu: 256,
+  memoryLimitMiB: 512,
+});
+
+javaTask.addContainer('java', {
+  image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/java-spring-boot')),
+  portMappings: [
+    { containerPort: 8080 },
+  ],
+});
+
 const svc = new DualAlbFargateService(stack, 'Service', {
   spot: true, // FARGATE_SPOT only cluster
   enableExecuteCommand: true,
@@ -190,6 +203,7 @@ const svc = new DualAlbFargateService(stack, 'Service', {
     { listenerPort: 9094, task: nodeTask, desiredCount: 1 },
     // The laravel service(external/internal)
     { listenerPort: 9095, task: laravelTask, desiredCount: 1 },
+    { listenerPort: 8080, task: javaTask, desiredCount: 1, accessibility: LoadBalancerAccessibility.EXTERNAL_ONLY, healthCheck: { path: '/hello-world' } },
   ],
   route53Ops: {
     zoneName, // svc.local
