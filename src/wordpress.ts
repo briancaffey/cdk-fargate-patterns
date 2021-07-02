@@ -54,6 +54,19 @@ export interface WordPressProps {
    * @default - 7 days
    */
   readonly backupRetention?: cdk.Duration;
+
+  /**
+   * task options for the WordPress fargate service
+   */
+  readonly serviceProps?: patterns.FargateTaskProps;
+  /**
+   * enable fargate spot
+   */
+  readonly spot?: boolean;
+  /**
+   * enable ECS Exec
+   */
+  readonly enableExecuteCommand?: boolean;
 }
 
 export class WordPress extends cdk.Construct {
@@ -146,18 +159,20 @@ export class WordPress extends cdk.Construct {
       condition: ecs.ContainerDependencyCondition.SUCCESS,
     });
 
+    const healthCheck = {
+      path: '/wp-includes/images/blank.gif',
+      interval: cdk.Duration.minutes(1),
+    };
+
     this.svc = new patterns.DualAlbFargateService(this, 'ALBFargateService', {
-      spot: true,
-      enableExecuteCommand: true,
-      tasks: [
+      spot: props.spot,
+      enableExecuteCommand: props.enableExecuteCommand,
+      tasks: props.serviceProps ? [props.serviceProps] : [
         {
           listenerPort: 80,
           accessibility: patterns.LoadBalancerAccessibility.EXTERNAL_ONLY,
           task,
-          healthCheck: {
-            path: '/wp-includes/images/blank.gif',
-            interval: cdk.Duration.minutes(1),
-          },
+          healthCheck,
         },
       ],
       route53Ops: {
@@ -191,7 +206,7 @@ export class WordPress extends cdk.Construct {
   private addDatabase(props: DatabaseProps): Database {
     return new Database(this, 'Database', {
       ...props,
-      // allowFrom: this.svc.service[0].connections,
+      allowFrom: this.svc.service[0],
     });
   }
 }
@@ -291,7 +306,7 @@ export class Database extends cdk.Construct {
     this.secret = config.secret;
     // allow internally from the same security group
     config.connections.allowInternally(ec2.Port.tcp(this._mysqlListenerPort));
-    // allow from the whole vpc cidr
+    // allow from the fargate service or the whole vpc cidr
     config.connections.allowFrom(props.allowFrom ?? ec2.Peer.ipv4(props.vpc.vpcCidrBlock), ec2.Port.tcp(this._mysqlListenerPort));
     this.clusterEndpointHostname = config.endpoint;
     this.clusterIdentifier = config.identifier;
@@ -305,7 +320,7 @@ export class Database extends cdk.Construct {
       vpc: props.vpc,
       vpcSubnets: props.databaseSubnets,
       engine: props.instanceEngine ?? rds.DatabaseInstanceEngine.mysql({
-        version: rds.MysqlEngineVersion.VER_8_0_21,
+        version: rds.MysqlEngineVersion.VER_8_0_23,
       }),
       storageEncrypted: true,
       backupRetention: props.backupRetention ?? cdk.Duration.days(7),

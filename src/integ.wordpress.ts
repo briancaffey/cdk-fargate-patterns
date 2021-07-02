@@ -13,5 +13,7 @@ const stack = new cdk.Stack(app, 'demo-wordpress', { env });
 
 new WordPress(stack, 'WP', {
   auroraServerless: true,
+  spot: true,
+  enableExecuteCommand: true,
 });
 

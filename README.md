@@ -161,3 +161,18 @@ $ curl http://demo-Servi-EH1OINYDWDU9-1397122594.ap-northeast-1.elb.amazonaws.co
 {"service":"product","version":"1.0"}
 {"service":"customer","version":"1.0"}
 ```
+
+# `WordPress`
+
+Use the `WordPress` construct to create a serverless **WordPress** service with AWS Fargate, Amazon EFS filesystem and Aurora serverless database. All credentials auto generated from the **AWS Secret Manager** and securely inject the credentials into the serverless container with the auto generated IAM task execution role.
+
+```ts
+new WordPress(stack, 'WP', {
+  auroraServerless: true,
+  spot: true,
+  enableExecuteCommand: true,
+});
+```
+
+
+
