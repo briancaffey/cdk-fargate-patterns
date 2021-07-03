@@ -98,37 +98,7 @@ export class WordPress extends cdk.Construct {
       memoryLimitMiB: 512,
     });
 
-    // bootstrap container that creates the database if not exist
-    const bootstrap = task.addContainer('bootstrap', {
-      essential: false,
-      image: ecs.ContainerImage.fromRegistry('public.ecr.aws/ubuntu/mysql:latest'),
-      environment: {
-        DB_NAME: 'wordpress',
-      },
-      secrets: {
-        WORDPRESS_DB_HOST: ecs.Secret.fromSecretsManager(
-          this.db.secret,
-          'host',
-        ),
-        WORDPRESS_DB_USER: ecs.Secret.fromSecretsManager(
-          this.db.secret,
-          'username',
-        ),
-        WORDPRESS_DB_PASSWORD: ecs.Secret.fromSecretsManager(
-          this.db.secret,
-          'password',
-        ),
-      },
-      command: [
-        'sh', '-c',
-        'mysql -u$WORDPRESS_DB_USER -p$WORDPRESS_DB_PASSWORD -h$WORDPRESS_DB_HOST -e "CREATE DATABASE IF NOT EXISTS $DB_NAME"',
-      ],
-      logging: ecs.LogDrivers.awsLogs({
-        streamPrefix: 'bootstrap',
-        logGroup,
-      }),
-    });
-    const wp = task.addContainer('wordpress', {
+    task.addContainer('wordpress', {
       image: ecs.ContainerImage.fromRegistry('wordpress:latest'),
       portMappings: [{ containerPort: 80 }],
       environment: {
@@ -154,17 +124,13 @@ export class WordPress extends cdk.Construct {
       },
     });
 
-    wp.addContainerDependencies({
-      container: bootstrap,
-      condition: ecs.ContainerDependencyCondition.SUCCESS,
-    });
-
     const healthCheck = {
       path: '/wp-includes/images/blank.gif',
       interval: cdk.Duration.minutes(1),
     };
 
     this.svc = new patterns.DualAlbFargateService(this, 'ALBFargateService', {
+      vpc: this.vpc,
       spot: props.spot,
       enableExecuteCommand: props.enableExecuteCommand,
       tasks: props.serviceProps ? [props.serviceProps] : [
@@ -199,7 +165,8 @@ export class WordPress extends cdk.Construct {
       sourceVolume: volumeName,
     });
 
-    filesystem.connections.allowFrom(this.svc.service[0], ec2.Port.tcp(2049));
+    filesystem.connections.allowFrom( new ec2.Connections({ securityGroups: this.svc.service[0].connections.securityGroups }), ec2.Port.tcp(2049), 'allow wordpress to connect efs');
+
     this.db.connections.allowFrom(this.svc.service[0], this.db.connections.defaultPort!, `allow ${this.svc.service[0].serviceName} to connect db`);
 
   }
@@ -342,6 +309,7 @@ export class Database extends cdk.Construct {
         version: rds.AuroraMysqlEngineVersion.VER_2_09_1,
       }),
       credentials: rds.Credentials.fromGeneratedSecret('admin'),
+      defaultDatabaseName: 'wordpress',
       instanceProps: {
         vpc: props.vpc,
         vpcSubnets: props.databaseSubnets,
@@ -370,6 +338,7 @@ export class Database extends cdk.Construct {
       backupRetention: props.backupRetention ?? cdk.Duration.days(7),
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       parameterGroup: rds.ParameterGroup.fromParameterGroupName(this, 'ParameterGroup', 'default.aurora-mysql5.7'),
+      defaultDatabaseName: 'wordpress',
     });
     return {
       connections: dbCluster.connections,

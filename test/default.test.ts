@@ -463,3 +463,34 @@ test('Wordpress - DB inbound rules have wordpress SG', () => {
     },
   });
 });
+
+test('Wordpress - EFS inbound rules have Fargate Service SG', () => {
+  // GIVEN
+  // WHEN
+  new WordPress(stack, 'WP', {
+    auroraServerless: true,
+    spot: true,
+    enableExecuteCommand: true,
+  });
+
+  // THEN
+  // we should still have the assgin public Ip.
+  expect(stack).toHaveResource('AWS::EC2::SecurityGroupIngress', {
+    IpProtocol: 'tcp',
+    Description: 'allow wordpress to connect efs',
+    FromPort: 2049,
+    GroupId: {
+      'Fn::GetAtt': [
+        'WPFileSystemEfsSecurityGroup70359E17',
+        'GroupId',
+      ],
+    },
+    SourceSecurityGroupId: {
+      'Fn::GetAtt': [
+        'WPALBFargateServicewordpressServiceSecurityGroupEC88C795',
+        'GroupId',
+      ],
+    },
+    ToPort: 2049,
+  });
+});
