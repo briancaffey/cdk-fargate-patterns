@@ -200,13 +200,12 @@ export class WordPress extends cdk.Construct {
     });
 
     filesystem.connections.allowFrom(this.svc.service[0], ec2.Port.tcp(2049));
-
+    this.db.connections.allowFrom(this.svc.service[0], this.db.connections.defaultPort!, `allow ${this.svc.service[0].serviceName} to connect db`);
 
   }
   private addDatabase(props: DatabaseProps): Database {
     return new Database(this, 'Database', {
       ...props,
-      allowFrom: this.svc.service[0],
     });
   }
 }

@@ -4,6 +4,7 @@ import * as ec2 from '@aws-cdk/aws-ec2';
 import * as ecs from '@aws-cdk/aws-ecs';
 import * as cdk from '@aws-cdk/core';
 import { DualAlbFargateService, LoadBalancerAccessibility } from '../src/index';
+import { WordPress } from '../src/wordpress';
 
 let app: cdk.App;
 let env: { region: string; account: string };
@@ -404,6 +405,61 @@ test('DualAlbFargateService - vpc subnet select test select public subnet', () =
           },
         ],
       },
+    },
+  });
+});
+
+test('Wordpress - DB inbound rules have wordpress SG', () => {
+  // GIVEN
+  // WHEN
+  new WordPress(stack, 'WP', {
+    auroraServerless: true,
+    spot: true,
+    enableExecuteCommand: true,
+  });
+
+  // THEN
+  // we should still have the assgin public Ip.
+  expect(stack).toHaveResource('AWS::EC2::SecurityGroupIngress', {
+    IpProtocol: 'tcp',
+    Description: {
+      'Fn::Join': [
+        '',
+        [
+          'allow ',
+          {
+            'Fn::GetAtt': [
+              'WPALBFargateServicewordpressServiceE0F9D98E',
+              'Name',
+            ],
+          },
+          ' to connect db',
+        ],
+      ],
+    },
+    FromPort: {
+      'Fn::GetAtt': [
+        'WPDatabaseAuroraServerlessClusterC5D03EC9',
+        'Endpoint.Port',
+      ],
+    },
+    GroupId: {
+      'Fn::GetAtt': [
+        'WPDatabaseAuroraServerlessClusterSecurityGroup5274AAA5',
+        'GroupId',
+      ],
+    },
+    SourceSecurityGroupId: {
+      'Fn::GetAtt': [
+        'WPALBFargateServicewordpressServiceSecurityGroupEC88C795',
+        'GroupId',
+      ],
+    },
+    ToPort: {
+      'Fn::GetAtt': [
+        'WPDatabaseAuroraServerlessClusterC5D03EC9',
+        'Endpoint.Port',
+      ],
     },
   });
 });
