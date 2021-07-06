@@ -1,0 +1,37 @@
+{
+    "gosu": {
+        "arch": "amd64",
+        "digest": "fd7257c2736164d02832dbf72e2c1ed9d875bf3e32f0988520796bc503330129",
+        "distro": "debian-10",
+        "type": "NAMI",
+        "version": "1.13.0-0"
+    },
+    "laravel": {
+        "arch": "amd64",
+        "digest": "e4a2800251eb97c1ed8e51c257c06b4ce6dc2ecd99bfaff1e09c0965f3b84c66",
+        "distro": "debian-10",
+        "type": "NAMI",
+        "version": "8.5.20-0"
+    },
+    "node": {
+        "arch": "amd64",
+        "digest": "101c00a56ab33ae192e9ac5a1780effa97885104679393a55aa5a941f9ece7f8",
+        "distro": "debian-10",
+        "type": "NAMI",
+        "version": "14.17.2-0"
+    },
+    "php": {
+        "arch": "amd64",
+        "digest": "cd407e914d11706babacc6a95070cbe96f41f0cef11e879e0d14b666d8be5e64",
+        "distro": "debian-10",
+        "type": "NAMI",
+        "version": "7.4.21-0"
+    },
+    "tini": {
+        "arch": "amd64",
+        "digest": "9b1f1c095944bac88a62c1b63f3bff1bb123aa7ccd371c908c0e5b41cec2528d",
+        "distro": "debian-10",
+        "type": "NAMI",
+        "version": "0.19.0-1"
+    }
+}

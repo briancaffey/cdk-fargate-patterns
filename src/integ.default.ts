@@ -103,16 +103,29 @@ phpTask.addContainer('php', {
   ],
 });
 
-// laravel service
-const laravelTask = new ecs.FargateTaskDefinition(stack, 'laravelTask', {
+// laravel-nginx-php-fpm service
+const laravelNginxPhpFpmTask = new ecs.FargateTaskDefinition(stack, 'laravelNginxPhpFpmTask', {
   cpu: 256,
   memoryLimitMiB: 512,
 });
 
-laravelTask.addContainer('laravel', {
-  image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/laravel')),
+laravelNginxPhpFpmTask.addContainer('laravel-nginx-php-fpm', {
+  image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/laravel-nginx-php-fpm')),
   portMappings: [
     { containerPort: 80 },
+  ],
+});
+
+// laravel-bitnami service
+const laravelBitnamiTask = new ecs.FargateTaskDefinition(stack, 'laravelBitnamiTask', {
+  cpu: 256,
+  memoryLimitMiB: 512,
+});
+
+laravelBitnamiTask.addContainer('laravel-bitnami', {
+  image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/laravel-bitnami')),
+  portMappings: [
+    { containerPort: 3000 },
   ],
 });
 
@@ -142,7 +155,7 @@ nodeTask.addContainer('node', {
   ],
 });
 
-// java spring boot  service
+// java spring boot service
 const javaTask = new ecs.FargateTaskDefinition(stack, 'javaTask', {
   cpu: 256,
   memoryLimitMiB: 512,
@@ -196,13 +209,16 @@ const svc = new DualAlbFargateService(stack, 'Service', {
     // The nginx service(external only)
     { listenerPort: 9091, task: nginxTask, desiredCount: 1, accessibility: LoadBalancerAccessibility.EXTERNAL_ONLY },
     // The nginx-php-fpm service(external/internal)
-    { listenerPort: 9092, task: phpTask, desiredCount: 1 },
+    // { listenerPort: 9092, task: phpTask, desiredCount: 1 },
     // The NuxtJS service(external/internal)
-    { listenerPort: 9093, task: nuxtTask, desiredCount: 1 },
+    // { listenerPort: 9093, task: nuxtTask, desiredCount: 1 },
     // The node service(external/internal)
     { listenerPort: 9094, task: nodeTask, desiredCount: 1 },
-    // The laravel service(external/internal)
-    { listenerPort: 9095, task: laravelTask, desiredCount: 1 },
+    // The laravel-nginx-php-fpm service(external/internal)
+    { listenerPort: 9095, task: laravelNginxPhpFpmTask, desiredCount: 1 },
+    // The laravel-bitnami service(external/internal)
+    { listenerPort: 9096, task: laravelBitnamiTask, desiredCount: 1 },
+    // java spring boot service
     { listenerPort: 8080, task: javaTask, desiredCount: 1, accessibility: LoadBalancerAccessibility.EXTERNAL_ONLY, healthCheck: { path: '/hello-world' } },
   ],
   route53Ops: {
