@@ -22,7 +22,10 @@
     "package": "npx projen package",
     "eslint": "npx projen eslint",
     "compat": "npx projen compat",
+    "publish:npm": "npx projen publish:npm",
+    "publish:pypi": "npx projen publish:pypi",
     "docgen": "npx projen docgen",
+    "release": "npx projen release",
     "projen": "npx projen",
     "start": "npx projen start"
   },
@@ -33,7 +36,7 @@
   },
   "devDependencies": {
     "@aws-cdk/assert": "^1.95.2",
-    "@types/jest": "^26.0.23",
+    "@types/jest": "^26.0.24",
     "@types/node": "^10.17.0",
     "@typescript-eslint/eslint-plugin": "^4.28.2",
     "@typescript-eslint/parser": "^4.28.2",
@@ -49,7 +52,7 @@
     "jsii-pacmak": "^1.30.0",
     "json-schema": "^0.3.0",
     "npm-check-updates": "^11",
-    "projen": "^0.25.4",
+    "projen": "^0.26.1",
     "standard-version": "^9",
     "ts-jest": "^27.0.3",
     "typescript": "^4.3.5"
