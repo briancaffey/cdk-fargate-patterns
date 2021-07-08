@@ -108,6 +108,11 @@ Object {
       "Type": "AWS::ElasticLoadBalancingV2::Listener",
     },
     "LaravelBitnamiDemoALBFargateServiceExternalAlb4FC1DE4D": Object {
+      "DependsOn": Array [
+        "LaravelBitnamiDemoVpcPublicSubnet1DefaultRoute0BDCDB38",
+        "LaravelBitnamiDemoVpcPublicSubnet2DefaultRouteC2C8E25C",
+        "LaravelBitnamiDemoVpcPublicSubnet3DefaultRoute4C59EE86",
+      ],
       "Properties": Object {
         "LoadBalancerAttributes": Array [
           Object {
@@ -125,8 +130,15 @@ Object {
           },
         ],
         "Subnets": Array [
-          "s-12345",
-          "s-67890",
+          Object {
+            "Ref": "LaravelBitnamiDemoVpcPublicSubnet1Subnet23EC70E4",
+          },
+          Object {
+            "Ref": "LaravelBitnamiDemoVpcPublicSubnet2SubnetB1715826",
+          },
+          Object {
+            "Ref": "LaravelBitnamiDemoVpcPublicSubnet3SubnetC4600029",
+          },
         ],
         "Type": "application",
       },
@@ -144,7 +156,9 @@ Object {
             "ToPort": 80,
           },
         ],
-        "VpcId": "vpc-12345",
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
@@ -176,7 +190,9 @@ Object {
         "Port": 80,
         "Protocol": "HTTP",
         "TargetType": "ip",
-        "VpcId": "vpc-12345",
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
       },
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
     },
@@ -228,8 +244,15 @@ Object {
               },
             ],
             "Subnets": Array [
-              "p-12345",
-              "p-67890",
+              Object {
+                "Ref": "LaravelBitnamiDemoVpcPrivateSubnet1Subnet76D7FAC2",
+              },
+              Object {
+                "Ref": "LaravelBitnamiDemoVpcPrivateSubnet2Subnet311E78F3",
+              },
+              Object {
+                "Ref": "LaravelBitnamiDemoVpcPrivateSubnet3Subnet523915E5",
+              },
             ],
           },
         },
@@ -249,7 +272,9 @@ Object {
             "IpProtocol": "-1",
           },
         ],
-        "VpcId": "vpc-12345",
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
@@ -461,14 +486,35 @@ Object {
         ],
         "SecurityGroupIngress": Array [
           Object {
-            "CidrIp": "1.2.3.4/5",
-            "Description": "from 1.2.3.4/5:3306",
+            "CidrIp": Object {
+              "Fn::GetAtt": Array [
+                "LaravelBitnamiDemoVpc495B9306",
+                "CidrBlock",
+              ],
+            },
+            "Description": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "from ",
+                  Object {
+                    "Fn::GetAtt": Array [
+                      "LaravelBitnamiDemoVpc495B9306",
+                      "CidrBlock",
+                    ],
+                  },
+                  ":3306",
+                ],
+              ],
+            },
             "FromPort": 3306,
             "IpProtocol": "tcp",
             "ToPort": 3306,
           },
         ],
-        "VpcId": "vpc-12345",
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
@@ -542,8 +588,15 @@ Object {
       "Properties": Object {
         "DBSubnetGroupDescription": "Subnets for AuroraServerlessCluster database",
         "SubnetIds": Array [
-          "p-12345",
-          "p-67890",
+          Object {
+            "Ref": "LaravelBitnamiDemoVpcPrivateSubnet1Subnet76D7FAC2",
+          },
+          Object {
+            "Ref": "LaravelBitnamiDemoVpcPrivateSubnet2Subnet311E78F3",
+          },
+          Object {
+            "Ref": "LaravelBitnamiDemoVpcPrivateSubnet3Subnet523915E5",
+          },
         ],
       },
       "Type": "AWS::RDS::DBSubnetGroup",
@@ -575,7 +628,9 @@ Object {
             ],
           },
         ],
-        "SubnetId": "p-12345",
+        "SubnetId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet1Subnet76D7FAC2",
+        },
       },
       "Type": "AWS::EFS::MountTarget",
     },
@@ -592,7 +647,28 @@ Object {
             ],
           },
         ],
-        "SubnetId": "p-67890",
+        "SubnetId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet2Subnet311E78F3",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "LaravelBitnamiDemoFileSystemEfsMountTarget36BAC867E": Object {
+      "Properties": Object {
+        "FileSystemId": Object {
+          "Ref": "LaravelBitnamiDemoFileSystemA8C32B97",
+        },
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "LaravelBitnamiDemoFileSystemEfsSecurityGroup7100EB16",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet3Subnet523915E5",
+        },
       },
       "Type": "AWS::EFS::MountTarget",
     },
@@ -612,7 +688,9 @@ Object {
             "Value": "demo-stack/LaravelBitnamiDemo/FileSystem",
           },
         ],
-        "VpcId": "vpc-12345",
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
@@ -908,6 +986,456 @@ Object {
       },
       "Type": "AWS::IAM::Policy",
     },
+    "LaravelBitnamiDemoVpc495B9306": Object {
+      "Properties": Object {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::VPC",
+    },
+    "LaravelBitnamiDemoVpcIGWB153C30D": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::InternetGateway",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet1DefaultRoute36771D6A": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet1NATGateway93B5EEC7",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet1RouteTable10E46681",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet1RouteTable10E46681": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet1RouteTableAssociation384BE580": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet1RouteTable10E46681",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet1Subnet76D7FAC2",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet1Subnet76D7FAC2": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.96.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet2DefaultRoute63283B61": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet1NATGateway93B5EEC7",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet2RouteTable43B0967B",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet2RouteTable43B0967B": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet2RouteTableAssociation4A9FC30D": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet2RouteTable43B0967B",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet2Subnet311E78F3",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet2Subnet311E78F3": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.128.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet3DefaultRoute354F89FD": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet1NATGateway93B5EEC7",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet3RouteTableD7116932",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet3RouteTableAssociation87AA86A4": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet3RouteTableD7116932",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet3Subnet523915E5",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet3RouteTableD7116932": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PrivateSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet3Subnet523915E5": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.160.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PrivateSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet1DefaultRoute0BDCDB38": Object {
+      "DependsOn": Array [
+        "LaravelBitnamiDemoVpcVPCGW4ED1515B",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "LaravelBitnamiDemoVpcIGWB153C30D",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet1RouteTable29CA1BE8",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet1EIP3F694277": Object {
+      "Properties": Object {
+        "Domain": "vpc",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet1NATGateway93B5EEC7": Object {
+      "Properties": Object {
+        "AllocationId": Object {
+          "Fn::GetAtt": Array [
+            "LaravelBitnamiDemoVpcPublicSubnet1EIP3F694277",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet1Subnet23EC70E4",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet1RouteTable29CA1BE8": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet1RouteTableAssociation46D0B16F": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet1RouteTable29CA1BE8",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet1Subnet23EC70E4",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet1Subnet23EC70E4": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.0.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet2DefaultRouteC2C8E25C": Object {
+      "DependsOn": Array [
+        "LaravelBitnamiDemoVpcVPCGW4ED1515B",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "LaravelBitnamiDemoVpcIGWB153C30D",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet2RouteTable2E4DF9B6",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet2RouteTable2E4DF9B6": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet2RouteTableAssociation20A9579B": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet2RouteTable2E4DF9B6",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet2SubnetB1715826",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet2SubnetB1715826": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.32.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet3DefaultRoute4C59EE86": Object {
+      "DependsOn": Array [
+        "LaravelBitnamiDemoVpcVPCGW4ED1515B",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "LaravelBitnamiDemoVpcIGWB153C30D",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet3RouteTableECCC614E",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet3RouteTableAssociationD6FBEA59": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet3RouteTableECCC614E",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet3SubnetC4600029",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet3RouteTableECCC614E": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PublicSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet3SubnetC4600029": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.64.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PublicSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelBitnamiDemoVpcVPCGW4ED1515B": Object {
+      "Properties": Object {
+        "InternetGatewayId": Object {
+          "Ref": "LaravelBitnamiDemoVpcIGWB153C30D",
+        },
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+    },
     "LaravelNginxDemoALBFargateServiceCluster0AF9F109": Object {
       "Type": "AWS::ECS::Cluster",
     },
@@ -943,6 +1471,11 @@ Object {
       "Type": "AWS::ElasticLoadBalancingV2::Listener",
     },
     "LaravelNginxDemoALBFargateServiceExternalAlb65460C7F": Object {
+      "DependsOn": Array [
+        "LaravelNginxDemoVpcPublicSubnet1DefaultRoute2DFC331B",
+        "LaravelNginxDemoVpcPublicSubnet2DefaultRoute4BFF02E0",
+        "LaravelNginxDemoVpcPublicSubnet3DefaultRouteD2780DD9",
+      ],
       "Properties": Object {
         "LoadBalancerAttributes": Array [
           Object {
@@ -960,8 +1493,15 @@ Object {
           },
         ],
         "Subnets": Array [
-          "s-12345",
-          "s-67890",
+          Object {
+            "Ref": "LaravelNginxDemoVpcPublicSubnet1Subnet5DB20B78",
+          },
+          Object {
+            "Ref": "LaravelNginxDemoVpcPublicSubnet2Subnet3AE58288",
+          },
+          Object {
+            "Ref": "LaravelNginxDemoVpcPublicSubnet3Subnet664A8EF8",
+          },
         ],
         "Type": "application",
       },
@@ -979,7 +1519,9 @@ Object {
             "ToPort": 80,
           },
         ],
-        "VpcId": "vpc-12345",
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
@@ -1011,7 +1553,9 @@ Object {
         "Port": 80,
         "Protocol": "HTTP",
         "TargetType": "ip",
-        "VpcId": "vpc-12345",
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
       },
       "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
     },
@@ -1063,8 +1607,15 @@ Object {
               },
             ],
             "Subnets": Array [
-              "p-12345",
-              "p-67890",
+              Object {
+                "Ref": "LaravelNginxDemoVpcPrivateSubnet1Subnet6AF263B1",
+              },
+              Object {
+                "Ref": "LaravelNginxDemoVpcPrivateSubnet2Subnet55B66710",
+              },
+              Object {
+                "Ref": "LaravelNginxDemoVpcPrivateSubnet3SubnetA0224D7F",
+              },
             ],
           },
         },
@@ -1084,7 +1635,9 @@ Object {
             "IpProtocol": "-1",
           },
         ],
-        "VpcId": "vpc-12345",
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
@@ -1296,14 +1849,35 @@ Object {
         ],
         "SecurityGroupIngress": Array [
           Object {
-            "CidrIp": "1.2.3.4/5",
-            "Description": "from 1.2.3.4/5:3306",
+            "CidrIp": Object {
+              "Fn::GetAtt": Array [
+                "LaravelNginxDemoVpc0CC479F5",
+                "CidrBlock",
+              ],
+            },
+            "Description": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "from ",
+                  Object {
+                    "Fn::GetAtt": Array [
+                      "LaravelNginxDemoVpc0CC479F5",
+                      "CidrBlock",
+                    ],
+                  },
+                  ":3306",
+                ],
+              ],
+            },
             "FromPort": 3306,
             "IpProtocol": "tcp",
             "ToPort": 3306,
           },
         ],
-        "VpcId": "vpc-12345",
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
@@ -1377,8 +1951,15 @@ Object {
       "Properties": Object {
         "DBSubnetGroupDescription": "Subnets for AuroraServerlessCluster database",
         "SubnetIds": Array [
-          "p-12345",
-          "p-67890",
+          Object {
+            "Ref": "LaravelNginxDemoVpcPrivateSubnet1Subnet6AF263B1",
+          },
+          Object {
+            "Ref": "LaravelNginxDemoVpcPrivateSubnet2Subnet55B66710",
+          },
+          Object {
+            "Ref": "LaravelNginxDemoVpcPrivateSubnet3SubnetA0224D7F",
+          },
         ],
       },
       "Type": "AWS::RDS::DBSubnetGroup",
@@ -1410,7 +1991,9 @@ Object {
             ],
           },
         ],
-        "SubnetId": "p-12345",
+        "SubnetId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet1Subnet6AF263B1",
+        },
       },
       "Type": "AWS::EFS::MountTarget",
     },
@@ -1427,7 +2010,28 @@ Object {
             ],
           },
         ],
-        "SubnetId": "p-67890",
+        "SubnetId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet2Subnet55B66710",
+        },
+      },
+      "Type": "AWS::EFS::MountTarget",
+    },
+    "LaravelNginxDemoFileSystemEfsMountTarget3045F7E56": Object {
+      "Properties": Object {
+        "FileSystemId": Object {
+          "Ref": "LaravelNginxDemoFileSystem1CB94528",
+        },
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "LaravelNginxDemoFileSystemEfsSecurityGroup1917DC5B",
+              "GroupId",
+            ],
+          },
+        ],
+        "SubnetId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet3SubnetA0224D7F",
+        },
       },
       "Type": "AWS::EFS::MountTarget",
     },
@@ -1447,7 +2051,9 @@ Object {
             "Value": "demo-stack/LaravelNginxDemo/FileSystem",
           },
         ],
-        "VpcId": "vpc-12345",
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
@@ -1742,6 +2348,456 @@ Object {
         ],
       },
       "Type": "AWS::IAM::Policy",
+    },
+    "LaravelNginxDemoVpc0CC479F5": Object {
+      "Properties": Object {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::VPC",
+    },
+    "LaravelNginxDemoVpcIGWEBFBB97D": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::InternetGateway",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet1DefaultRouteF1CAB04B": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet1NATGateway6899A022",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet1RouteTable6A0A42D7",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet1RouteTable6A0A42D7": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet1RouteTableAssociation8CB52590": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet1RouteTable6A0A42D7",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet1Subnet6AF263B1",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet1Subnet6AF263B1": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.96.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet2DefaultRouteDC9523CC": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet1NATGateway6899A022",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet2RouteTable5292825C",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet2RouteTable5292825C": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet2RouteTableAssociationAAA6BF71": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet2RouteTable5292825C",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet2Subnet55B66710",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet2Subnet55B66710": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.128.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet3DefaultRoute966575CF": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet1NATGateway6899A022",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet3RouteTable51D4FDD9",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet3RouteTable51D4FDD9": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PrivateSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet3RouteTableAssociationC21A3D5C": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet3RouteTable51D4FDD9",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet3SubnetA0224D7F",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet3SubnetA0224D7F": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.160.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PrivateSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelNginxDemoVpcPublicSubnet1DefaultRoute2DFC331B": Object {
+      "DependsOn": Array [
+        "LaravelNginxDemoVpcVPCGW59DB6E55",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "LaravelNginxDemoVpcIGWEBFBB97D",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet1RouteTableFD969897",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelNginxDemoVpcPublicSubnet1EIPAFB9BEB8": Object {
+      "Properties": Object {
+        "Domain": "vpc",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "LaravelNginxDemoVpcPublicSubnet1NATGateway6899A022": Object {
+      "Properties": Object {
+        "AllocationId": Object {
+          "Fn::GetAtt": Array [
+            "LaravelNginxDemoVpcPublicSubnet1EIPAFB9BEB8",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet1Subnet5DB20B78",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "LaravelNginxDemoVpcPublicSubnet1RouteTableAssociationB18F2C9B": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet1RouteTableFD969897",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet1Subnet5DB20B78",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelNginxDemoVpcPublicSubnet1RouteTableFD969897": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelNginxDemoVpcPublicSubnet1Subnet5DB20B78": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.0.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelNginxDemoVpcPublicSubnet2DefaultRoute4BFF02E0": Object {
+      "DependsOn": Array [
+        "LaravelNginxDemoVpcVPCGW59DB6E55",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "LaravelNginxDemoVpcIGWEBFBB97D",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet2RouteTable4A2F427F",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelNginxDemoVpcPublicSubnet2RouteTable4A2F427F": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelNginxDemoVpcPublicSubnet2RouteTableAssociationED1C6083": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet2RouteTable4A2F427F",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet2Subnet3AE58288",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelNginxDemoVpcPublicSubnet2Subnet3AE58288": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.32.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelNginxDemoVpcPublicSubnet3DefaultRouteD2780DD9": Object {
+      "DependsOn": Array [
+        "LaravelNginxDemoVpcVPCGW59DB6E55",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "LaravelNginxDemoVpcIGWEBFBB97D",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet3RouteTable19F6881E",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelNginxDemoVpcPublicSubnet3RouteTable19F6881E": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PublicSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelNginxDemoVpcPublicSubnet3RouteTableAssociationCB715749": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet3RouteTable19F6881E",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet3Subnet664A8EF8",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelNginxDemoVpcPublicSubnet3Subnet664A8EF8": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.64.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PublicSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelNginxDemoVpcVPCGW59DB6E55": Object {
+      "Properties": Object {
+        "InternetGatewayId": Object {
+          "Ref": "LaravelNginxDemoVpcIGWEBFBB97D",
+        },
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment",
     },
     "demostackLaravelBitnamiDemoDatabaseAuroraServerlessClusterSecret0B8147243fdaad7efa858a3daf9490cf0a702aeb": Object {
       "Properties": Object {

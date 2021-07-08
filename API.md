@@ -2,6 +2,71 @@
 
 ## Constructs <a name="Constructs"></a>
 
+### Database <a name="cdk-fargate-patterns.Database"></a>
+
+Represents the database instance or database cluster.
+
+#### Initializer <a name="cdk-fargate-patterns.Database.Initializer"></a>
+
+```typescript
+import { Database } from 'cdk-fargate-patterns'
+
+new Database(scope: Construct, id: string, props: DatabaseProps)
+```
+
+##### `scope`<sup>Required</sup> <a name="cdk-fargate-patterns.Database.scope"></a>
+
+- *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
+
+---
+
+##### `id`<sup>Required</sup> <a name="cdk-fargate-patterns.Database.id"></a>
+
+- *Type:* `string`
+
+---
+
+##### `props`<sup>Required</sup> <a name="cdk-fargate-patterns.Database.props"></a>
+
+- *Type:* [`cdk-fargate-patterns.DatabaseProps`](#cdk-fargate-patterns.DatabaseProps)
+
+---
+
+
+
+#### Properties <a name="Properties"></a>
+
+##### `clusterEndpointHostname`<sup>Required</sup> <a name="cdk-fargate-patterns.Database.clusterEndpointHostname"></a>
+
+- *Type:* `string`
+
+---
+
+##### `clusterIdentifier`<sup>Required</sup> <a name="cdk-fargate-patterns.Database.clusterIdentifier"></a>
+
+- *Type:* `string`
+
+---
+
+##### `connections`<sup>Required</sup> <a name="cdk-fargate-patterns.Database.connections"></a>
+
+- *Type:* [`@aws-cdk/aws-ec2.Connections`](#@aws-cdk/aws-ec2.Connections)
+
+---
+
+##### `secret`<sup>Required</sup> <a name="cdk-fargate-patterns.Database.secret"></a>
+
+- *Type:* [`@aws-cdk/aws-secretsmanager.ISecret`](#@aws-cdk/aws-secretsmanager.ISecret)
+
+---
+
+##### `vpc`<sup>Required</sup> <a name="cdk-fargate-patterns.Database.vpc"></a>
+
+- *Type:* [`@aws-cdk/aws-ec2.IVpc`](#@aws-cdk/aws-ec2.IVpc)
+
+---
+
+
 ### DualAlbFargateService <a name="cdk-fargate-patterns.DualAlbFargateService"></a>
 
 #### Initializer <a name="cdk-fargate-patterns.DualAlbFargateService.Initializer"></a>
@@ -67,7 +132,244 @@ The internal ALB.
 ---
 
 
+### Laravel <a name="cdk-fargate-patterns.Laravel"></a>
+
+#### Initializer <a name="cdk-fargate-patterns.Laravel.Initializer"></a>
+
+```typescript
+import { Laravel } from 'cdk-fargate-patterns'
+
+new Laravel(scope: Construct, id: string, props: LaravelProps)
+```
+
+##### `scope`<sup>Required</sup> <a name="cdk-fargate-patterns.Laravel.scope"></a>
+
+- *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
+
+---
+
+##### `id`<sup>Required</sup> <a name="cdk-fargate-patterns.Laravel.id"></a>
+
+- *Type:* `string`
+
+---
+
+##### `props`<sup>Required</sup> <a name="cdk-fargate-patterns.Laravel.props"></a>
+
+- *Type:* [`cdk-fargate-patterns.LaravelProps`](#cdk-fargate-patterns.LaravelProps)
+
+---
+
+
+
+#### Properties <a name="Properties"></a>
+
+##### `svc`<sup>Required</sup> <a name="cdk-fargate-patterns.Laravel.svc"></a>
+
+- *Type:* [`cdk-fargate-patterns.DualAlbFargateService`](#cdk-fargate-patterns.DualAlbFargateService)
+
+---
+
+##### `vpc`<sup>Required</sup> <a name="cdk-fargate-patterns.Laravel.vpc"></a>
+
+- *Type:* [`@aws-cdk/aws-ec2.IVpc`](#@aws-cdk/aws-ec2.IVpc)
+
+---
+
+##### `db`<sup>Optional</sup> <a name="cdk-fargate-patterns.Laravel.db"></a>
+
+- *Type:* [`cdk-fargate-patterns.Database`](#cdk-fargate-patterns.Database)
+
+---
+
+
+### WordPress <a name="cdk-fargate-patterns.WordPress"></a>
+
+#### Initializer <a name="cdk-fargate-patterns.WordPress.Initializer"></a>
+
+```typescript
+import { WordPress } from 'cdk-fargate-patterns'
+
+new WordPress(scope: Construct, id: string, props?: WordPressProps)
+```
+
+##### `scope`<sup>Required</sup> <a name="cdk-fargate-patterns.WordPress.scope"></a>
+
+- *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
+
+---
+
+##### `id`<sup>Required</sup> <a name="cdk-fargate-patterns.WordPress.id"></a>
+
+- *Type:* `string`
+
+---
+
+##### `props`<sup>Optional</sup> <a name="cdk-fargate-patterns.WordPress.props"></a>
+
+- *Type:* [`cdk-fargate-patterns.WordPressProps`](#cdk-fargate-patterns.WordPressProps)
+
+---
+
+
+
+#### Properties <a name="Properties"></a>
+
+##### `svc`<sup>Required</sup> <a name="cdk-fargate-patterns.WordPress.svc"></a>
+
+- *Type:* [`cdk-fargate-patterns.DualAlbFargateService`](#cdk-fargate-patterns.DualAlbFargateService)
+
+---
+
+##### `vpc`<sup>Required</sup> <a name="cdk-fargate-patterns.WordPress.vpc"></a>
+
+- *Type:* [`@aws-cdk/aws-ec2.IVpc`](#@aws-cdk/aws-ec2.IVpc)
+
+---
+
+##### `db`<sup>Optional</sup> <a name="cdk-fargate-patterns.WordPress.db"></a>
+
+- *Type:* [`cdk-fargate-patterns.Database`](#cdk-fargate-patterns.Database)
+
+---
+
+
 ## Structs <a name="Structs"></a>
+
+### DatabaseCofig <a name="cdk-fargate-patterns.DatabaseCofig"></a>
+
+Database configuration.
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { DatabaseCofig } from 'cdk-fargate-patterns'
+
+const databaseCofig: DatabaseCofig = { ... }
+```
+
+##### `connections`<sup>Required</sup> <a name="cdk-fargate-patterns.DatabaseCofig.connections"></a>
+
+- *Type:* [`@aws-cdk/aws-ec2.Connections`](#@aws-cdk/aws-ec2.Connections)
+
+The database connnections.
+
+---
+
+##### `endpoint`<sup>Required</sup> <a name="cdk-fargate-patterns.DatabaseCofig.endpoint"></a>
+
+- *Type:* `string`
+
+The endpoint address for the database.
+
+---
+
+##### `identifier`<sup>Required</sup> <a name="cdk-fargate-patterns.DatabaseCofig.identifier"></a>
+
+- *Type:* `string`
+
+The databasae identifier.
+
+---
+
+##### `secret`<sup>Required</sup> <a name="cdk-fargate-patterns.DatabaseCofig.secret"></a>
+
+- *Type:* [`@aws-cdk/aws-secretsmanager.ISecret`](#@aws-cdk/aws-secretsmanager.ISecret)
+
+The database secret.
+
+---
+
+### DatabaseProps <a name="cdk-fargate-patterns.DatabaseProps"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { DatabaseProps } from 'cdk-fargate-patterns'
+
+const databaseProps: DatabaseProps = { ... }
+```
+
+##### `vpc`<sup>Required</sup> <a name="cdk-fargate-patterns.DatabaseProps.vpc"></a>
+
+- *Type:* [`@aws-cdk/aws-ec2.IVpc`](#@aws-cdk/aws-ec2.IVpc)
+
+The VPC for the database.
+
+---
+
+##### `allowFrom`<sup>Optional</sup> <a name="cdk-fargate-patterns.DatabaseProps.allowFrom"></a>
+
+- *Type:* [`@aws-cdk/aws-ec2.IConnectable`](#@aws-cdk/aws-ec2.IConnectable)
+- *Default:* the whole VPC CIDR
+
+Allow database connection.
+
+---
+
+##### `auroraServerless`<sup>Optional</sup> <a name="cdk-fargate-patterns.DatabaseProps.auroraServerless"></a>
+
+- *Type:* `boolean`
+- *Default:* false
+
+enable aurora serverless.
+
+---
+
+##### `backupRetention`<sup>Optional</sup> <a name="cdk-fargate-patterns.DatabaseProps.backupRetention"></a>
+
+- *Type:* [`@aws-cdk/core.Duration`](#@aws-cdk/core.Duration)
+- *Default:* 7 days
+
+database backup retension.
+
+---
+
+##### `clusterEngine`<sup>Optional</sup> <a name="cdk-fargate-patterns.DatabaseProps.clusterEngine"></a>
+
+- *Type:* [`@aws-cdk/aws-rds.IClusterEngine`](#@aws-cdk/aws-rds.IClusterEngine)
+- *Default:* rds.AuroraMysqlEngineVersion.VER_2_09_1
+
+The database cluster engine.
+
+---
+
+##### `databaseSubnets`<sup>Optional</sup> <a name="cdk-fargate-patterns.DatabaseProps.databaseSubnets"></a>
+
+- *Type:* [`@aws-cdk/aws-ec2.SubnetSelection`](#@aws-cdk/aws-ec2.SubnetSelection)
+
+VPC subnets for database.
+
+---
+
+##### `instanceEngine`<sup>Optional</sup> <a name="cdk-fargate-patterns.DatabaseProps.instanceEngine"></a>
+
+- *Type:* [`@aws-cdk/aws-rds.IInstanceEngine`](#@aws-cdk/aws-rds.IInstanceEngine)
+- *Default:* MySQL 8.0.21
+
+The database instance engine.
+
+---
+
+##### `instanceType`<sup>Optional</sup> <a name="cdk-fargate-patterns.DatabaseProps.instanceType"></a>
+
+- *Type:* [`@aws-cdk/aws-ec2.InstanceType`](#@aws-cdk/aws-ec2.InstanceType)
+- *Default:* r5.large
+
+The database instance type.
+
+---
+
+##### `singleDbInstance`<sup>Optional</sup> <a name="cdk-fargate-patterns.DatabaseProps.singleDbInstance"></a>
+
+- *Type:* `boolean`
+- *Default:* false
+
+Whether to use single RDS instance rather than RDS cluster.
+
+Not recommended for production.
+
+---
 
 ### DualAlbFargateServiceProps <a name="cdk-fargate-patterns.DualAlbFargateServiceProps"></a>
 
@@ -198,6 +500,140 @@ service autoscaling policy.
 
 ---
 
+### LaravelProps <a name="cdk-fargate-patterns.LaravelProps"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { LaravelProps } from 'cdk-fargate-patterns'
+
+const laravelProps: LaravelProps = { ... }
+```
+
+##### `code`<sup>Required</sup> <a name="cdk-fargate-patterns.LaravelProps.code"></a>
+
+- *Type:* `string`
+
+The local path to the Laravel code base.
+
+---
+
+##### `loadbalancer`<sup>Required</sup> <a name="cdk-fargate-patterns.LaravelProps.loadbalancer"></a>
+
+- *Type:* [`cdk-fargate-patterns.LoadBalancerAccessibility`](#cdk-fargate-patterns.LoadBalancerAccessibility)
+
+The loadbalancer accessibility for the service.
+
+---
+
+##### `auroraServerless`<sup>Optional</sup> <a name="cdk-fargate-patterns.LaravelProps.auroraServerless"></a>
+
+- *Type:* `boolean`
+- *Default:* false
+
+Whether to use aurora serverless.
+
+When enabled, the `databaseInstanceType` and
+`engine` will be ignored. The `rds.DatabaseClusterEngine.AURORA_MYSQL` will be used as
+the default cluster engine instead.
+
+---
+
+##### `backupRetention`<sup>Optional</sup> <a name="cdk-fargate-patterns.LaravelProps.backupRetention"></a>
+
+- *Type:* [`@aws-cdk/core.Duration`](#@aws-cdk/core.Duration)
+- *Default:* 7 days
+
+database backup retension.
+
+---
+
+##### `clusterEngine`<sup>Optional</sup> <a name="cdk-fargate-patterns.LaravelProps.clusterEngine"></a>
+
+- *Type:* [`@aws-cdk/aws-rds.IClusterEngine`](#@aws-cdk/aws-rds.IClusterEngine)
+- *Default:* rds.AuroraMysqlEngineVersion.VER_2_09_1
+
+The database cluster engine.
+
+---
+
+##### `containerPort`<sup>Optional</sup> <a name="cdk-fargate-patterns.LaravelProps.containerPort"></a>
+
+- *Type:* `number`
+- *Default:* 80
+
+The Laravel container port.
+
+---
+
+##### `databaseInstanceType`<sup>Optional</sup> <a name="cdk-fargate-patterns.LaravelProps.databaseInstanceType"></a>
+
+- *Type:* [`@aws-cdk/aws-ec2.InstanceType`](#@aws-cdk/aws-ec2.InstanceType)
+- *Default:* r5.large
+
+Database instance type.
+
+---
+
+##### `databaseSubnets`<sup>Optional</sup> <a name="cdk-fargate-patterns.LaravelProps.databaseSubnets"></a>
+
+- *Type:* [`@aws-cdk/aws-ec2.SubnetSelection`](#@aws-cdk/aws-ec2.SubnetSelection)
+- *Default:* VPC isolated subnets
+
+VPC subnets for database.
+
+---
+
+##### `enableExecuteCommand`<sup>Optional</sup> <a name="cdk-fargate-patterns.LaravelProps.enableExecuteCommand"></a>
+
+- *Type:* `boolean`
+
+enable ECS Exec.
+
+---
+
+##### `instanceEngine`<sup>Optional</sup> <a name="cdk-fargate-patterns.LaravelProps.instanceEngine"></a>
+
+- *Type:* [`@aws-cdk/aws-rds.IInstanceEngine`](#@aws-cdk/aws-rds.IInstanceEngine)
+- *Default:* MySQL 8.0.21
+
+The database instance engine.
+
+---
+
+##### `serviceProps`<sup>Optional</sup> <a name="cdk-fargate-patterns.LaravelProps.serviceProps"></a>
+
+- *Type:* [`cdk-fargate-patterns.FargateTaskProps`](#cdk-fargate-patterns.FargateTaskProps)
+
+task options for the Laravel fargate service.
+
+---
+
+##### `singleDbInstance`<sup>Optional</sup> <a name="cdk-fargate-patterns.LaravelProps.singleDbInstance"></a>
+
+- *Type:* `boolean`
+- *Default:* false
+
+Whether to use single RDS instance rather than RDS cluster.
+
+Not recommended for production.
+
+---
+
+##### `spot`<sup>Optional</sup> <a name="cdk-fargate-patterns.LaravelProps.spot"></a>
+
+- *Type:* `boolean`
+
+enable fargate spot.
+
+---
+
+##### `vpc`<sup>Optional</sup> <a name="cdk-fargate-patterns.LaravelProps.vpc"></a>
+
+- *Type:* [`@aws-cdk/aws-ec2.IVpc`](#@aws-cdk/aws-ec2.IVpc)
+
+---
+
 ### LoadBalancerAccessibility <a name="cdk-fargate-patterns.LoadBalancerAccessibility"></a>
 
 The load balancer accessibility.
@@ -307,6 +743,115 @@ request per target.
 - *Default:* 50
 
 target cpu utilization.
+
+---
+
+### WordPressProps <a name="cdk-fargate-patterns.WordPressProps"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { WordPressProps } from 'cdk-fargate-patterns'
+
+const wordPressProps: WordPressProps = { ... }
+```
+
+##### `auroraServerless`<sup>Optional</sup> <a name="cdk-fargate-patterns.WordPressProps.auroraServerless"></a>
+
+- *Type:* `boolean`
+- *Default:* false
+
+Whether to use aurora serverless.
+
+When enabled, the `databaseInstanceType` and
+`engine` will be ignored. The `rds.DatabaseClusterEngine.AURORA_MYSQL` will be used as
+the default cluster engine instead.
+
+---
+
+##### `backupRetention`<sup>Optional</sup> <a name="cdk-fargate-patterns.WordPressProps.backupRetention"></a>
+
+- *Type:* [`@aws-cdk/core.Duration`](#@aws-cdk/core.Duration)
+- *Default:* 7 days
+
+database backup retension.
+
+---
+
+##### `clusterEngine`<sup>Optional</sup> <a name="cdk-fargate-patterns.WordPressProps.clusterEngine"></a>
+
+- *Type:* [`@aws-cdk/aws-rds.IClusterEngine`](#@aws-cdk/aws-rds.IClusterEngine)
+- *Default:* rds.AuroraMysqlEngineVersion.VER_2_09_1
+
+The database cluster engine.
+
+---
+
+##### `databaseInstanceType`<sup>Optional</sup> <a name="cdk-fargate-patterns.WordPressProps.databaseInstanceType"></a>
+
+- *Type:* [`@aws-cdk/aws-ec2.InstanceType`](#@aws-cdk/aws-ec2.InstanceType)
+- *Default:* r5.large
+
+Database instance type.
+
+---
+
+##### `databaseSubnets`<sup>Optional</sup> <a name="cdk-fargate-patterns.WordPressProps.databaseSubnets"></a>
+
+- *Type:* [`@aws-cdk/aws-ec2.SubnetSelection`](#@aws-cdk/aws-ec2.SubnetSelection)
+- *Default:* VPC isolated subnets
+
+VPC subnets for database.
+
+---
+
+##### `enableExecuteCommand`<sup>Optional</sup> <a name="cdk-fargate-patterns.WordPressProps.enableExecuteCommand"></a>
+
+- *Type:* `boolean`
+
+enable ECS Exec.
+
+---
+
+##### `instanceEngine`<sup>Optional</sup> <a name="cdk-fargate-patterns.WordPressProps.instanceEngine"></a>
+
+- *Type:* [`@aws-cdk/aws-rds.IInstanceEngine`](#@aws-cdk/aws-rds.IInstanceEngine)
+- *Default:* MySQL 8.0.21
+
+The database instance engine.
+
+---
+
+##### `serviceProps`<sup>Optional</sup> <a name="cdk-fargate-patterns.WordPressProps.serviceProps"></a>
+
+- *Type:* [`cdk-fargate-patterns.FargateTaskProps`](#cdk-fargate-patterns.FargateTaskProps)
+
+task options for the WordPress fargate service.
+
+---
+
+##### `singleDbInstance`<sup>Optional</sup> <a name="cdk-fargate-patterns.WordPressProps.singleDbInstance"></a>
+
+- *Type:* `boolean`
+- *Default:* false
+
+Whether to use single RDS instance rather than RDS cluster.
+
+Not recommended for production.
+
+---
+
+##### `spot`<sup>Optional</sup> <a name="cdk-fargate-patterns.WordPressProps.spot"></a>
+
+- *Type:* `boolean`
+
+enable fargate spot.
+
+---
+
+##### `vpc`<sup>Optional</sup> <a name="cdk-fargate-patterns.WordPressProps.vpc"></a>
+
+- *Type:* [`@aws-cdk/aws-ec2.IVpc`](#@aws-cdk/aws-ec2.IVpc)
 
 ---
 
