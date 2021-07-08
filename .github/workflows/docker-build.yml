@@ -1,18 +1,134 @@
-name: docker-build
+name: ci
 
 on:
-  workflow_dispatch: {}
   push:
     branches:
       - 'main'
-      
+
 jobs:
-  laravel-bitnami:
+  go-order-service:
     runs-on: ubuntu-latest
     steps:
       -
-        name: Checkout
-        uses: actions/checkout@v2
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Build
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./services/OrderService
+          push: false
+          tags: user/app:latest
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+  go-common-service:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Build
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./services/CommonService
+          push: false
+          tags: user/app:latest
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+  java-spring-boot:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Build
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./services/java-spring-boot
+          push: false
+          tags: user/app:latest
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+  nginx-php:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Build
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./services/nginx-php
+          push: false
+          tags: user/app:latest
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+  node:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Build
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./services/node
+          push: false
+          tags: user/app:latest
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+  nuxt:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      -
+        name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      -
+        name: Build
+        id: docker_build
+        uses: docker/build-push-action@v2
+        with:
+          context: ./services/nuxt
+          push: false
+          tags: user/app:latest
+      -
+        name: Image digest
+        run: echo ${{ steps.docker_build.outputs.digest }}
+  laravel-bitnami:
+    runs-on: ubuntu-latest
+    steps:
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
@@ -33,9 +149,6 @@ jobs:
   laravel-nginx-php-fpm:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout
-        uses: actions/checkout@v2
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v1
