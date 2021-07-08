@@ -135,8 +135,7 @@ export class WordPress extends cdk.Construct {
       enableExecuteCommand: props.enableExecuteCommand,
       tasks: props.serviceProps ? [props.serviceProps] : [
         {
-          listenerPort: 80,
-          accessibility: patterns.LoadBalancerAccessibility.EXTERNAL_ONLY,
+          external: { port: 80 },
           task,
           healthCheck,
         },

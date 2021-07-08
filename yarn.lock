@@ -90,7 +90,7 @@
     "@aws-cdk/core" "1.111.0"
     constructs "^3.3.69"
 
-"@aws-cdk/aws-certificatemanager@1.111.0":
+"@aws-cdk/aws-certificatemanager@1.111.0", "@aws-cdk/aws-certificatemanager@^1.95.2":
   version "1.111.0"
   resolved "https://registry.yarnpkg.com/@aws-cdk/aws-certificatemanager/-/aws-certificatemanager-1.111.0.tgz#51234ba7af47f43c99c20fae7284cf5fbe246452"
   integrity sha512-g5XwE+C4wJtBsNvdEG+eeIDlQsrE8dajED2moCgwdM/CRdVCYE35lPNlxdZoRE0kAZfg5km2CKA07sn3PeRY/A==
@@ -4429,10 +4429,10 @@ jsii-diff@^1.30.0:
     typescript "~3.9.9"
     yargs "^16.2.0"
 
-jsii-docgen@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/jsii-docgen/-/jsii-docgen-2.0.3.tgz#ffd42585cd0f7de1ac43525c894928ea1eae3772"
-  integrity sha512-S5DH7kkiTM4hc4OsSAPTII2IXJdGtPiFK3MqxeNSEqUaQc86AEWqXz+UECUEmAr2vI4k67/3qNP0oTA78oc8OA==
+jsii-docgen@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/jsii-docgen/-/jsii-docgen-2.0.5.tgz#0b5fc97ea5abe65fa530b3f9bd421669b396c3a4"
+  integrity sha512-zyJDNOyTRPkJgAamhAGCfokNWslOcjUDidH4XdLMiYHpUMTFXTMacGd43mAE4LsJAzSjtVDby2eSJ/Z+ML04tg==
   dependencies:
     "@jsii/spec" "^1.30.0"
     case "^1.6.3"
@@ -5603,10 +5603,10 @@ progress@^2.0.0, progress@^2.0.3:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.3.tgz#7e8cf8d8f5b8f239c1bc68beb4eb78567d572ef8"
   integrity sha512-7PiHtLll5LdnKIMw100I+8xJXR5gW2QwWYkT6iJva0bXitZKa/XMrSbdmg3r2Xnaidz9Qumd0VPaMrZlF9V9sA==
 
-projen@^0.26.1:
-  version "0.26.1"
-  resolved "https://registry.yarnpkg.com/projen/-/projen-0.26.1.tgz#ab3b49ee3ee095e57033d12123e59d50f4a5bfd7"
-  integrity sha512-KqNF4V0mWqhp6VVqgpsEhjCOnM1fsZr1WY4ED/j0xGUhDkq6PePN1ixiWk0XPGWjXpgfcEvsb0RSIUtCNYFxNQ==
+projen@^0.26.3:
+  version "0.26.3"
+  resolved "https://registry.yarnpkg.com/projen/-/projen-0.26.3.tgz#22411a42822b83e623fe696605fbae5597627da2"
+  integrity sha512-F0we0XiXk2bLSTjGYXmCn78+hCTETvest/JkHE31xxH7pyFMXHUixpNP8YGBBuMCfLr8bEFXGBidRJ60xDe9qw==
   dependencies:
     "@iarna/toml" "^2.2.5"
     chalk "^4.1.1"

@@ -46,17 +46,23 @@ The service(s) created from the task(s).
 
 - *Type:* [`@aws-cdk/aws-ec2.IVpc`](#@aws-cdk/aws-ec2.IVpc)
 
+The VPC.
+
 ---
 
 ##### `externalAlb`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualAlbFargateService.externalAlb"></a>
 
 - *Type:* [`@aws-cdk/aws-elasticloadbalancingv2.ApplicationLoadBalancer`](#@aws-cdk/aws-elasticloadbalancingv2.ApplicationLoadBalancer)
 
+The external ALB.
+
 ---
 
 ##### `internalAlb`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualAlbFargateService.internalAlb"></a>
 
 - *Type:* [`@aws-cdk/aws-elasticloadbalancingv2.ApplicationLoadBalancer`](#@aws-cdk/aws-elasticloadbalancingv2.ApplicationLoadBalancer)
+
+The internal ALB.
 
 ---
 
@@ -124,6 +130,8 @@ The subnets to associate with the service.
 
 ### FargateTaskProps <a name="cdk-fargate-patterns.FargateTaskProps"></a>
 
+Task properties for the Fargate.
+
 #### Initializer <a name="[object Object].Initializer"></a>
 
 ```typescript
@@ -132,30 +140,17 @@ import { FargateTaskProps } from 'cdk-fargate-patterns'
 const fargateTaskProps: FargateTaskProps = { ... }
 ```
 
-##### `listenerPort`<sup>Required</sup> <a name="cdk-fargate-patterns.FargateTaskProps.listenerPort"></a>
-
-- *Type:* `number`
-
----
-
 ##### `task`<sup>Required</sup> <a name="cdk-fargate-patterns.FargateTaskProps.task"></a>
 
 - *Type:* [`@aws-cdk/aws-ecs.FargateTaskDefinition`](#@aws-cdk/aws-ecs.FargateTaskDefinition)
 
 ---
 
-##### `accessibility`<sup>Optional</sup> <a name="cdk-fargate-patterns.FargateTaskProps.accessibility"></a>
-
-- *Type:* [`cdk-fargate-patterns.LoadBalancerAccessibility`](#cdk-fargate-patterns.LoadBalancerAccessibility)
-- *Default:* both
-
-Register the service to internal ALB, external ALB or both.
-
----
-
 ##### `capacityProviderStrategy`<sup>Optional</sup> <a name="cdk-fargate-patterns.FargateTaskProps.capacityProviderStrategy"></a>
 
 - *Type:* [`@aws-cdk/aws-ecs.CapacityProviderStrategy`](#@aws-cdk/aws-ecs.CapacityProviderStrategy)[]
+
+Customized capacity provider strategy.
 
 ---
 
@@ -168,11 +163,29 @@ desired number of tasks for the service.
 
 ---
 
+##### `external`<sup>Optional</sup> <a name="cdk-fargate-patterns.FargateTaskProps.external"></a>
+
+- *Type:* [`cdk-fargate-patterns.LoadBalancerAccessibility`](#cdk-fargate-patterns.LoadBalancerAccessibility)
+- *Default:* no external listener
+
+The external ALB listener.
+
+---
+
 ##### `healthCheck`<sup>Optional</sup> <a name="cdk-fargate-patterns.FargateTaskProps.healthCheck"></a>
 
 - *Type:* [`@aws-cdk/aws-elasticloadbalancingv2.HealthCheck`](#@aws-cdk/aws-elasticloadbalancingv2.HealthCheck)
 
 health check from elbv2 target group.
+
+---
+
+##### `internal`<sup>Optional</sup> <a name="cdk-fargate-patterns.FargateTaskProps.internal"></a>
+
+- *Type:* [`cdk-fargate-patterns.LoadBalancerAccessibility`](#cdk-fargate-patterns.LoadBalancerAccessibility)
+- *Default:* no internal listener
+
+The internal ALB listener.
 
 ---
 
@@ -182,6 +195,35 @@ health check from elbv2 target group.
 - *Default:* { maxCapacity: 10, targetCpuUtilization: 50, requestsPerTarget: 1000 }
 
 service autoscaling policy.
+
+---
+
+### LoadBalancerAccessibility <a name="cdk-fargate-patterns.LoadBalancerAccessibility"></a>
+
+The load balancer accessibility.
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { LoadBalancerAccessibility } from 'cdk-fargate-patterns'
+
+const loadBalancerAccessibility: LoadBalancerAccessibility = { ... }
+```
+
+##### `port`<sup>Required</sup> <a name="cdk-fargate-patterns.LoadBalancerAccessibility.port"></a>
+
+- *Type:* `number`
+
+The port of the listener.
+
+---
+
+##### `certificate`<sup>Optional</sup> <a name="cdk-fargate-patterns.LoadBalancerAccessibility.certificate"></a>
+
+- *Type:* [`@aws-cdk/aws-certificatemanager.ICertificate`](#@aws-cdk/aws-certificatemanager.ICertificate)[]
+- *Default:* no certificate(HTTP only)
+
+The ACM certificate for the HTTPS listener.
 
 ---
 
@@ -269,23 +311,4 @@ target cpu utilization.
 ---
 
 
-
-## Enums <a name="Enums"></a>
-
-### LoadBalancerAccessibility <a name="LoadBalancerAccessibility"></a>
-
-The load balancer accessibility.
-
-#### `EXTERNAL_ONLY` <a name="cdk-fargate-patterns.LoadBalancerAccessibility.EXTERNAL_ONLY"></a>
-
-register to external load balancer only.
-
----
-
-
-#### `INTERNAL_ONLY` <a name="cdk-fargate-patterns.LoadBalancerAccessibility.INTERNAL_ONLY"></a>
-
-register to internal load balancer only.
-
----
 

@@ -1,10 +1,9 @@
 import * as path from 'path';
+import * as acm from '@aws-cdk/aws-certificatemanager';
 import * as ec2 from '@aws-cdk/aws-ec2';
 import * as ecs from '@aws-cdk/aws-ecs';
 import * as cdk from '@aws-cdk/core';
 import { DualAlbFargateService } from './index';
-import { LoadBalancerAccessibility } from './main';
-
 
 const app = new cdk.App();
 
@@ -116,18 +115,18 @@ laravelNginxPhpFpmTask.addContainer('laravel-nginx-php-fpm', {
   ],
 });
 
-// laravel-bitnami service
-const laravelBitnamiTask = new ecs.FargateTaskDefinition(stack, 'laravelBitnamiTask', {
-  cpu: 256,
-  memoryLimitMiB: 512,
-});
+// // laravel-bitnami service
+// const laravelBitnamiTask = new ecs.FargateTaskDefinition(stack, 'laravelBitnamiTask', {
+//   cpu: 256,
+//   memoryLimitMiB: 512,
+// });
 
-laravelBitnamiTask.addContainer('laravel-bitnami', {
-  image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/laravel-bitnami')),
-  portMappings: [
-    { containerPort: 3000 },
-  ],
-});
+// laravelBitnamiTask.addContainer('laravel-bitnami', {
+//   image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/laravel-bitnami')),
+//   portMappings: [
+//     { containerPort: 3000 },
+//   ],
+// });
 
 // NuxtJS service
 const nuxtTask = new ecs.FargateTaskDefinition(stack, 'nuxtTask', {
@@ -168,16 +167,19 @@ javaTask.addContainer('java', {
   ],
 });
 
+const certArn = stack.node.tryGetContext('ACM_CERT_ARN');
+const cert = certArn ? acm.Certificate.fromCertificateArn(stack, 'Cert', certArn) : undefined;
+
 const svc = new DualAlbFargateService(stack, 'Service', {
   spot: true, // FARGATE_SPOT only cluster
   enableExecuteCommand: true,
   tasks: [
     // The order service with both external/internal access
     {
-      listenerPort: 80,
-      accessibility: LoadBalancerAccessibility.EXTERNAL_ONLY,
       task: orderTask,
       desiredCount: 2,
+      internal: { port: 80 },
+      external: cert ? { port: 443, certificate: [cert] } : { port: 80 },
       // customize the service autoscaling policy
       scalingPolicy: {
         maxCapacity: 20,
@@ -187,10 +189,9 @@ const svc = new DualAlbFargateService(stack, 'Service', {
     },
     {
       // The customer service(internal only)
-      accessibility: LoadBalancerAccessibility.INTERNAL_ONLY,
-      listenerPort: 8080,
       task: customerTask,
       desiredCount: 1,
+      internal: { port: 8080 },
       capacityProviderStrategy: [
         {
           capacityProvider: 'FARGATE',
@@ -205,21 +206,60 @@ const svc = new DualAlbFargateService(stack, 'Service', {
       ],
     },
     // The produce service(internal only)
-    { listenerPort: 9090, task: productTask, desiredCount: 1, accessibility: LoadBalancerAccessibility.INTERNAL_ONLY },
+    {
+      task: productTask,
+      desiredCount: 1,
+      internal: { port: 9090 },
+    },
     // The nginx service(external only)
-    { listenerPort: 9091, task: nginxTask, desiredCount: 1, accessibility: LoadBalancerAccessibility.EXTERNAL_ONLY },
+    {
+      task: nginxTask,
+      desiredCount: 1,
+      external: { port: 9091 },
+    },
     // The nginx-php-fpm service(external/internal)
-    // { listenerPort: 9092, task: phpTask, desiredCount: 1 },
+    {
+      task: phpTask,
+      desiredCount: 1,
+      internal: { port: 9092 },
+      external: { port: 9092 },
+    },
     // The NuxtJS service(external/internal)
-    // { listenerPort: 9093, task: nuxtTask, desiredCount: 1 },
+    {
+      task: nuxtTask,
+      desiredCount: 1,
+      internal: { port: 9093 },
+      external: { port: 9093 },
+    },
     // The node service(external/internal)
-    { listenerPort: 9094, task: nodeTask, desiredCount: 1 },
+    {
+      task: nodeTask,
+      desiredCount: 1,
+      internal: { port: 9094 },
+      external: { port: 9094 },
+    },
     // The laravel-nginx-php-fpm service(external/internal)
-    { listenerPort: 9095, task: laravelNginxPhpFpmTask, desiredCount: 1 },
-    // The laravel-bitnami service(external/internal)
-    { listenerPort: 9096, task: laravelBitnamiTask, desiredCount: 1 },
-    // java spring boot service
-    { listenerPort: 8080, task: javaTask, desiredCount: 1, accessibility: LoadBalancerAccessibility.EXTERNAL_ONLY, healthCheck: { path: '/hello-world' } },
+    {
+      task: laravelNginxPhpFpmTask,
+      desiredCount: 1,
+      internal: { port: 9095 },
+      external: { port: 9095 },
+    },
+    // // The laravel-bitnami service(external/internal)
+    // {
+    //   task: laravelBitnamiTask,
+    //   desiredCount: 1,
+    //   internal: { port: 9096 },
+    //   external: { port: 9096 },
+    // },
+    // java spring boot service(external/internal)
+    {
+      task: javaTask,
+      desiredCount: 1,
+      internal: { port: 9097 },
+      external: { port: 9097 },
+      healthCheck: { path: '/hello-world' },
+    },
   ],
   route53Ops: {
     zoneName, // svc.local

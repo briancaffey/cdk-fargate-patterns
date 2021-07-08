@@ -59,24 +59,6 @@ Object {
     "ServiceCluster572F72F1": Object {
       "Type": "AWS::ECS::Cluster",
     },
-    "ServiceExtAlbListener808010AC370C": Object {
-      "Properties": Object {
-        "DefaultActions": Array [
-          Object {
-            "TargetGroupArn": Object {
-              "Ref": "ServicecustomerExtTG3D2842F6",
-            },
-            "Type": "forward",
-          },
-        ],
-        "LoadBalancerArn": Object {
-          "Ref": "ServiceExternalAlbC648C006",
-        },
-        "Port": 8080,
-        "Protocol": "HTTP",
-      },
-      "Type": "AWS::ElasticLoadBalancingV2::Listener",
-    },
     "ServiceExtAlbListener80CF2B8C01": Object {
       "Properties": Object {
         "DefaultActions": Array [
@@ -91,24 +73,6 @@ Object {
           "Ref": "ServiceExternalAlbC648C006",
         },
         "Port": 80,
-        "Protocol": "HTTP",
-      },
-      "Type": "AWS::ElasticLoadBalancingV2::Listener",
-    },
-    "ServiceExtAlbListener909050DBE278": Object {
-      "Properties": Object {
-        "DefaultActions": Array [
-          Object {
-            "TargetGroupArn": Object {
-              "Ref": "ServiceproductExtTG6F14D8B6",
-            },
-            "Type": "forward",
-          },
-        ],
-        "LoadBalancerArn": Object {
-          "Ref": "ServiceExternalAlbC648C006",
-        },
-        "Port": 9090,
         "Protocol": "HTTP",
       },
       "Type": "AWS::ElasticLoadBalancingV2::Listener",
@@ -193,20 +157,6 @@ Object {
             "IpProtocol": "tcp",
             "ToPort": 80,
           },
-          Object {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow from anyone on port 8080",
-            "FromPort": 8080,
-            "IpProtocol": "tcp",
-            "ToPort": 8080,
-          },
-          Object {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow from anyone on port 9090",
-            "FromPort": 9090,
-            "IpProtocol": "tcp",
-            "ToPort": 9090,
-          },
         ],
         "VpcId": Object {
           "Ref": "ServiceVpc4872DC6E",
@@ -214,54 +164,12 @@ Object {
       },
       "Type": "AWS::EC2::SecurityGroup",
     },
-    "ServiceExternalAlbSecurityGrouptodemostackServicecustomerServiceSecurityGroup76C15ACA808005D8D766": Object {
-      "Properties": Object {
-        "Description": "Load balancer to target",
-        "DestinationSecurityGroupId": Object {
-          "Fn::GetAtt": Array [
-            "ServicecustomerServiceSecurityGroup79D4888A",
-            "GroupId",
-          ],
-        },
-        "FromPort": 8080,
-        "GroupId": Object {
-          "Fn::GetAtt": Array [
-            "ServiceExternalAlbSecurityGroup94D38B09",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "ToPort": 8080,
-      },
-      "Type": "AWS::EC2::SecurityGroupEgress",
-    },
     "ServiceExternalAlbSecurityGrouptodemostackServiceorderServiceSecurityGroup144F1ECF8080D88F4A9D": Object {
       "Properties": Object {
         "Description": "Load balancer to target",
         "DestinationSecurityGroupId": Object {
           "Fn::GetAtt": Array [
             "ServiceorderServiceSecurityGroupFFF4D002",
-            "GroupId",
-          ],
-        },
-        "FromPort": 8080,
-        "GroupId": Object {
-          "Fn::GetAtt": Array [
-            "ServiceExternalAlbSecurityGroup94D38B09",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "ToPort": 8080,
-      },
-      "Type": "AWS::EC2::SecurityGroupEgress",
-    },
-    "ServiceExternalAlbSecurityGrouptodemostackServiceproductServiceSecurityGroup3058E36F808067C4E203": Object {
-      "Properties": Object {
-        "Description": "Load balancer to target",
-        "DestinationSecurityGroupId": Object {
-          "Fn::GetAtt": Array [
-            "ServiceproductServiceSecurityGroup87076A63",
             "GroupId",
           ],
         },
@@ -954,17 +862,6 @@ Object {
       },
       "Type": "AWS::EC2::VPCGatewayAttachment",
     },
-    "ServicecustomerExtTG3D2842F6": Object {
-      "Properties": Object {
-        "Port": 80,
-        "Protocol": "HTTP",
-        "TargetType": "ip",
-        "VpcId": Object {
-          "Ref": "ServiceVpc4872DC6E",
-        },
-      },
-      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
-    },
     "ServicecustomerIntTG0D7967D6": Object {
       "Properties": Object {
         "Port": 80,
@@ -978,7 +875,6 @@ Object {
     },
     "ServicecustomerService8F0EBE1F": Object {
       "DependsOn": Array [
-        "ServiceExtAlbListener808010AC370C",
         "ServiceIntAlbListener808027FA1497",
       ],
       "Properties": Object {
@@ -1006,13 +902,6 @@ Object {
         "EnableExecuteCommand": false,
         "HealthCheckGracePeriodSeconds": 60,
         "LoadBalancers": Array [
-          Object {
-            "ContainerName": "customer",
-            "ContainerPort": 8080,
-            "TargetGroupArn": Object {
-              "Ref": "ServicecustomerExtTG3D2842F6",
-            },
-          },
           Object {
             "ContainerName": "customer",
             "ContainerPort": 8080,
@@ -1066,27 +955,6 @@ Object {
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
-    },
-    "ServicecustomerServiceSecurityGroupfromdemostackServiceExternalAlbSecurityGroup75093328808043049641": Object {
-      "Properties": Object {
-        "Description": "Load balancer to target",
-        "FromPort": 8080,
-        "GroupId": Object {
-          "Fn::GetAtt": Array [
-            "ServicecustomerServiceSecurityGroup79D4888A",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": Object {
-          "Fn::GetAtt": Array [
-            "ServiceExternalAlbSecurityGroup94D38B09",
-            "GroupId",
-          ],
-        },
-        "ToPort": 8080,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
     },
     "ServicecustomerServiceSecurityGroupfromdemostackServiceInternalAlbSecurityGroup888743608080FF622F3A": Object {
       "Properties": Object {
@@ -1223,77 +1091,6 @@ Object {
                   Object {
                     "Fn::GetAtt": Array [
                       "ServicecustomerIntTG0D7967D6",
-                      "TargetGroupFullName",
-                    ],
-                  },
-                ],
-              ],
-            },
-          },
-          "TargetValue": 1000,
-        },
-      },
-      "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
-    },
-    "ServicecustomerServiceTaskCountTargetRequestScalingBEF21383": Object {
-      "Properties": Object {
-        "PolicyName": "demostackServicecustomerServiceTaskCountTargetRequestScaling35027BB0",
-        "PolicyType": "TargetTrackingScaling",
-        "ScalingTargetId": Object {
-          "Ref": "ServicecustomerServiceTaskCountTarget93297161",
-        },
-        "TargetTrackingScalingPolicyConfiguration": Object {
-          "PredefinedMetricSpecification": Object {
-            "PredefinedMetricType": "ALBRequestCountPerTarget",
-            "ResourceLabel": Object {
-              "Fn::Join": Array [
-                "",
-                Array [
-                  Object {
-                    "Fn::Select": Array [
-                      1,
-                      Object {
-                        "Fn::Split": Array [
-                          "/",
-                          Object {
-                            "Ref": "ServiceExtAlbListener808010AC370C",
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                  "/",
-                  Object {
-                    "Fn::Select": Array [
-                      2,
-                      Object {
-                        "Fn::Split": Array [
-                          "/",
-                          Object {
-                            "Ref": "ServiceExtAlbListener808010AC370C",
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                  "/",
-                  Object {
-                    "Fn::Select": Array [
-                      3,
-                      Object {
-                        "Fn::Split": Array [
-                          "/",
-                          Object {
-                            "Ref": "ServiceExtAlbListener808010AC370C",
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                  "/",
-                  Object {
-                    "Fn::GetAtt": Array [
-                      "ServicecustomerExtTG3D2842F6",
                       "TargetGroupFullName",
                     ],
                   },
@@ -1658,17 +1455,6 @@ Object {
       },
       "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
     },
-    "ServiceproductExtTG6F14D8B6": Object {
-      "Properties": Object {
-        "Port": 80,
-        "Protocol": "HTTP",
-        "TargetType": "ip",
-        "VpcId": Object {
-          "Ref": "ServiceVpc4872DC6E",
-        },
-      },
-      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
-    },
     "ServiceproductIntTGD6EBD86F": Object {
       "Properties": Object {
         "Port": 80,
@@ -1682,7 +1468,6 @@ Object {
     },
     "ServiceproductService76D76EF8": Object {
       "DependsOn": Array [
-        "ServiceExtAlbListener909050DBE278",
         "ServiceIntAlbListener90902FF1540B",
       ],
       "Properties": Object {
@@ -1710,13 +1495,6 @@ Object {
         "EnableExecuteCommand": false,
         "HealthCheckGracePeriodSeconds": 60,
         "LoadBalancers": Array [
-          Object {
-            "ContainerName": "product",
-            "ContainerPort": 8080,
-            "TargetGroupArn": Object {
-              "Ref": "ServiceproductExtTG6F14D8B6",
-            },
-          },
           Object {
             "ContainerName": "product",
             "ContainerPort": 8080,
@@ -1770,27 +1548,6 @@ Object {
         },
       },
       "Type": "AWS::EC2::SecurityGroup",
-    },
-    "ServiceproductServiceSecurityGroupfromdemostackServiceExternalAlbSecurityGroup750933288080D86FAD53": Object {
-      "Properties": Object {
-        "Description": "Load balancer to target",
-        "FromPort": 8080,
-        "GroupId": Object {
-          "Fn::GetAtt": Array [
-            "ServiceproductServiceSecurityGroup87076A63",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": Object {
-          "Fn::GetAtt": Array [
-            "ServiceExternalAlbSecurityGroup94D38B09",
-            "GroupId",
-          ],
-        },
-        "ToPort": 8080,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
     },
     "ServiceproductServiceSecurityGroupfromdemostackServiceInternalAlbSecurityGroup8887436080805FD62758": Object {
       "Properties": Object {
@@ -1927,77 +1684,6 @@ Object {
                   Object {
                     "Fn::GetAtt": Array [
                       "ServiceproductIntTGD6EBD86F",
-                      "TargetGroupFullName",
-                    ],
-                  },
-                ],
-              ],
-            },
-          },
-          "TargetValue": 1000,
-        },
-      },
-      "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
-    },
-    "ServiceproductServiceTaskCountTargetRequestScaling88F3E40C": Object {
-      "Properties": Object {
-        "PolicyName": "demostackServiceproductServiceTaskCountTargetRequestScaling8A8BF0F7",
-        "PolicyType": "TargetTrackingScaling",
-        "ScalingTargetId": Object {
-          "Ref": "ServiceproductServiceTaskCountTarget3E8314AF",
-        },
-        "TargetTrackingScalingPolicyConfiguration": Object {
-          "PredefinedMetricSpecification": Object {
-            "PredefinedMetricType": "ALBRequestCountPerTarget",
-            "ResourceLabel": Object {
-              "Fn::Join": Array [
-                "",
-                Array [
-                  Object {
-                    "Fn::Select": Array [
-                      1,
-                      Object {
-                        "Fn::Split": Array [
-                          "/",
-                          Object {
-                            "Ref": "ServiceExtAlbListener909050DBE278",
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                  "/",
-                  Object {
-                    "Fn::Select": Array [
-                      2,
-                      Object {
-                        "Fn::Split": Array [
-                          "/",
-                          Object {
-                            "Ref": "ServiceExtAlbListener909050DBE278",
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                  "/",
-                  Object {
-                    "Fn::Select": Array [
-                      3,
-                      Object {
-                        "Fn::Split": Array [
-                          "/",
-                          Object {
-                            "Ref": "ServiceExtAlbListener909050DBE278",
-                          },
-                        ],
-                      },
-                    ],
-                  },
-                  "/",
-                  Object {
-                    "Fn::GetAtt": Array [
-                      "ServiceproductExtTG6F14D8B6",
                       "TargetGroupFullName",
                     ],
                   },

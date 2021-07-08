@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as ec2 from '@aws-cdk/aws-ec2';
 import * as ecs from '@aws-cdk/aws-ecs';
 import * as cdk from '@aws-cdk/core';
-import { DualAlbFargateService, LoadBalancerAccessibility } from '../src/index';
+import { DualAlbFargateService } from '../src/index';
 import { WordPress } from '../src/wordpress';
 
 let app: cdk.App;
@@ -86,9 +86,10 @@ test('Snapshot', () => {
     spot: true, // FARGATE_SPOT only cluster
     tasks: [
       {
-        listenerPort: 80,
         task: orderTask,
         desiredCount: 2,
+        internal: { port: 80 },
+        external: { port: 80 },
         // customize the service autoscaling policy
         scalingPolicy: {
           maxCapacity: 20,
@@ -96,8 +97,8 @@ test('Snapshot', () => {
           targetCpuUtilization: 50,
         },
       },
-      { listenerPort: 8080, task: customerTask, desiredCount: 2 },
-      { listenerPort: 9090, task: productTask, desiredCount: 2 },
+      { task: customerTask, desiredCount: 2, internal: { port: 8080 } },
+      { task: productTask, desiredCount: 2, internal: { port: 9090 } },
     ],
     route53Ops: {
       zoneName, // svc.local
@@ -108,7 +109,7 @@ test('Snapshot', () => {
   expect(app.synth().getStackArtifact(stack.artifactId).template).toMatchSnapshot();
 });
 
-test('DualAlbFargateService - minimal setup', () => {
+test('DualAlbFargateService - minimal setup both internal and external ALB', () => {
   // GIVEN
   // WHEN
   const task = new ecs.FargateTaskDefinition(stack, 'task', {
@@ -122,7 +123,9 @@ test('DualAlbFargateService - minimal setup', () => {
   });
 
   new DualAlbFargateService(stack, 'Service', {
-    tasks: [{ listenerPort: 80, task }],
+    tasks: [
+      { task, internal: { port: 80 }, external: { port: 80 } },
+    ],
   });
 
   // THEN
@@ -157,7 +160,7 @@ test('DualAlbFargateService - internal only', () => {
   });
 
   new DualAlbFargateService(stack, 'Service', {
-    tasks: [{ listenerPort: 80, task, accessibility: LoadBalancerAccessibility.INTERNAL_ONLY }],
+    tasks: [{ task, internal: { port: 80 } }],
   });
 
   // THEN
@@ -191,7 +194,7 @@ test('DualAlbFargateService - external only', () => {
   });
 
   new DualAlbFargateService(stack, 'Service', {
-    tasks: [{ listenerPort: 80, task, accessibility: LoadBalancerAccessibility.EXTERNAL_ONLY }],
+    tasks: [{ task, external: { port: 80 } }],
   });
 
   // THEN
@@ -237,8 +240,12 @@ test('DualAlbFargateService - partial internal only', () => {
 
   new DualAlbFargateService(stack, 'Service', {
     tasks: [
-      { listenerPort: 80, task, accessibility: LoadBalancerAccessibility.INTERNAL_ONLY },
-      { listenerPort: 8080, task: task2 },
+      { task, internal: { port: 80 } },
+      {
+        task: task2,
+        internal: { port: 8080 },
+        external: { port: 8080 },
+      },
     ],
   });
 
@@ -284,8 +291,8 @@ test('DualAlbFargateService - partial external only', () => {
 
   new DualAlbFargateService(stack, 'Service', {
     tasks: [
-      { listenerPort: 80, task, accessibility: LoadBalancerAccessibility.EXTERNAL_ONLY },
-      { listenerPort: 8080, task: task2 },
+      { task, external: { port: 80 } },
+      { task: task2, internal: { port: 8080 }, external: { port: 8080 } },
     ],
   });
 
@@ -322,7 +329,10 @@ test('DualAlbFargateService - vpc subnet select default select private subnet', 
 
   new DualAlbFargateService(stack, 'Service', {
     tasks: [
-      { listenerPort: 8080, task },
+      {
+        task,
+        internal: { port: 80 },
+      },
     ],
   });
 
@@ -372,7 +382,11 @@ test('DualAlbFargateService - vpc subnet select test select public subnet', () =
 
   new DualAlbFargateService(stack, 'Service', {
     tasks: [
-      { listenerPort: 8080, task },
+      {
+        task,
+        internal: { port: 8080 },
+        external: { port: 8080 },
+      },
     ],
     vpcSubnets: {
       subnetType: ec2.SubnetType.PUBLIC,

@@ -1,3 +1,4 @@
+import * as acm from '@aws-cdk/aws-certificatemanager';
 import * as ec2 from '@aws-cdk/aws-ec2';
 import * as ecs from '@aws-cdk/aws-ecs';
 import * as elbv2 from '@aws-cdk/aws-elasticloadbalancingv2';
@@ -34,20 +35,34 @@ export interface DualAlbFargateServiceProps {
 /**
  * The load balancer accessibility.
  */
-export enum LoadBalancerAccessibility {
+export interface LoadBalancerAccessibility {
   /**
-   * register to external load balancer only
+   * The port of the listener
    */
-  EXTERNAL_ONLY = 'EXTERNAL_ONLY',
+  readonly port: number;
   /**
-   * register to internal load balancer only
+   * The ACM certificate for the HTTPS listener
+   * @default - no certificate(HTTP only)
    */
-  INTERNAL_ONLY = 'INTERNAL_ONLY',
+  readonly certificate?: acm.ICertificate[];
 }
 
+/**
+ * Task properties for the Fargate
+ */
 export interface FargateTaskProps {
+  // The Fargate task definition
   readonly task: ecs.FargateTaskDefinition;
-  readonly listenerPort: number;
+  /**
+   * The internal ALB listener
+   * @default - no internal listener
+   */
+  readonly internal?: LoadBalancerAccessibility;
+  /**
+   * The external ALB listener
+   * @default - no external listener
+   */
+  readonly external?: LoadBalancerAccessibility;
   /**
    * desired number of tasks for the service
    * @default 1
@@ -58,12 +73,10 @@ export interface FargateTaskProps {
    * @default - { maxCapacity: 10, targetCpuUtilization: 50, requestsPerTarget: 1000 }
    */
   readonly scalingPolicy?: ServiceScalingPolicy;
-  readonly capacityProviderStrategy?: ecs.CapacityProviderStrategy[];
   /**
-   * Register the service to internal ALB, external ALB or both.
-   * @default both
+   * Customized capacity provider strategy
    */
-  readonly accessibility?: LoadBalancerAccessibility;
+  readonly capacityProviderStrategy?: ecs.CapacityProviderStrategy[];
   /**
    * health check from elbv2 target group
   */
@@ -113,8 +126,17 @@ export interface Route53Options {
 }
 
 export class DualAlbFargateService extends cdk.Construct {
+  /**
+   * The external ALB
+   */
   readonly externalAlb?: elbv2.ApplicationLoadBalancer
+  /**
+   * The internal ALB
+   */
   readonly internalAlb?: elbv2.ApplicationLoadBalancer
+  /**
+   * The VPC
+   */
   readonly vpc: ec2.IVpc;
   /**
    * The service(s) created from the task(s)
@@ -143,10 +165,10 @@ export class DualAlbFargateService extends cdk.Construct {
     // determine whether we need the external LB
     props.tasks.forEach(t => {
       // determine the accessibility
-      if (t.accessibility != LoadBalancerAccessibility.INTERNAL_ONLY ) {
+      if (t.external) {
         this.hasExternalLoadBalancer = true;
       }
-      if (t.accessibility != LoadBalancerAccessibility.EXTERNAL_ONLY) {
+      if (t.internal) {
         this.hasInternalLoadBalancer = true;
       }
     });
@@ -202,18 +224,19 @@ export class DualAlbFargateService extends cdk.Construct {
         targetUtilizationPercent: t.scalingPolicy?.targetCpuUtilization ?? 50,
       });
 
-      if (t.accessibility != LoadBalancerAccessibility.INTERNAL_ONLY) {
+      if (t.external) {
         const exttg = new elbv2.ApplicationTargetGroup(this, `${defaultContainerName}ExtTG`, {
           protocol: elbv2.ApplicationProtocol.HTTP,
           vpc: this.vpc,
           healthCheck: t.healthCheck,
         });
         // listener for the external ALB
-        new elbv2.ApplicationListener(this, `ExtAlbListener${t.listenerPort}`, {
+        new elbv2.ApplicationListener(this, `ExtAlbListener${t.external.port}`, {
           loadBalancer: this.externalAlb!,
           open: true,
-          port: t.listenerPort,
-          protocol: elbv2.ApplicationProtocol.HTTP,
+          port: t.external.port,
+          protocol: t.external.certificate ? elbv2.ApplicationProtocol.HTTPS : elbv2.ApplicationProtocol.HTTP,
+          certificates: t.external.certificate,
           defaultTargetGroups: [exttg],
         });
         scaling.scaleOnRequestCount('RequestScaling', {
@@ -223,7 +246,7 @@ export class DualAlbFargateService extends cdk.Construct {
         exttg.addTarget(svc);
       }
 
-      if (t.accessibility != LoadBalancerAccessibility.EXTERNAL_ONLY) {
+      if (t.internal) {
         const inttg = new elbv2.ApplicationTargetGroup(this, `${defaultContainerName}IntTG`, {
           protocol: elbv2.ApplicationProtocol.HTTP,
           vpc: this.vpc,
@@ -231,11 +254,12 @@ export class DualAlbFargateService extends cdk.Construct {
         });
 
         // listener for the internal ALB
-        new elbv2.ApplicationListener(this, `IntAlbListener${t.listenerPort}`, {
+        new elbv2.ApplicationListener(this, `IntAlbListener${t.internal.port}`, {
           loadBalancer: this.internalAlb!,
           open: true,
-          port: t.listenerPort,
-          protocol: elbv2.ApplicationProtocol.HTTP,
+          port: t.internal.port,
+          protocol: t.internal.certificate ? elbv2.ApplicationProtocol.HTTPS : elbv2.ApplicationProtocol.HTTP,
+          certificates: t.internal.certificate,
           defaultTargetGroups: [inttg],
         });
 
