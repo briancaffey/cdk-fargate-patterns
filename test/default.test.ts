@@ -34,7 +34,7 @@ test('Snapshot', () => {
   const internalALBEndpoint = `http://${internalAlbRecordName}.${zoneName}`;
 
   orderTask.addContainer('order', {
-    image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/OrderService')),
+    image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/golang/OrderService')),
     portMappings: [
       { containerPort: 8080 },
     ],
@@ -52,7 +52,7 @@ test('Snapshot', () => {
   });
 
   customerTask.addContainer('customer', {
-    image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/CommonService')),
+    image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/golang/CommonService')),
     portMappings: [
       { containerPort: 8080 },
     ],
@@ -70,7 +70,7 @@ test('Snapshot', () => {
   });
 
   productTask.addContainer('product', {
-    image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/CommonService')),
+    image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/golang/CommonService')),
     portMappings: [
       { containerPort: 8080 },
     ],

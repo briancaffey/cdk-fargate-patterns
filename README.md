@@ -188,5 +188,41 @@ new WordPress(stack, 'WP', {
 });
 ```
 
+# `Laravel`
 
+The `Laravl` construct is provided as a high-level abstraction that allows you to create a modern Laravel environment running on `AWS Fargate` and `Amazon Aurora Serverless`. Here comes two 
 
+**laravel-bitnami** - based on [bitnami/laravel](https://hub.docker.com/r/bitnami/laravel/) with `artisan` running as the built-in web server.
+
+**laravel-nginx-php-fpm** - laravel with nginx and php-fpm maintained by [Ernest Chiang](https://github.com/dwchiang).
+
+Simply point `code` to your local Laravel codebase and it takes care everything else for you.
+
+## Samples
+
+```ts
+/**
+ * laravel-bitnami
+ */
+new Laravel(stack, 'LaravelBitnamiDemo', {
+  auroraServerless: true,
+  spot: true,
+  enableExecuteCommand: true,
+  code: path.join(__dirname, '../services/laravel-bitnami'),
+  containerPort: 3000,
+  loadbalancer: { port: 80 },
+});
+
+/**
+ * laravel-nginx-php-fpm
+ */
+new Laravel(stack, 'LaravelNginxDemo', {
+  auroraServerless: true,
+  spot: true,
+  enableExecuteCommand: true,
+  code: path.join(__dirname, '../services/laravel-nginx-php-fpm'),
+  loadbalancer: { port: 80 },
+});
+```
+
+See [integ.laravel.ts](src/integ.laravel.ts) for the full code sample.

@@ -26,7 +26,7 @@ const orderTask = new ecs.FargateTaskDefinition(stack, 'orderTask', {
 });
 
 orderTask.addContainer('order', {
-  image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/OrderService')),
+  image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/golang/OrderService')),
   portMappings: [
     { containerPort: 8080 },
   ],
@@ -45,7 +45,7 @@ const customerTask = new ecs.FargateTaskDefinition(stack, 'customerTask', {
 });
 
 customerTask.addContainer('customer', {
-  image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/CommonService')),
+  image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/golang/CommonService')),
   portMappings: [
     { containerPort: 8080 },
   ],
@@ -64,7 +64,7 @@ const productTask = new ecs.FargateTaskDefinition(stack, 'productTask', {
 });
 
 productTask.addContainer('product', {
-  image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/CommonService')),
+  image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/golang/CommonService')),
   portMappings: [
     { containerPort: 8080 },
   ],
