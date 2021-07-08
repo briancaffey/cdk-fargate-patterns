@@ -1,10 +1,11 @@
 name: docker-build
 
 on:
+  workflow_dispatch: {}
   push:
     branches:
       - 'main'
-
+      
 jobs:
   laravel-bitnami:
     runs-on: ubuntu-latest
