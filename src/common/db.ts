@@ -55,6 +55,12 @@ export interface DatabaseProps {
    * @default - the whole VPC CIDR
    */
   readonly allowFrom?: ec2.IConnectable;
+  /**
+   * Default database name to create
+   *
+   * @default - do not create any default database
+   */
+  readonly defaultDatabaseName?: string;
 }
 
 /**
@@ -136,7 +142,7 @@ export class Database extends cdk.Construct {
         version: rds.AuroraMysqlEngineVersion.VER_2_09_1,
       }),
       credentials: rds.Credentials.fromGeneratedSecret('admin'),
-      defaultDatabaseName: 'Laravel',
+      defaultDatabaseName: props.defaultDatabaseName,
       instanceProps: {
         vpc: props.vpc,
         vpcSubnets: props.databaseSubnets,
@@ -165,7 +171,7 @@ export class Database extends cdk.Construct {
       backupRetention: props.backupRetention ?? cdk.Duration.days(7),
       removalPolicy: cdk.RemovalPolicy.DESTROY,
       parameterGroup: rds.ParameterGroup.fromParameterGroupName(this, 'ParameterGroup', 'default.aurora-mysql5.7'),
-      defaultDatabaseName: 'Laravel',
+      defaultDatabaseName: props.defaultDatabaseName,
     });
     return {
       connections: dbCluster.connections,

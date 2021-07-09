@@ -433,7 +433,6 @@ Object {
         "DBSubnetGroupName": Object {
           "Ref": "LaravelBitnamiDemoDatabaseAuroraServerlessClusterSubnetsC851F9D2",
         },
-        "DatabaseName": "Laravel",
         "Engine": "aurora-mysql",
         "EngineMode": "serverless",
         "MasterUserPassword": Object {
@@ -531,7 +530,7 @@ Object {
                   "Name",
                 ],
               },
-              " to connect db",
+              " to connect to database",
             ],
           ],
         },
@@ -696,7 +695,7 @@ Object {
     },
     "LaravelBitnamiDemoFileSystemEfsSecurityGroupfromdemostackLaravelBitnamiDemoALBFargateServiceLaravelServiceSecurityGroupFD7F83AC2049C97093B4": Object {
       "Properties": Object {
-        "Description": "allow Laravel to connect efs",
+        "Description": "allow Laravel to connect to efs filesystem",
         "FromPort": 2049,
         "GroupId": Object {
           "Fn::GetAtt": Array [
@@ -772,7 +771,7 @@ Object {
             ],
             "Secrets": Array [
               Object {
-                "Name": "Laravel_DB_HOST",
+                "Name": "LARAVEL_DB_HOST",
                 "ValueFrom": Object {
                   "Fn::Join": Array [
                     "",
@@ -786,7 +785,7 @@ Object {
                 },
               },
               Object {
-                "Name": "Laravel_DB_USER",
+                "Name": "LARAVEL_DB_USER",
                 "ValueFrom": Object {
                   "Fn::Join": Array [
                     "",
@@ -800,7 +799,7 @@ Object {
                 },
               },
               Object {
-                "Name": "Laravel_DB_PASSWORD",
+                "Name": "LARAVEL_DB_PASSWORD",
                 "ValueFrom": Object {
                   "Fn::Join": Array [
                     "",
@@ -1796,7 +1795,6 @@ Object {
         "DBSubnetGroupName": Object {
           "Ref": "LaravelNginxDemoDatabaseAuroraServerlessClusterSubnetsC79F8BB1",
         },
-        "DatabaseName": "Laravel",
         "Engine": "aurora-mysql",
         "EngineMode": "serverless",
         "MasterUserPassword": Object {
@@ -1894,7 +1892,7 @@ Object {
                   "Name",
                 ],
               },
-              " to connect db",
+              " to connect to database",
             ],
           ],
         },
@@ -2059,7 +2057,7 @@ Object {
     },
     "LaravelNginxDemoFileSystemEfsSecurityGroupfromdemostackLaravelNginxDemoALBFargateServiceLaravelServiceSecurityGroup0202342520494128A51C": Object {
       "Properties": Object {
-        "Description": "allow Laravel to connect efs",
+        "Description": "allow Laravel to connect to efs filesystem",
         "FromPort": 2049,
         "GroupId": Object {
           "Fn::GetAtt": Array [
@@ -2135,7 +2133,7 @@ Object {
             ],
             "Secrets": Array [
               Object {
-                "Name": "Laravel_DB_HOST",
+                "Name": "LARAVEL_DB_HOST",
                 "ValueFrom": Object {
                   "Fn::Join": Array [
                     "",
@@ -2149,7 +2147,7 @@ Object {
                 },
               },
               Object {
-                "Name": "Laravel_DB_USER",
+                "Name": "LARAVEL_DB_USER",
                 "ValueFrom": Object {
                   "Fn::Join": Array [
                     "",
@@ -2163,7 +2161,7 @@ Object {
                 },
               },
               Object {
-                "Name": "Laravel_DB_PASSWORD",
+                "Name": "LARAVEL_DB_PASSWORD",
                 "ValueFrom": Object {
                   "Fn::Join": Array [
                     "",

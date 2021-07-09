@@ -75,12 +75,19 @@ export interface LaravelProps {
    */
   readonly containerPort?: number;
   /**
-   * The loadbalancer accessibility for the service
+   * The loadbalancer accessibility for the service.
    */
   readonly loadbalancer: LoadBalancerAccessibility;
+  /**
+   * The default database name to create.
+   */
+  readonly defaultDatabaseName?: string;
 
 }
 
+/**
+ * Represents the Laravel service
+ */
 export class Laravel extends cdk.Construct {
   readonly vpc: ec2.IVpc;
   readonly db?: Database;
@@ -98,6 +105,7 @@ export class Laravel extends cdk.Construct {
       auroraServerless: props.auroraServerless,
       singleDbInstance: props.singleDbInstance,
       backupRetention: props.backupRetention,
+      defaultDatabaseName: props.defaultDatabaseName,
     });
 
     const logGroup = new logs.LogGroup(this, 'LogGroup', {
@@ -121,15 +129,15 @@ export class Laravel extends cdk.Construct {
         logGroup,
       }),
       secrets: {
-        Laravel_DB_HOST: ecs.Secret.fromSecretsManager(
+        LARAVEL_DB_HOST: ecs.Secret.fromSecretsManager(
           this.db.secret,
           'host',
         ),
-        Laravel_DB_USER: ecs.Secret.fromSecretsManager(
+        LARAVEL_DB_USER: ecs.Secret.fromSecretsManager(
           this.db.secret,
           'username',
         ),
-        Laravel_DB_PASSWORD: ecs.Secret.fromSecretsManager(
+        LARAVEL_DB_PASSWORD: ecs.Secret.fromSecretsManager(
           this.db.secret,
           'password',
         ),
@@ -176,9 +184,9 @@ export class Laravel extends cdk.Construct {
       sourceVolume: volumeName,
     });
 
-    filesystem.connections.allowFrom(new ec2.Connections({ securityGroups: this.svc.service[0].connections.securityGroups }), ec2.Port.tcp(2049), 'allow Laravel to connect efs');
+    filesystem.connections.allowFrom(new ec2.Connections({ securityGroups: this.svc.service[0].connections.securityGroups }), ec2.Port.tcp(2049), 'allow Laravel to connect to efs filesystem');
 
-    this.db.connections.allowFrom(this.svc.service[0], this.db.connections.defaultPort!, `allow ${this.svc.service[0].serviceName} to connect db`);
+    this.db.connections.allowFrom(this.svc.service[0], this.db.connections.defaultPort!, `allow ${this.svc.service[0].serviceName} to connect to database`);
 
   }
   private addDatabase(props: DatabaseProps): Database {

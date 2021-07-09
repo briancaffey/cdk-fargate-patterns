@@ -85,6 +85,7 @@ export class WordPress extends cdk.Construct {
       auroraServerless: props.auroraServerless,
       singleDbInstance: props.singleDbInstance,
       backupRetention: props.backupRetention,
+      defaultDatabaseName: 'wordpress',
     });
 
     const logGroup = new logs.LogGroup(this, 'LogGroup', {
