@@ -4,10 +4,9 @@ import * as efs from '@aws-cdk/aws-efs';
 import * as logs from '@aws-cdk/aws-logs';
 import * as rds from '@aws-cdk/aws-rds';
 import * as cdk from '@aws-cdk/core';
-import { DualAlbFargateService, FargateTaskProps, Database, DatabaseProps } from './';
+import { DualAlbFargateService, FargateTaskProps, Database, DatabaseProps, LoadBalancerAccessibility } from './';
 
-
-export interface WordPressProps {
+export interface LaravelProps {
   readonly vpc?: ec2.IVpc;
   /**
    * VPC subnets for database
@@ -55,7 +54,7 @@ export interface WordPressProps {
   readonly backupRetention?: cdk.Duration;
 
   /**
-   * task options for the WordPress fargate service
+   * task options for the Laravel fargate service
    */
   readonly serviceProps?: FargateTaskProps;
   /**
@@ -66,13 +65,39 @@ export interface WordPressProps {
    * enable ECS Exec
    */
   readonly enableExecuteCommand?: boolean;
+  /**
+   * The local path to the Laravel code base.
+   */
+  readonly code: string;
+  /**
+   * The Laravel container port
+   * @default 80
+   */
+  readonly containerPort?: number;
+  /**
+   * The loadbalancer accessibility for the service.
+   */
+  readonly loadbalancer: LoadBalancerAccessibility;
+  /**
+   * The default database name to create.
+   */
+  readonly defaultDatabaseName?: string;
+
+  /**
+   * Options to create the EFS FileSystem
+   */
+  readonly efsFileSystem?: efs.FileSystemProps;
+
 }
 
-export class WordPress extends cdk.Construct {
+/**
+ * Represents the Laravel service
+ */
+export class Laravel extends cdk.Construct {
   readonly vpc: ec2.IVpc;
   readonly db?: Database;
   readonly svc: DualAlbFargateService;
-  constructor(scope: cdk.Construct, id: string, props: WordPressProps = {}) {
+  constructor(scope: cdk.Construct, id: string, props: LaravelProps) {
     super(scope, id);
 
     this.vpc = props.vpc ?? getOrCreateVpc(this);
@@ -85,7 +110,7 @@ export class WordPress extends cdk.Construct {
       auroraServerless: props.auroraServerless,
       singleDbInstance: props.singleDbInstance,
       backupRetention: props.backupRetention,
-      defaultDatabaseName: 'wordpress',
+      defaultDatabaseName: props.defaultDatabaseName,
     });
 
     const logGroup = new logs.LogGroup(this, 'LogGroup', {
@@ -98,26 +123,26 @@ export class WordPress extends cdk.Construct {
       memoryLimitMiB: 512,
     });
 
-    task.addContainer('wordpress', {
-      image: ecs.ContainerImage.fromRegistry('wordpress:latest'),
-      portMappings: [{ containerPort: 80 }],
+    task.addContainer('Laravel', {
+      image: ecs.ContainerImage.fromAsset(props.code),
+      portMappings: [{ containerPort: props.containerPort ?? 80 }],
       environment: {
-        WORDPRESS_DB_NAME: 'wordpress',
+        Laravel_DB_NAME: 'Laravel',
       },
       logging: new ecs.AwsLogDriver({
-        streamPrefix: 'wordpress-fargate',
+        streamPrefix: 'Laravel-fargate',
         logGroup,
       }),
       secrets: {
-        WORDPRESS_DB_HOST: ecs.Secret.fromSecretsManager(
+        LARAVEL_DB_HOST: ecs.Secret.fromSecretsManager(
           this.db.secret,
           'host',
         ),
-        WORDPRESS_DB_USER: ecs.Secret.fromSecretsManager(
+        LARAVEL_DB_USER: ecs.Secret.fromSecretsManager(
           this.db.secret,
           'username',
         ),
-        WORDPRESS_DB_PASSWORD: ecs.Secret.fromSecretsManager(
+        LARAVEL_DB_PASSWORD: ecs.Secret.fromSecretsManager(
           this.db.secret,
           'password',
         ),
@@ -125,7 +150,7 @@ export class WordPress extends cdk.Construct {
     });
 
     const healthCheck = {
-      path: '/wp-includes/images/blank.gif',
+      path: '/',
       interval: cdk.Duration.minutes(1),
     };
 
@@ -135,38 +160,38 @@ export class WordPress extends cdk.Construct {
       enableExecuteCommand: props.enableExecuteCommand,
       tasks: props.serviceProps ? [props.serviceProps] : [
         {
-          external: { port: 80 },
+          external: props.loadbalancer,
           task,
           healthCheck,
         },
       ],
-      route53Ops: {
-        enableLoadBalancerAlias: false,
-      },
+      route53Ops: { enableLoadBalancerAlias: false },
     });
 
-    // EFS volume
-    const filesystem = new efs.FileSystem(this, 'FileSystem', {
-      vpc: this.vpc,
-      encrypted: true,
-    });
+    if (props.efsFileSystem) {
+      // EFS volume
+      const filesystem = new efs.FileSystem(this, 'FileSystem', props.efsFileSystem);
 
-    const volumeName = 'efs';
-    this.svc.service[0].taskDefinition.addVolume({
-      name: volumeName,
-      efsVolumeConfiguration: {
-        fileSystemId: filesystem.fileSystemId,
-      },
-    });
-    this.svc.service[0].taskDefinition.defaultContainer?.addMountPoints({
-      containerPath: '/var/www/html',
-      readOnly: false,
-      sourceVolume: volumeName,
-    });
+      const volumeName = 'efs';
+      this.svc.service[0].taskDefinition.addVolume({
+        name: volumeName,
+        efsVolumeConfiguration: {
+          fileSystemId: filesystem.fileSystemId,
+        },
+      });
 
-    filesystem.connections.allowFrom( new ec2.Connections({ securityGroups: this.svc.service[0].connections.securityGroups }), ec2.Port.tcp(2049), 'allow wordpress to connect efs');
+      // fix me - tentatively mount to /efsmount
+      this.svc.service[0].taskDefinition.defaultContainer?.addMountPoints({
+        containerPath: '/efsmount',
+        readOnly: false,
+        sourceVolume: volumeName,
+      });
 
-    this.db.connections.allowFrom(this.svc.service[0], this.db.connections.defaultPort!, `allow ${this.svc.service[0].serviceName} to connect db`);
+      filesystem.connections.allowFrom(new ec2.Connections({ securityGroups: this.svc.service[0].connections.securityGroups }), ec2.Port.tcp(2049), 'allow Laravel to connect to efs filesystem');
+    }
+
+
+    this.db.connections.allowFrom(this.svc.service[0], this.db.connections.defaultPort!, `allow ${this.svc.service[0].serviceName} to connect to database`);
 
   }
   private addDatabase(props: DatabaseProps): Database {
@@ -175,6 +200,7 @@ export class WordPress extends cdk.Construct {
     });
   }
 }
+
 
 function getOrCreateVpc(scope: cdk.Construct): ec2.IVpc {
   // use an existing vpc or create a new one

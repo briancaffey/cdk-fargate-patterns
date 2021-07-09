@@ -1,0 +1,2584 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Snapshot 1`] = `
+Object {
+  "Outputs": Object {
+    "LaravelBitnamiDemoALBFargateServiceExternalEndpointBD496529": Object {
+      "Value": Object {
+        "Fn::Join": Array [
+          "",
+          Array [
+            "http://",
+            Object {
+              "Fn::GetAtt": Array [
+                "LaravelBitnamiDemoALBFargateServiceExternalAlb4FC1DE4D",
+                "DNSName",
+              ],
+            },
+          ],
+        ],
+      },
+    },
+    "LaravelBitnamiDemoDatabaseDBSecretArn201458A9": Object {
+      "Value": Object {
+        "Ref": "LaravelBitnamiDemoDatabaseAuroraServerlessClusterSecretAttachmentDAF8A9A6",
+      },
+    },
+    "LaravelBitnamiDemoDatabaseclusterEndpointHostname92896CCB": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "LaravelBitnamiDemoDatabaseAuroraServerlessCluster0B044319",
+          "Endpoint.Address",
+        ],
+      },
+    },
+    "LaravelBitnamiDemoDatabaseclusterIdentifier69723950": Object {
+      "Value": Object {
+        "Ref": "LaravelBitnamiDemoDatabaseAuroraServerlessCluster0B044319",
+      },
+    },
+    "LaravelNginxDemoALBFargateServiceExternalEndpointCEFFBF17": Object {
+      "Value": Object {
+        "Fn::Join": Array [
+          "",
+          Array [
+            "http://",
+            Object {
+              "Fn::GetAtt": Array [
+                "LaravelNginxDemoALBFargateServiceExternalAlb65460C7F",
+                "DNSName",
+              ],
+            },
+          ],
+        ],
+      },
+    },
+    "LaravelNginxDemoDatabaseDBSecretArnA3114F2D": Object {
+      "Value": Object {
+        "Ref": "LaravelNginxDemoDatabaseAuroraServerlessClusterSecretAttachment5F7A6306",
+      },
+    },
+    "LaravelNginxDemoDatabaseclusterEndpointHostnameFFB587A3": Object {
+      "Value": Object {
+        "Fn::GetAtt": Array [
+          "LaravelNginxDemoDatabaseAuroraServerlessCluster8C6C9E01",
+          "Endpoint.Address",
+        ],
+      },
+    },
+    "LaravelNginxDemoDatabaseclusterIdentifierCFDE48C9": Object {
+      "Value": Object {
+        "Ref": "LaravelNginxDemoDatabaseAuroraServerlessCluster8C6C9E01",
+      },
+    },
+  },
+  "Resources": Object {
+    "LaravelBitnamiDemoALBFargateServiceClusterAE361F3E": Object {
+      "Type": "AWS::ECS::Cluster",
+    },
+    "LaravelBitnamiDemoALBFargateServiceClusterD4F81F10": Object {
+      "Properties": Object {
+        "CapacityProviders": Array [
+          "FARGATE",
+          "FARGATE_SPOT",
+        ],
+        "Cluster": Object {
+          "Ref": "LaravelBitnamiDemoALBFargateServiceClusterAE361F3E",
+        },
+        "DefaultCapacityProviderStrategy": Array [],
+      },
+      "Type": "AWS::ECS::ClusterCapacityProviderAssociations",
+    },
+    "LaravelBitnamiDemoALBFargateServiceExtAlbListener80CF871428": Object {
+      "Properties": Object {
+        "DefaultActions": Array [
+          Object {
+            "TargetGroupArn": Object {
+              "Ref": "LaravelBitnamiDemoALBFargateServiceLaravelExtTGDBF069C0",
+            },
+            "Type": "forward",
+          },
+        ],
+        "LoadBalancerArn": Object {
+          "Ref": "LaravelBitnamiDemoALBFargateServiceExternalAlb4FC1DE4D",
+        },
+        "Port": 80,
+        "Protocol": "HTTP",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+    },
+    "LaravelBitnamiDemoALBFargateServiceExternalAlb4FC1DE4D": Object {
+      "DependsOn": Array [
+        "LaravelBitnamiDemoVpcPublicSubnet1DefaultRoute0BDCDB38",
+        "LaravelBitnamiDemoVpcPublicSubnet2DefaultRouteC2C8E25C",
+        "LaravelBitnamiDemoVpcPublicSubnet3DefaultRoute4C59EE86",
+      ],
+      "Properties": Object {
+        "LoadBalancerAttributes": Array [
+          Object {
+            "Key": "deletion_protection.enabled",
+            "Value": "false",
+          },
+        ],
+        "Scheme": "internet-facing",
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "LaravelBitnamiDemoALBFargateServiceExternalAlbSecurityGroupA89BE319",
+              "GroupId",
+            ],
+          },
+        ],
+        "Subnets": Array [
+          Object {
+            "Ref": "LaravelBitnamiDemoVpcPublicSubnet1Subnet23EC70E4",
+          },
+          Object {
+            "Ref": "LaravelBitnamiDemoVpcPublicSubnet2SubnetB1715826",
+          },
+          Object {
+            "Ref": "LaravelBitnamiDemoVpcPublicSubnet3SubnetC4600029",
+          },
+        ],
+        "Type": "application",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+    },
+    "LaravelBitnamiDemoALBFargateServiceExternalAlbSecurityGroupA89BE319": Object {
+      "Properties": Object {
+        "GroupDescription": "Automatically created Security Group for ELB demostackLaravelBitnamiDemoALBFargateServiceExternalAlbAABED82F",
+        "SecurityGroupIngress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow from anyone on port 80",
+            "FromPort": 80,
+            "IpProtocol": "tcp",
+            "ToPort": 80,
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "LaravelBitnamiDemoALBFargateServiceExternalAlbSecurityGrouptodemostackLaravelBitnamiDemoALBFargateServiceLaravelServiceSecurityGroupFD7F83AC300093D55626": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "LaravelBitnamiDemoALBFargateServiceLaravelServiceSecurityGroupC4CEAE89",
+            "GroupId",
+          ],
+        },
+        "FromPort": 3000,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "LaravelBitnamiDemoALBFargateServiceExternalAlbSecurityGroupA89BE319",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 3000,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
+    "LaravelBitnamiDemoALBFargateServiceLaravelExtTGDBF069C0": Object {
+      "Properties": Object {
+        "HealthCheckIntervalSeconds": 60,
+        "HealthCheckPath": "/",
+        "Port": 80,
+        "Protocol": "HTTP",
+        "TargetType": "ip",
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    },
+    "LaravelBitnamiDemoALBFargateServiceLaravelService5240B951": Object {
+      "DependsOn": Array [
+        "LaravelBitnamiDemoALBFargateServiceExtAlbListener80CF871428",
+      ],
+      "Properties": Object {
+        "CapacityProviderStrategy": Array [
+          Object {
+            "Base": 0,
+            "CapacityProvider": "FARGATE_SPOT",
+            "Weight": 1,
+          },
+          Object {
+            "Base": 0,
+            "CapacityProvider": "FARGATE",
+            "Weight": 0,
+          },
+        ],
+        "Cluster": Object {
+          "Ref": "LaravelBitnamiDemoALBFargateServiceClusterAE361F3E",
+        },
+        "DeploymentConfiguration": Object {
+          "MaximumPercent": 200,
+          "MinimumHealthyPercent": 50,
+        },
+        "EnableECSManagedTags": false,
+        "EnableExecuteCommand": true,
+        "HealthCheckGracePeriodSeconds": 60,
+        "LoadBalancers": Array [
+          Object {
+            "ContainerName": "Laravel",
+            "ContainerPort": 3000,
+            "TargetGroupArn": Object {
+              "Ref": "LaravelBitnamiDemoALBFargateServiceLaravelExtTGDBF069C0",
+            },
+          },
+        ],
+        "NetworkConfiguration": Object {
+          "AwsvpcConfiguration": Object {
+            "AssignPublicIp": "DISABLED",
+            "SecurityGroups": Array [
+              Object {
+                "Fn::GetAtt": Array [
+                  "LaravelBitnamiDemoALBFargateServiceLaravelServiceSecurityGroupC4CEAE89",
+                  "GroupId",
+                ],
+              },
+            ],
+            "Subnets": Array [
+              Object {
+                "Ref": "LaravelBitnamiDemoVpcPrivateSubnet1Subnet76D7FAC2",
+              },
+              Object {
+                "Ref": "LaravelBitnamiDemoVpcPrivateSubnet2Subnet311E78F3",
+              },
+              Object {
+                "Ref": "LaravelBitnamiDemoVpcPrivateSubnet3Subnet523915E5",
+              },
+            ],
+          },
+        },
+        "TaskDefinition": Object {
+          "Ref": "LaravelBitnamiDemoTaskB7C31CEC",
+        },
+      },
+      "Type": "AWS::ECS::Service",
+    },
+    "LaravelBitnamiDemoALBFargateServiceLaravelServiceSecurityGroupC4CEAE89": Object {
+      "Properties": Object {
+        "GroupDescription": "demo-stack/LaravelBitnamiDemo/ALBFargateService/LaravelService/SecurityGroup",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "LaravelBitnamiDemoALBFargateServiceLaravelServiceSecurityGroupfromdemostackLaravelBitnamiDemoALBFargateServiceExternalAlbSecurityGroup1219BACC300049A51F81": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "FromPort": 3000,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "LaravelBitnamiDemoALBFargateServiceLaravelServiceSecurityGroupC4CEAE89",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "LaravelBitnamiDemoALBFargateServiceExternalAlbSecurityGroupA89BE319",
+            "GroupId",
+          ],
+        },
+        "ToPort": 3000,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "LaravelBitnamiDemoALBFargateServiceLaravelServiceTaskCountTarget61D75BF1": Object {
+      "Properties": Object {
+        "MaxCapacity": 10,
+        "MinCapacity": 1,
+        "ResourceId": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "service/",
+              Object {
+                "Ref": "LaravelBitnamiDemoALBFargateServiceClusterAE361F3E",
+              },
+              "/",
+              Object {
+                "Fn::GetAtt": Array [
+                  "LaravelBitnamiDemoALBFargateServiceLaravelService5240B951",
+                  "Name",
+                ],
+              },
+            ],
+          ],
+        },
+        "RoleARN": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":iam::123456789012:role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService",
+            ],
+          ],
+        },
+        "ScalableDimension": "ecs:service:DesiredCount",
+        "ServiceNamespace": "ecs",
+      },
+      "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
+    },
+    "LaravelBitnamiDemoALBFargateServiceLaravelServiceTaskCountTargetCpuScaling7EBDDC48": Object {
+      "Properties": Object {
+        "PolicyName": "demostackLaravelBitnamiDemoALBFargateServiceLaravelServiceTaskCountTargetCpuScaling2AD23CD4",
+        "PolicyType": "TargetTrackingScaling",
+        "ScalingTargetId": Object {
+          "Ref": "LaravelBitnamiDemoALBFargateServiceLaravelServiceTaskCountTarget61D75BF1",
+        },
+        "TargetTrackingScalingPolicyConfiguration": Object {
+          "PredefinedMetricSpecification": Object {
+            "PredefinedMetricType": "ECSServiceAverageCPUUtilization",
+          },
+          "TargetValue": 50,
+        },
+      },
+      "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+    },
+    "LaravelBitnamiDemoALBFargateServiceLaravelServiceTaskCountTargetRequestScaling02B82B2E": Object {
+      "Properties": Object {
+        "PolicyName": "demostackLaravelBitnamiDemoALBFargateServiceLaravelServiceTaskCountTargetRequestScaling3D016A7B",
+        "PolicyType": "TargetTrackingScaling",
+        "ScalingTargetId": Object {
+          "Ref": "LaravelBitnamiDemoALBFargateServiceLaravelServiceTaskCountTarget61D75BF1",
+        },
+        "TargetTrackingScalingPolicyConfiguration": Object {
+          "PredefinedMetricSpecification": Object {
+            "PredefinedMetricType": "ALBRequestCountPerTarget",
+            "ResourceLabel": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  Object {
+                    "Fn::Select": Array [
+                      1,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "LaravelBitnamiDemoALBFargateServiceExtAlbListener80CF871428",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "/",
+                  Object {
+                    "Fn::Select": Array [
+                      2,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "LaravelBitnamiDemoALBFargateServiceExtAlbListener80CF871428",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "/",
+                  Object {
+                    "Fn::Select": Array [
+                      3,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "LaravelBitnamiDemoALBFargateServiceExtAlbListener80CF871428",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "/",
+                  Object {
+                    "Fn::GetAtt": Array [
+                      "LaravelBitnamiDemoALBFargateServiceLaravelExtTGDBF069C0",
+                      "TargetGroupFullName",
+                    ],
+                  },
+                ],
+              ],
+            },
+          },
+          "TargetValue": 1000,
+        },
+      },
+      "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+    },
+    "LaravelBitnamiDemoDatabaseAuroraServerlessCluster0B044319": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "BackupRetentionPeriod": 7,
+        "DBClusterParameterGroupName": "default.aurora-mysql5.7",
+        "DBSubnetGroupName": Object {
+          "Ref": "LaravelBitnamiDemoDatabaseAuroraServerlessClusterSubnetsC851F9D2",
+        },
+        "Engine": "aurora-mysql",
+        "EngineMode": "serverless",
+        "MasterUserPassword": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "{{resolve:secretsmanager:",
+              Object {
+                "Ref": "demostackLaravelBitnamiDemoDatabaseAuroraServerlessClusterSecret0B8147243fdaad7efa858a3daf9490cf0a702aeb",
+              },
+              ":SecretString:password::}}",
+            ],
+          ],
+        },
+        "MasterUsername": "admin",
+        "StorageEncrypted": true,
+        "VpcSecurityGroupIds": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "LaravelBitnamiDemoDatabaseAuroraServerlessClusterSecurityGroup77730538",
+              "GroupId",
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::RDS::DBCluster",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "LaravelBitnamiDemoDatabaseAuroraServerlessClusterSecretAttachmentDAF8A9A6": Object {
+      "Properties": Object {
+        "SecretId": Object {
+          "Ref": "demostackLaravelBitnamiDemoDatabaseAuroraServerlessClusterSecret0B8147243fdaad7efa858a3daf9490cf0a702aeb",
+        },
+        "TargetId": Object {
+          "Ref": "LaravelBitnamiDemoDatabaseAuroraServerlessCluster0B044319",
+        },
+        "TargetType": "AWS::RDS::DBCluster",
+      },
+      "Type": "AWS::SecretsManager::SecretTargetAttachment",
+    },
+    "LaravelBitnamiDemoDatabaseAuroraServerlessClusterSecurityGroup77730538": Object {
+      "Properties": Object {
+        "GroupDescription": "RDS security group",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "SecurityGroupIngress": Array [
+          Object {
+            "CidrIp": Object {
+              "Fn::GetAtt": Array [
+                "LaravelBitnamiDemoVpc495B9306",
+                "CidrBlock",
+              ],
+            },
+            "Description": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "from ",
+                  Object {
+                    "Fn::GetAtt": Array [
+                      "LaravelBitnamiDemoVpc495B9306",
+                      "CidrBlock",
+                    ],
+                  },
+                  ":3306",
+                ],
+              ],
+            },
+            "FromPort": 3306,
+            "IpProtocol": "tcp",
+            "ToPort": 3306,
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "LaravelBitnamiDemoDatabaseAuroraServerlessClusterSecurityGroupfromdemostackLaravelBitnamiDemoALBFargateServiceLaravelServiceSecurityGroupFD7F83ACIndirectPortD70EEAED": Object {
+      "Properties": Object {
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "allow ",
+              Object {
+                "Fn::GetAtt": Array [
+                  "LaravelBitnamiDemoALBFargateServiceLaravelService5240B951",
+                  "Name",
+                ],
+              },
+              " to connect to database",
+            ],
+          ],
+        },
+        "FromPort": Object {
+          "Fn::GetAtt": Array [
+            "LaravelBitnamiDemoDatabaseAuroraServerlessCluster0B044319",
+            "Endpoint.Port",
+          ],
+        },
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "LaravelBitnamiDemoDatabaseAuroraServerlessClusterSecurityGroup77730538",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "LaravelBitnamiDemoALBFargateServiceLaravelServiceSecurityGroupC4CEAE89",
+            "GroupId",
+          ],
+        },
+        "ToPort": Object {
+          "Fn::GetAtt": Array [
+            "LaravelBitnamiDemoDatabaseAuroraServerlessCluster0B044319",
+            "Endpoint.Port",
+          ],
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "LaravelBitnamiDemoDatabaseAuroraServerlessClusterSecurityGroupfromdemostackLaravelBitnamiDemoDatabaseAuroraServerlessClusterSecurityGroup13D6E4183306AFF3EE42": Object {
+      "Properties": Object {
+        "Description": "from demostackLaravelBitnamiDemoDatabaseAuroraServerlessClusterSecurityGroup13D6E418:3306",
+        "FromPort": 3306,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "LaravelBitnamiDemoDatabaseAuroraServerlessClusterSecurityGroup77730538",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "LaravelBitnamiDemoDatabaseAuroraServerlessClusterSecurityGroup77730538",
+            "GroupId",
+          ],
+        },
+        "ToPort": 3306,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "LaravelBitnamiDemoDatabaseAuroraServerlessClusterSubnetsC851F9D2": Object {
+      "Properties": Object {
+        "DBSubnetGroupDescription": "Subnets for AuroraServerlessCluster database",
+        "SubnetIds": Array [
+          Object {
+            "Ref": "LaravelBitnamiDemoVpcPrivateSubnet1Subnet76D7FAC2",
+          },
+          Object {
+            "Ref": "LaravelBitnamiDemoVpcPrivateSubnet2Subnet311E78F3",
+          },
+          Object {
+            "Ref": "LaravelBitnamiDemoVpcPrivateSubnet3Subnet523915E5",
+          },
+        ],
+      },
+      "Type": "AWS::RDS::DBSubnetGroup",
+    },
+    "LaravelBitnamiDemoLogGroup521E7348": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "RetentionInDays": 30,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "LaravelBitnamiDemoTaskB7C31CEC": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "Environment": Array [
+              Object {
+                "Name": "Laravel_DB_NAME",
+                "Value": "Laravel",
+              },
+            ],
+            "Essential": true,
+            "Image": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "123456789012.dkr.ecr.us-east-1.",
+                  Object {
+                    "Ref": "AWS::URLSuffix",
+                  },
+                  "/aws-cdk/assets:c171fa1cc0efba63bf5b92d0e23e57deb8acdf61efffda740e36a83947343c6f",
+                ],
+              ],
+            },
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": Object {
+                  "Ref": "LaravelBitnamiDemoLogGroup521E7348",
+                },
+                "awslogs-region": "us-east-1",
+                "awslogs-stream-prefix": "Laravel-fargate",
+              },
+            },
+            "Name": "Laravel",
+            "PortMappings": Array [
+              Object {
+                "ContainerPort": 3000,
+                "Protocol": "tcp",
+              },
+            ],
+            "Secrets": Array [
+              Object {
+                "Name": "LARAVEL_DB_HOST",
+                "ValueFrom": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Ref": "LaravelBitnamiDemoDatabaseAuroraServerlessClusterSecretAttachmentDAF8A9A6",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              Object {
+                "Name": "LARAVEL_DB_USER",
+                "ValueFrom": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Ref": "LaravelBitnamiDemoDatabaseAuroraServerlessClusterSecretAttachmentDAF8A9A6",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              Object {
+                "Name": "LARAVEL_DB_PASSWORD",
+                "ValueFrom": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Ref": "LaravelBitnamiDemoDatabaseAuroraServerlessClusterSecretAttachmentDAF8A9A6",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "LaravelBitnamiDemoTaskExecutionRole7847FFE7",
+            "Arn",
+          ],
+        },
+        "Family": "demostackLaravelBitnamiDemoTask562917D5",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": Array [
+          "FARGATE",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "LaravelBitnamiDemoTaskTaskRole03E75807",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "LaravelBitnamiDemoTaskExecutionRole7847FFE7": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LaravelBitnamiDemoTaskExecutionRoleDefaultPolicy451A7B9C": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecr:us-east-1:123456789012:repository/aws-cdk/assets",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "LaravelBitnamiDemoLogGroup521E7348",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "LaravelBitnamiDemoDatabaseAuroraServerlessClusterSecretAttachmentDAF8A9A6",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LaravelBitnamiDemoTaskExecutionRoleDefaultPolicy451A7B9C",
+        "Roles": Array [
+          Object {
+            "Ref": "LaravelBitnamiDemoTaskExecutionRole7847FFE7",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "LaravelBitnamiDemoTaskTaskRole03E75807": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LaravelBitnamiDemoTaskTaskRoleDefaultPolicy50592B60": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "logs:DescribeLogGroups",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LaravelBitnamiDemoTaskTaskRoleDefaultPolicy50592B60",
+        "Roles": Array [
+          Object {
+            "Ref": "LaravelBitnamiDemoTaskTaskRole03E75807",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "LaravelBitnamiDemoVpc495B9306": Object {
+      "Properties": Object {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::VPC",
+    },
+    "LaravelBitnamiDemoVpcIGWB153C30D": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::InternetGateway",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet1DefaultRoute36771D6A": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet1NATGateway93B5EEC7",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet1RouteTable10E46681",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet1RouteTable10E46681": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet1RouteTableAssociation384BE580": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet1RouteTable10E46681",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet1Subnet76D7FAC2",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet1Subnet76D7FAC2": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.96.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet2DefaultRoute63283B61": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet1NATGateway93B5EEC7",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet2RouteTable43B0967B",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet2RouteTable43B0967B": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet2RouteTableAssociation4A9FC30D": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet2RouteTable43B0967B",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet2Subnet311E78F3",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet2Subnet311E78F3": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.128.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet3DefaultRoute354F89FD": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet1NATGateway93B5EEC7",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet3RouteTableD7116932",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet3RouteTableAssociation87AA86A4": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet3RouteTableD7116932",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet3Subnet523915E5",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet3RouteTableD7116932": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PrivateSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelBitnamiDemoVpcPrivateSubnet3Subnet523915E5": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.160.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PrivateSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet1DefaultRoute0BDCDB38": Object {
+      "DependsOn": Array [
+        "LaravelBitnamiDemoVpcVPCGW4ED1515B",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "LaravelBitnamiDemoVpcIGWB153C30D",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet1RouteTable29CA1BE8",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet1EIP3F694277": Object {
+      "Properties": Object {
+        "Domain": "vpc",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet1NATGateway93B5EEC7": Object {
+      "Properties": Object {
+        "AllocationId": Object {
+          "Fn::GetAtt": Array [
+            "LaravelBitnamiDemoVpcPublicSubnet1EIP3F694277",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet1Subnet23EC70E4",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet1RouteTable29CA1BE8": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet1RouteTableAssociation46D0B16F": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet1RouteTable29CA1BE8",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet1Subnet23EC70E4",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet1Subnet23EC70E4": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.0.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet2DefaultRouteC2C8E25C": Object {
+      "DependsOn": Array [
+        "LaravelBitnamiDemoVpcVPCGW4ED1515B",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "LaravelBitnamiDemoVpcIGWB153C30D",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet2RouteTable2E4DF9B6",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet2RouteTable2E4DF9B6": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet2RouteTableAssociation20A9579B": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet2RouteTable2E4DF9B6",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet2SubnetB1715826",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet2SubnetB1715826": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.32.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet3DefaultRoute4C59EE86": Object {
+      "DependsOn": Array [
+        "LaravelBitnamiDemoVpcVPCGW4ED1515B",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "LaravelBitnamiDemoVpcIGWB153C30D",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet3RouteTableECCC614E",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet3RouteTableAssociationD6FBEA59": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet3RouteTableECCC614E",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelBitnamiDemoVpcPublicSubnet3SubnetC4600029",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet3RouteTableECCC614E": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PublicSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelBitnamiDemoVpcPublicSubnet3SubnetC4600029": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.64.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelBitnamiDemo/Vpc/PublicSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelBitnamiDemoVpcVPCGW4ED1515B": Object {
+      "Properties": Object {
+        "InternetGatewayId": Object {
+          "Ref": "LaravelBitnamiDemoVpcIGWB153C30D",
+        },
+        "VpcId": Object {
+          "Ref": "LaravelBitnamiDemoVpc495B9306",
+        },
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+    },
+    "LaravelNginxDemoALBFargateServiceCluster0AF9F109": Object {
+      "Type": "AWS::ECS::Cluster",
+    },
+    "LaravelNginxDemoALBFargateServiceClusterD339A31A": Object {
+      "Properties": Object {
+        "CapacityProviders": Array [
+          "FARGATE",
+          "FARGATE_SPOT",
+        ],
+        "Cluster": Object {
+          "Ref": "LaravelNginxDemoALBFargateServiceCluster0AF9F109",
+        },
+        "DefaultCapacityProviderStrategy": Array [],
+      },
+      "Type": "AWS::ECS::ClusterCapacityProviderAssociations",
+    },
+    "LaravelNginxDemoALBFargateServiceExtAlbListener8034DA48AB": Object {
+      "Properties": Object {
+        "DefaultActions": Array [
+          Object {
+            "TargetGroupArn": Object {
+              "Ref": "LaravelNginxDemoALBFargateServiceLaravelExtTGEB95FD3E",
+            },
+            "Type": "forward",
+          },
+        ],
+        "LoadBalancerArn": Object {
+          "Ref": "LaravelNginxDemoALBFargateServiceExternalAlb65460C7F",
+        },
+        "Port": 80,
+        "Protocol": "HTTP",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::Listener",
+    },
+    "LaravelNginxDemoALBFargateServiceExternalAlb65460C7F": Object {
+      "DependsOn": Array [
+        "LaravelNginxDemoVpcPublicSubnet1DefaultRoute2DFC331B",
+        "LaravelNginxDemoVpcPublicSubnet2DefaultRoute4BFF02E0",
+        "LaravelNginxDemoVpcPublicSubnet3DefaultRouteD2780DD9",
+      ],
+      "Properties": Object {
+        "LoadBalancerAttributes": Array [
+          Object {
+            "Key": "deletion_protection.enabled",
+            "Value": "false",
+          },
+        ],
+        "Scheme": "internet-facing",
+        "SecurityGroups": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "LaravelNginxDemoALBFargateServiceExternalAlbSecurityGroup7940DE41",
+              "GroupId",
+            ],
+          },
+        ],
+        "Subnets": Array [
+          Object {
+            "Ref": "LaravelNginxDemoVpcPublicSubnet1Subnet5DB20B78",
+          },
+          Object {
+            "Ref": "LaravelNginxDemoVpcPublicSubnet2Subnet3AE58288",
+          },
+          Object {
+            "Ref": "LaravelNginxDemoVpcPublicSubnet3Subnet664A8EF8",
+          },
+        ],
+        "Type": "application",
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::LoadBalancer",
+    },
+    "LaravelNginxDemoALBFargateServiceExternalAlbSecurityGroup7940DE41": Object {
+      "Properties": Object {
+        "GroupDescription": "Automatically created Security Group for ELB demostackLaravelNginxDemoALBFargateServiceExternalAlb1F4B4BEC",
+        "SecurityGroupIngress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow from anyone on port 80",
+            "FromPort": 80,
+            "IpProtocol": "tcp",
+            "ToPort": 80,
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "LaravelNginxDemoALBFargateServiceExternalAlbSecurityGrouptodemostackLaravelNginxDemoALBFargateServiceLaravelServiceSecurityGroup020234258062C7CAC5": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "DestinationSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "LaravelNginxDemoALBFargateServiceLaravelServiceSecurityGroupEDE8E27C",
+            "GroupId",
+          ],
+        },
+        "FromPort": 80,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "LaravelNginxDemoALBFargateServiceExternalAlbSecurityGroup7940DE41",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "ToPort": 80,
+      },
+      "Type": "AWS::EC2::SecurityGroupEgress",
+    },
+    "LaravelNginxDemoALBFargateServiceLaravelExtTGEB95FD3E": Object {
+      "Properties": Object {
+        "HealthCheckIntervalSeconds": 60,
+        "HealthCheckPath": "/",
+        "Port": 80,
+        "Protocol": "HTTP",
+        "TargetType": "ip",
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::ElasticLoadBalancingV2::TargetGroup",
+    },
+    "LaravelNginxDemoALBFargateServiceLaravelServiceDC6604F2": Object {
+      "DependsOn": Array [
+        "LaravelNginxDemoALBFargateServiceExtAlbListener8034DA48AB",
+      ],
+      "Properties": Object {
+        "CapacityProviderStrategy": Array [
+          Object {
+            "Base": 0,
+            "CapacityProvider": "FARGATE_SPOT",
+            "Weight": 1,
+          },
+          Object {
+            "Base": 0,
+            "CapacityProvider": "FARGATE",
+            "Weight": 0,
+          },
+        ],
+        "Cluster": Object {
+          "Ref": "LaravelNginxDemoALBFargateServiceCluster0AF9F109",
+        },
+        "DeploymentConfiguration": Object {
+          "MaximumPercent": 200,
+          "MinimumHealthyPercent": 50,
+        },
+        "EnableECSManagedTags": false,
+        "EnableExecuteCommand": true,
+        "HealthCheckGracePeriodSeconds": 60,
+        "LoadBalancers": Array [
+          Object {
+            "ContainerName": "Laravel",
+            "ContainerPort": 80,
+            "TargetGroupArn": Object {
+              "Ref": "LaravelNginxDemoALBFargateServiceLaravelExtTGEB95FD3E",
+            },
+          },
+        ],
+        "NetworkConfiguration": Object {
+          "AwsvpcConfiguration": Object {
+            "AssignPublicIp": "DISABLED",
+            "SecurityGroups": Array [
+              Object {
+                "Fn::GetAtt": Array [
+                  "LaravelNginxDemoALBFargateServiceLaravelServiceSecurityGroupEDE8E27C",
+                  "GroupId",
+                ],
+              },
+            ],
+            "Subnets": Array [
+              Object {
+                "Ref": "LaravelNginxDemoVpcPrivateSubnet1Subnet6AF263B1",
+              },
+              Object {
+                "Ref": "LaravelNginxDemoVpcPrivateSubnet2Subnet55B66710",
+              },
+              Object {
+                "Ref": "LaravelNginxDemoVpcPrivateSubnet3SubnetA0224D7F",
+              },
+            ],
+          },
+        },
+        "TaskDefinition": Object {
+          "Ref": "LaravelNginxDemoTaskE77A6BFC",
+        },
+      },
+      "Type": "AWS::ECS::Service",
+    },
+    "LaravelNginxDemoALBFargateServiceLaravelServiceSecurityGroupEDE8E27C": Object {
+      "Properties": Object {
+        "GroupDescription": "demo-stack/LaravelNginxDemo/ALBFargateService/LaravelService/SecurityGroup",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "LaravelNginxDemoALBFargateServiceLaravelServiceSecurityGroupfromdemostackLaravelNginxDemoALBFargateServiceExternalAlbSecurityGroup6E21961B807E4A3082": Object {
+      "Properties": Object {
+        "Description": "Load balancer to target",
+        "FromPort": 80,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "LaravelNginxDemoALBFargateServiceLaravelServiceSecurityGroupEDE8E27C",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "LaravelNginxDemoALBFargateServiceExternalAlbSecurityGroup7940DE41",
+            "GroupId",
+          ],
+        },
+        "ToPort": 80,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "LaravelNginxDemoALBFargateServiceLaravelServiceTaskCountTargetCpuScaling7B5C2E1F": Object {
+      "Properties": Object {
+        "PolicyName": "demostackLaravelNginxDemoALBFargateServiceLaravelServiceTaskCountTargetCpuScaling890CA931",
+        "PolicyType": "TargetTrackingScaling",
+        "ScalingTargetId": Object {
+          "Ref": "LaravelNginxDemoALBFargateServiceLaravelServiceTaskCountTargetD918B9F3",
+        },
+        "TargetTrackingScalingPolicyConfiguration": Object {
+          "PredefinedMetricSpecification": Object {
+            "PredefinedMetricType": "ECSServiceAverageCPUUtilization",
+          },
+          "TargetValue": 50,
+        },
+      },
+      "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+    },
+    "LaravelNginxDemoALBFargateServiceLaravelServiceTaskCountTargetD918B9F3": Object {
+      "Properties": Object {
+        "MaxCapacity": 10,
+        "MinCapacity": 1,
+        "ResourceId": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "service/",
+              Object {
+                "Ref": "LaravelNginxDemoALBFargateServiceCluster0AF9F109",
+              },
+              "/",
+              Object {
+                "Fn::GetAtt": Array [
+                  "LaravelNginxDemoALBFargateServiceLaravelServiceDC6604F2",
+                  "Name",
+                ],
+              },
+            ],
+          ],
+        },
+        "RoleARN": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "arn:",
+              Object {
+                "Ref": "AWS::Partition",
+              },
+              ":iam::123456789012:role/aws-service-role/ecs.application-autoscaling.amazonaws.com/AWSServiceRoleForApplicationAutoScaling_ECSService",
+            ],
+          ],
+        },
+        "ScalableDimension": "ecs:service:DesiredCount",
+        "ServiceNamespace": "ecs",
+      },
+      "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
+    },
+    "LaravelNginxDemoALBFargateServiceLaravelServiceTaskCountTargetRequestScaling753CFDD1": Object {
+      "Properties": Object {
+        "PolicyName": "demostackLaravelNginxDemoALBFargateServiceLaravelServiceTaskCountTargetRequestScaling6A388F8B",
+        "PolicyType": "TargetTrackingScaling",
+        "ScalingTargetId": Object {
+          "Ref": "LaravelNginxDemoALBFargateServiceLaravelServiceTaskCountTargetD918B9F3",
+        },
+        "TargetTrackingScalingPolicyConfiguration": Object {
+          "PredefinedMetricSpecification": Object {
+            "PredefinedMetricType": "ALBRequestCountPerTarget",
+            "ResourceLabel": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  Object {
+                    "Fn::Select": Array [
+                      1,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "LaravelNginxDemoALBFargateServiceExtAlbListener8034DA48AB",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "/",
+                  Object {
+                    "Fn::Select": Array [
+                      2,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "LaravelNginxDemoALBFargateServiceExtAlbListener8034DA48AB",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "/",
+                  Object {
+                    "Fn::Select": Array [
+                      3,
+                      Object {
+                        "Fn::Split": Array [
+                          "/",
+                          Object {
+                            "Ref": "LaravelNginxDemoALBFargateServiceExtAlbListener8034DA48AB",
+                          },
+                        ],
+                      },
+                    ],
+                  },
+                  "/",
+                  Object {
+                    "Fn::GetAtt": Array [
+                      "LaravelNginxDemoALBFargateServiceLaravelExtTGEB95FD3E",
+                      "TargetGroupFullName",
+                    ],
+                  },
+                ],
+              ],
+            },
+          },
+          "TargetValue": 1000,
+        },
+      },
+      "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+    },
+    "LaravelNginxDemoDatabaseAuroraServerlessCluster8C6C9E01": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "BackupRetentionPeriod": 7,
+        "DBClusterParameterGroupName": "default.aurora-mysql5.7",
+        "DBSubnetGroupName": Object {
+          "Ref": "LaravelNginxDemoDatabaseAuroraServerlessClusterSubnetsC79F8BB1",
+        },
+        "Engine": "aurora-mysql",
+        "EngineMode": "serverless",
+        "MasterUserPassword": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "{{resolve:secretsmanager:",
+              Object {
+                "Ref": "demostackLaravelNginxDemoDatabaseAuroraServerlessClusterSecretA2393C803fdaad7efa858a3daf9490cf0a702aeb",
+              },
+              ":SecretString:password::}}",
+            ],
+          ],
+        },
+        "MasterUsername": "admin",
+        "StorageEncrypted": true,
+        "VpcSecurityGroupIds": Array [
+          Object {
+            "Fn::GetAtt": Array [
+              "LaravelNginxDemoDatabaseAuroraServerlessClusterSecurityGroup32D2630F",
+              "GroupId",
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::RDS::DBCluster",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "LaravelNginxDemoDatabaseAuroraServerlessClusterSecretAttachment5F7A6306": Object {
+      "Properties": Object {
+        "SecretId": Object {
+          "Ref": "demostackLaravelNginxDemoDatabaseAuroraServerlessClusterSecretA2393C803fdaad7efa858a3daf9490cf0a702aeb",
+        },
+        "TargetId": Object {
+          "Ref": "LaravelNginxDemoDatabaseAuroraServerlessCluster8C6C9E01",
+        },
+        "TargetType": "AWS::RDS::DBCluster",
+      },
+      "Type": "AWS::SecretsManager::SecretTargetAttachment",
+    },
+    "LaravelNginxDemoDatabaseAuroraServerlessClusterSecurityGroup32D2630F": Object {
+      "Properties": Object {
+        "GroupDescription": "RDS security group",
+        "SecurityGroupEgress": Array [
+          Object {
+            "CidrIp": "0.0.0.0/0",
+            "Description": "Allow all outbound traffic by default",
+            "IpProtocol": "-1",
+          },
+        ],
+        "SecurityGroupIngress": Array [
+          Object {
+            "CidrIp": Object {
+              "Fn::GetAtt": Array [
+                "LaravelNginxDemoVpc0CC479F5",
+                "CidrBlock",
+              ],
+            },
+            "Description": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "from ",
+                  Object {
+                    "Fn::GetAtt": Array [
+                      "LaravelNginxDemoVpc0CC479F5",
+                      "CidrBlock",
+                    ],
+                  },
+                  ":3306",
+                ],
+              ],
+            },
+            "FromPort": 3306,
+            "IpProtocol": "tcp",
+            "ToPort": 3306,
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroup",
+    },
+    "LaravelNginxDemoDatabaseAuroraServerlessClusterSecurityGroupfromdemostackLaravelNginxDemoALBFargateServiceLaravelServiceSecurityGroup02023425IndirectPortC3186BD8": Object {
+      "Properties": Object {
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "allow ",
+              Object {
+                "Fn::GetAtt": Array [
+                  "LaravelNginxDemoALBFargateServiceLaravelServiceDC6604F2",
+                  "Name",
+                ],
+              },
+              " to connect to database",
+            ],
+          ],
+        },
+        "FromPort": Object {
+          "Fn::GetAtt": Array [
+            "LaravelNginxDemoDatabaseAuroraServerlessCluster8C6C9E01",
+            "Endpoint.Port",
+          ],
+        },
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "LaravelNginxDemoDatabaseAuroraServerlessClusterSecurityGroup32D2630F",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "LaravelNginxDemoALBFargateServiceLaravelServiceSecurityGroupEDE8E27C",
+            "GroupId",
+          ],
+        },
+        "ToPort": Object {
+          "Fn::GetAtt": Array [
+            "LaravelNginxDemoDatabaseAuroraServerlessCluster8C6C9E01",
+            "Endpoint.Port",
+          ],
+        },
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "LaravelNginxDemoDatabaseAuroraServerlessClusterSecurityGroupfromdemostackLaravelNginxDemoDatabaseAuroraServerlessClusterSecurityGroup86A3343B3306B669DEC2": Object {
+      "Properties": Object {
+        "Description": "from demostackLaravelNginxDemoDatabaseAuroraServerlessClusterSecurityGroup86A3343B:3306",
+        "FromPort": 3306,
+        "GroupId": Object {
+          "Fn::GetAtt": Array [
+            "LaravelNginxDemoDatabaseAuroraServerlessClusterSecurityGroup32D2630F",
+            "GroupId",
+          ],
+        },
+        "IpProtocol": "tcp",
+        "SourceSecurityGroupId": Object {
+          "Fn::GetAtt": Array [
+            "LaravelNginxDemoDatabaseAuroraServerlessClusterSecurityGroup32D2630F",
+            "GroupId",
+          ],
+        },
+        "ToPort": 3306,
+      },
+      "Type": "AWS::EC2::SecurityGroupIngress",
+    },
+    "LaravelNginxDemoDatabaseAuroraServerlessClusterSubnetsC79F8BB1": Object {
+      "Properties": Object {
+        "DBSubnetGroupDescription": "Subnets for AuroraServerlessCluster database",
+        "SubnetIds": Array [
+          Object {
+            "Ref": "LaravelNginxDemoVpcPrivateSubnet1Subnet6AF263B1",
+          },
+          Object {
+            "Ref": "LaravelNginxDemoVpcPrivateSubnet2Subnet55B66710",
+          },
+          Object {
+            "Ref": "LaravelNginxDemoVpcPrivateSubnet3SubnetA0224D7F",
+          },
+        ],
+      },
+      "Type": "AWS::RDS::DBSubnetGroup",
+    },
+    "LaravelNginxDemoLogGroupB4AF6364": Object {
+      "DeletionPolicy": "Delete",
+      "Properties": Object {
+        "RetentionInDays": 30,
+      },
+      "Type": "AWS::Logs::LogGroup",
+      "UpdateReplacePolicy": "Delete",
+    },
+    "LaravelNginxDemoTaskE77A6BFC": Object {
+      "Properties": Object {
+        "ContainerDefinitions": Array [
+          Object {
+            "Environment": Array [
+              Object {
+                "Name": "Laravel_DB_NAME",
+                "Value": "Laravel",
+              },
+            ],
+            "Essential": true,
+            "Image": Object {
+              "Fn::Join": Array [
+                "",
+                Array [
+                  "123456789012.dkr.ecr.us-east-1.",
+                  Object {
+                    "Ref": "AWS::URLSuffix",
+                  },
+                  "/aws-cdk/assets:50e79f1fa72c59b8c7442367ecf7c0501450459ade2a82eae52c4e8462362b65",
+                ],
+              ],
+            },
+            "LogConfiguration": Object {
+              "LogDriver": "awslogs",
+              "Options": Object {
+                "awslogs-group": Object {
+                  "Ref": "LaravelNginxDemoLogGroupB4AF6364",
+                },
+                "awslogs-region": "us-east-1",
+                "awslogs-stream-prefix": "Laravel-fargate",
+              },
+            },
+            "Name": "Laravel",
+            "PortMappings": Array [
+              Object {
+                "ContainerPort": 80,
+                "Protocol": "tcp",
+              },
+            ],
+            "Secrets": Array [
+              Object {
+                "Name": "LARAVEL_DB_HOST",
+                "ValueFrom": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Ref": "LaravelNginxDemoDatabaseAuroraServerlessClusterSecretAttachment5F7A6306",
+                      },
+                      ":host::",
+                    ],
+                  ],
+                },
+              },
+              Object {
+                "Name": "LARAVEL_DB_USER",
+                "ValueFrom": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Ref": "LaravelNginxDemoDatabaseAuroraServerlessClusterSecretAttachment5F7A6306",
+                      },
+                      ":username::",
+                    ],
+                  ],
+                },
+              },
+              Object {
+                "Name": "LARAVEL_DB_PASSWORD",
+                "ValueFrom": Object {
+                  "Fn::Join": Array [
+                    "",
+                    Array [
+                      Object {
+                        "Ref": "LaravelNginxDemoDatabaseAuroraServerlessClusterSecretAttachment5F7A6306",
+                      },
+                      ":password::",
+                    ],
+                  ],
+                },
+              },
+            ],
+          },
+        ],
+        "Cpu": "256",
+        "ExecutionRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "LaravelNginxDemoTaskExecutionRoleECDCE57D",
+            "Arn",
+          ],
+        },
+        "Family": "demostackLaravelNginxDemoTaskEDCF86F2",
+        "Memory": "512",
+        "NetworkMode": "awsvpc",
+        "RequiresCompatibilities": Array [
+          "FARGATE",
+        ],
+        "TaskRoleArn": Object {
+          "Fn::GetAtt": Array [
+            "LaravelNginxDemoTaskTaskRoleDF89A373",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::ECS::TaskDefinition",
+    },
+    "LaravelNginxDemoTaskExecutionRoleDefaultPolicy20DB731D": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:BatchGetImage",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::Join": Array [
+                  "",
+                  Array [
+                    "arn:",
+                    Object {
+                      "Ref": "AWS::Partition",
+                    },
+                    ":ecr:us-east-1:123456789012:repository/aws-cdk/assets",
+                  ],
+                ],
+              },
+            },
+            Object {
+              "Action": "ecr:GetAuthorizationToken",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Fn::GetAtt": Array [
+                  "LaravelNginxDemoLogGroupB4AF6364",
+                  "Arn",
+                ],
+              },
+            },
+            Object {
+              "Action": Array [
+                "secretsmanager:GetSecretValue",
+                "secretsmanager:DescribeSecret",
+              ],
+              "Effect": "Allow",
+              "Resource": Object {
+                "Ref": "LaravelNginxDemoDatabaseAuroraServerlessClusterSecretAttachment5F7A6306",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LaravelNginxDemoTaskExecutionRoleDefaultPolicy20DB731D",
+        "Roles": Array [
+          Object {
+            "Ref": "LaravelNginxDemoTaskExecutionRoleECDCE57D",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "LaravelNginxDemoTaskExecutionRoleECDCE57D": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LaravelNginxDemoTaskTaskRoleDF89A373": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "ecs-tasks.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LaravelNginxDemoTaskTaskRoleDefaultPolicy0F25F64C": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ssmmessages:CreateControlChannel",
+                "ssmmessages:CreateDataChannel",
+                "ssmmessages:OpenControlChannel",
+                "ssmmessages:OpenDataChannel",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": "logs:DescribeLogGroups",
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+            Object {
+              "Action": Array [
+                "logs:CreateLogStream",
+                "logs:DescribeLogStreams",
+                "logs:PutLogEvents",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LaravelNginxDemoTaskTaskRoleDefaultPolicy0F25F64C",
+        "Roles": Array [
+          Object {
+            "Ref": "LaravelNginxDemoTaskTaskRoleDF89A373",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
+    "LaravelNginxDemoVpc0CC479F5": Object {
+      "Properties": Object {
+        "CidrBlock": "10.0.0.0/16",
+        "EnableDnsHostnames": true,
+        "EnableDnsSupport": true,
+        "InstanceTenancy": "default",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::VPC",
+    },
+    "LaravelNginxDemoVpcIGWEBFBB97D": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::InternetGateway",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet1DefaultRouteF1CAB04B": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet1NATGateway6899A022",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet1RouteTable6A0A42D7",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet1RouteTable6A0A42D7": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet1RouteTableAssociation8CB52590": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet1RouteTable6A0A42D7",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet1Subnet6AF263B1",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet1Subnet6AF263B1": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.96.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PrivateSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet2DefaultRouteDC9523CC": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet1NATGateway6899A022",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet2RouteTable5292825C",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet2RouteTable5292825C": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet2RouteTableAssociationAAA6BF71": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet2RouteTable5292825C",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet2Subnet55B66710",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet2Subnet55B66710": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.128.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PrivateSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet3DefaultRoute966575CF": Object {
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "NatGatewayId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet1NATGateway6899A022",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet3RouteTable51D4FDD9",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet3RouteTable51D4FDD9": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PrivateSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet3RouteTableAssociationC21A3D5C": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet3RouteTable51D4FDD9",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelNginxDemoVpcPrivateSubnet3SubnetA0224D7F",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelNginxDemoVpcPrivateSubnet3SubnetA0224D7F": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.160.0/19",
+        "MapPublicIpOnLaunch": false,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Private",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PrivateSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelNginxDemoVpcPublicSubnet1DefaultRoute2DFC331B": Object {
+      "DependsOn": Array [
+        "LaravelNginxDemoVpcVPCGW59DB6E55",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "LaravelNginxDemoVpcIGWEBFBB97D",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet1RouteTableFD969897",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelNginxDemoVpcPublicSubnet1EIPAFB9BEB8": Object {
+      "Properties": Object {
+        "Domain": "vpc",
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::EIP",
+    },
+    "LaravelNginxDemoVpcPublicSubnet1NATGateway6899A022": Object {
+      "Properties": Object {
+        "AllocationId": Object {
+          "Fn::GetAtt": Array [
+            "LaravelNginxDemoVpcPublicSubnet1EIPAFB9BEB8",
+            "AllocationId",
+          ],
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet1Subnet5DB20B78",
+        },
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PublicSubnet1",
+          },
+        ],
+      },
+      "Type": "AWS::EC2::NatGateway",
+    },
+    "LaravelNginxDemoVpcPublicSubnet1RouteTableAssociationB18F2C9B": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet1RouteTableFD969897",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet1Subnet5DB20B78",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelNginxDemoVpcPublicSubnet1RouteTableFD969897": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelNginxDemoVpcPublicSubnet1Subnet5DB20B78": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1a",
+        "CidrBlock": "10.0.0.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PublicSubnet1",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelNginxDemoVpcPublicSubnet2DefaultRoute4BFF02E0": Object {
+      "DependsOn": Array [
+        "LaravelNginxDemoVpcVPCGW59DB6E55",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "LaravelNginxDemoVpcIGWEBFBB97D",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet2RouteTable4A2F427F",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelNginxDemoVpcPublicSubnet2RouteTable4A2F427F": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelNginxDemoVpcPublicSubnet2RouteTableAssociationED1C6083": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet2RouteTable4A2F427F",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet2Subnet3AE58288",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelNginxDemoVpcPublicSubnet2Subnet3AE58288": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1b",
+        "CidrBlock": "10.0.32.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PublicSubnet2",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelNginxDemoVpcPublicSubnet3DefaultRouteD2780DD9": Object {
+      "DependsOn": Array [
+        "LaravelNginxDemoVpcVPCGW59DB6E55",
+      ],
+      "Properties": Object {
+        "DestinationCidrBlock": "0.0.0.0/0",
+        "GatewayId": Object {
+          "Ref": "LaravelNginxDemoVpcIGWEBFBB97D",
+        },
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet3RouteTable19F6881E",
+        },
+      },
+      "Type": "AWS::EC2::Route",
+    },
+    "LaravelNginxDemoVpcPublicSubnet3RouteTable19F6881E": Object {
+      "Properties": Object {
+        "Tags": Array [
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PublicSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::RouteTable",
+    },
+    "LaravelNginxDemoVpcPublicSubnet3RouteTableAssociationCB715749": Object {
+      "Properties": Object {
+        "RouteTableId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet3RouteTable19F6881E",
+        },
+        "SubnetId": Object {
+          "Ref": "LaravelNginxDemoVpcPublicSubnet3Subnet664A8EF8",
+        },
+      },
+      "Type": "AWS::EC2::SubnetRouteTableAssociation",
+    },
+    "LaravelNginxDemoVpcPublicSubnet3Subnet664A8EF8": Object {
+      "Properties": Object {
+        "AvailabilityZone": "dummy1c",
+        "CidrBlock": "10.0.64.0/19",
+        "MapPublicIpOnLaunch": true,
+        "Tags": Array [
+          Object {
+            "Key": "aws-cdk:subnet-name",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "aws-cdk:subnet-type",
+            "Value": "Public",
+          },
+          Object {
+            "Key": "Name",
+            "Value": "demo-stack/LaravelNginxDemo/Vpc/PublicSubnet3",
+          },
+        ],
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::Subnet",
+    },
+    "LaravelNginxDemoVpcVPCGW59DB6E55": Object {
+      "Properties": Object {
+        "InternetGatewayId": Object {
+          "Ref": "LaravelNginxDemoVpcIGWEBFBB97D",
+        },
+        "VpcId": Object {
+          "Ref": "LaravelNginxDemoVpc0CC479F5",
+        },
+      },
+      "Type": "AWS::EC2::VPCGatewayAttachment",
+    },
+    "demostackLaravelBitnamiDemoDatabaseAuroraServerlessClusterSecret0B8147243fdaad7efa858a3daf9490cf0a702aeb": Object {
+      "Properties": Object {
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Generated by the CDK for stack: ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+            ],
+          ],
+        },
+        "GenerateSecretString": Object {
+          "ExcludeCharacters": " %+~\`#$&*()|[]{}:;<>?!'/@\\"\\\\",
+          "GenerateStringKey": "password",
+          "PasswordLength": 30,
+          "SecretStringTemplate": "{\\"username\\":\\"admin\\"}",
+        },
+      },
+      "Type": "AWS::SecretsManager::Secret",
+    },
+    "demostackLaravelNginxDemoDatabaseAuroraServerlessClusterSecretA2393C803fdaad7efa858a3daf9490cf0a702aeb": Object {
+      "Properties": Object {
+        "Description": Object {
+          "Fn::Join": Array [
+            "",
+            Array [
+              "Generated by the CDK for stack: ",
+              Object {
+                "Ref": "AWS::StackName",
+              },
+            ],
+          ],
+        },
+        "GenerateSecretString": Object {
+          "ExcludeCharacters": " %+~\`#$&*()|[]{}:;<>?!'/@\\"\\\\",
+          "GenerateStringKey": "password",
+          "PasswordLength": 30,
+          "SecretStringTemplate": "{\\"username\\":\\"admin\\"}",
+        },
+      },
+      "Type": "AWS::SecretsManager::Secret",
+    },
+  },
+}
+`;
