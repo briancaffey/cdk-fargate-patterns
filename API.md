@@ -603,6 +603,14 @@ The default database name to create.
 
 ---
 
+##### `efsFileSystem`<sup>Optional</sup> <a name="cdk-fargate-patterns.LaravelProps.efsFileSystem"></a>
+
+- *Type:* [`@aws-cdk/aws-efs.FileSystemProps`](#@aws-cdk/aws-efs.FileSystemProps)
+
+Options to create the EFS FileSystem.
+
+---
+
 ##### `enableExecuteCommand`<sup>Optional</sup> <a name="cdk-fargate-patterns.LaravelProps.enableExecuteCommand"></a>
 
 - *Type:* `boolean`
