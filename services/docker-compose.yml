@@ -84,7 +84,7 @@ services:
     build:
       context: ./laravel-nginx-php-fpm
       dockerfile: Dockerfile
-    container_name: laravel
+    container_name: laravel-nginx
     ports:
       - 9095:80
     networks:
@@ -93,7 +93,7 @@ services:
     build:
       context: ./laravel-bitnami
       dockerfile: Dockerfile
-    container_name: laravel
+    container_name: laravel-bitnami
     ports:
       - 9096:3000
     networks:
