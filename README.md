@@ -223,3 +223,24 @@ new Laravel(stack, 'LaravelNginxDemo', {
 ```
 
 See [integ.laravel.ts](src/integ.laravel.ts) for the full code sample.
+
+
+# Local development and testing
+
+The [docker-compose.yml](./services/docker-compose.yml) is provided with all sample services in the repository. To bring up all services locally, run:
+
+```sh
+$ cd services
+$ docker compose up
+```
+Use `cURL` to test locally:
+
+```
+curl http://localhost
+```
+Response:
+```
+{"service":"order","version":"1.0"}
+{"service":"product","version":"1.0"}
+{"service":"customer","version":"1.0"}
+```
