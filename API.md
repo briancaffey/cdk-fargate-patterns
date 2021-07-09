@@ -134,6 +134,8 @@ The internal ALB.
 
 ### Laravel <a name="cdk-fargate-patterns.Laravel"></a>
 
+Represents the Laravel service.
+
 #### Initializer <a name="cdk-fargate-patterns.Laravel.Initializer"></a>
 
 ```typescript
@@ -339,6 +341,15 @@ The database cluster engine.
 - *Type:* [`@aws-cdk/aws-ec2.SubnetSelection`](#@aws-cdk/aws-ec2.SubnetSelection)
 
 VPC subnets for database.
+
+---
+
+##### `defaultDatabaseName`<sup>Optional</sup> <a name="cdk-fargate-patterns.DatabaseProps.defaultDatabaseName"></a>
+
+- *Type:* `string`
+- *Default:* do not create any default database
+
+Default database name to create.
 
 ---
 
@@ -581,6 +592,14 @@ Database instance type.
 - *Default:* VPC isolated subnets
 
 VPC subnets for database.
+
+---
+
+##### `defaultDatabaseName`<sup>Optional</sup> <a name="cdk-fargate-patterns.LaravelProps.defaultDatabaseName"></a>
+
+- *Type:* `string`
+
+The default database name to create.
 
 ---
 
