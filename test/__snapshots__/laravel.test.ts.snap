@@ -600,120 +600,6 @@ Object {
       },
       "Type": "AWS::RDS::DBSubnetGroup",
     },
-    "LaravelBitnamiDemoFileSystemA8C32B97": Object {
-      "DeletionPolicy": "Retain",
-      "Properties": Object {
-        "Encrypted": true,
-        "FileSystemTags": Array [
-          Object {
-            "Key": "Name",
-            "Value": "demo-stack/LaravelBitnamiDemo/FileSystem",
-          },
-        ],
-      },
-      "Type": "AWS::EFS::FileSystem",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "LaravelBitnamiDemoFileSystemEfsMountTarget1B9AA7041": Object {
-      "Properties": Object {
-        "FileSystemId": Object {
-          "Ref": "LaravelBitnamiDemoFileSystemA8C32B97",
-        },
-        "SecurityGroups": Array [
-          Object {
-            "Fn::GetAtt": Array [
-              "LaravelBitnamiDemoFileSystemEfsSecurityGroup7100EB16",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": Object {
-          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet1Subnet76D7FAC2",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "LaravelBitnamiDemoFileSystemEfsMountTarget298C2C244": Object {
-      "Properties": Object {
-        "FileSystemId": Object {
-          "Ref": "LaravelBitnamiDemoFileSystemA8C32B97",
-        },
-        "SecurityGroups": Array [
-          Object {
-            "Fn::GetAtt": Array [
-              "LaravelBitnamiDemoFileSystemEfsSecurityGroup7100EB16",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": Object {
-          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet2Subnet311E78F3",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "LaravelBitnamiDemoFileSystemEfsMountTarget36BAC867E": Object {
-      "Properties": Object {
-        "FileSystemId": Object {
-          "Ref": "LaravelBitnamiDemoFileSystemA8C32B97",
-        },
-        "SecurityGroups": Array [
-          Object {
-            "Fn::GetAtt": Array [
-              "LaravelBitnamiDemoFileSystemEfsSecurityGroup7100EB16",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": Object {
-          "Ref": "LaravelBitnamiDemoVpcPrivateSubnet3Subnet523915E5",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "LaravelBitnamiDemoFileSystemEfsSecurityGroup7100EB16": Object {
-      "Properties": Object {
-        "GroupDescription": "demo-stack/LaravelBitnamiDemo/FileSystem/EfsSecurityGroup",
-        "SecurityGroupEgress": Array [
-          Object {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow all outbound traffic by default",
-            "IpProtocol": "-1",
-          },
-        ],
-        "Tags": Array [
-          Object {
-            "Key": "Name",
-            "Value": "demo-stack/LaravelBitnamiDemo/FileSystem",
-          },
-        ],
-        "VpcId": Object {
-          "Ref": "LaravelBitnamiDemoVpc495B9306",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "LaravelBitnamiDemoFileSystemEfsSecurityGroupfromdemostackLaravelBitnamiDemoALBFargateServiceLaravelServiceSecurityGroupFD7F83AC2049C97093B4": Object {
-      "Properties": Object {
-        "Description": "allow Laravel to connect to efs filesystem",
-        "FromPort": 2049,
-        "GroupId": Object {
-          "Fn::GetAtt": Array [
-            "LaravelBitnamiDemoFileSystemEfsSecurityGroup7100EB16",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": Object {
-          "Fn::GetAtt": Array [
-            "LaravelBitnamiDemoALBFargateServiceLaravelServiceSecurityGroupC4CEAE89",
-            "GroupId",
-          ],
-        },
-        "ToPort": 2049,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
-    },
     "LaravelBitnamiDemoLogGroup521E7348": Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
@@ -755,13 +641,6 @@ Object {
                 "awslogs-stream-prefix": "Laravel-fargate",
               },
             },
-            "MountPoints": Array [
-              Object {
-                "ContainerPath": "/efsmount",
-                "ReadOnly": false,
-                "SourceVolume": "efs",
-              },
-            ],
             "Name": "Laravel",
             "PortMappings": Array [
               Object {
@@ -834,16 +713,6 @@ Object {
             "Arn",
           ],
         },
-        "Volumes": Array [
-          Object {
-            "EfsVolumeConfiguration": Object {
-              "FileSystemId": Object {
-                "Ref": "LaravelBitnamiDemoFileSystemA8C32B97",
-              },
-            },
-            "Name": "efs",
-          },
-        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },
@@ -1962,120 +1831,6 @@ Object {
       },
       "Type": "AWS::RDS::DBSubnetGroup",
     },
-    "LaravelNginxDemoFileSystem1CB94528": Object {
-      "DeletionPolicy": "Retain",
-      "Properties": Object {
-        "Encrypted": true,
-        "FileSystemTags": Array [
-          Object {
-            "Key": "Name",
-            "Value": "demo-stack/LaravelNginxDemo/FileSystem",
-          },
-        ],
-      },
-      "Type": "AWS::EFS::FileSystem",
-      "UpdateReplacePolicy": "Retain",
-    },
-    "LaravelNginxDemoFileSystemEfsMountTarget157B53669": Object {
-      "Properties": Object {
-        "FileSystemId": Object {
-          "Ref": "LaravelNginxDemoFileSystem1CB94528",
-        },
-        "SecurityGroups": Array [
-          Object {
-            "Fn::GetAtt": Array [
-              "LaravelNginxDemoFileSystemEfsSecurityGroup1917DC5B",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": Object {
-          "Ref": "LaravelNginxDemoVpcPrivateSubnet1Subnet6AF263B1",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "LaravelNginxDemoFileSystemEfsMountTarget28E61CF22": Object {
-      "Properties": Object {
-        "FileSystemId": Object {
-          "Ref": "LaravelNginxDemoFileSystem1CB94528",
-        },
-        "SecurityGroups": Array [
-          Object {
-            "Fn::GetAtt": Array [
-              "LaravelNginxDemoFileSystemEfsSecurityGroup1917DC5B",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": Object {
-          "Ref": "LaravelNginxDemoVpcPrivateSubnet2Subnet55B66710",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "LaravelNginxDemoFileSystemEfsMountTarget3045F7E56": Object {
-      "Properties": Object {
-        "FileSystemId": Object {
-          "Ref": "LaravelNginxDemoFileSystem1CB94528",
-        },
-        "SecurityGroups": Array [
-          Object {
-            "Fn::GetAtt": Array [
-              "LaravelNginxDemoFileSystemEfsSecurityGroup1917DC5B",
-              "GroupId",
-            ],
-          },
-        ],
-        "SubnetId": Object {
-          "Ref": "LaravelNginxDemoVpcPrivateSubnet3SubnetA0224D7F",
-        },
-      },
-      "Type": "AWS::EFS::MountTarget",
-    },
-    "LaravelNginxDemoFileSystemEfsSecurityGroup1917DC5B": Object {
-      "Properties": Object {
-        "GroupDescription": "demo-stack/LaravelNginxDemo/FileSystem/EfsSecurityGroup",
-        "SecurityGroupEgress": Array [
-          Object {
-            "CidrIp": "0.0.0.0/0",
-            "Description": "Allow all outbound traffic by default",
-            "IpProtocol": "-1",
-          },
-        ],
-        "Tags": Array [
-          Object {
-            "Key": "Name",
-            "Value": "demo-stack/LaravelNginxDemo/FileSystem",
-          },
-        ],
-        "VpcId": Object {
-          "Ref": "LaravelNginxDemoVpc0CC479F5",
-        },
-      },
-      "Type": "AWS::EC2::SecurityGroup",
-    },
-    "LaravelNginxDemoFileSystemEfsSecurityGroupfromdemostackLaravelNginxDemoALBFargateServiceLaravelServiceSecurityGroup0202342520494128A51C": Object {
-      "Properties": Object {
-        "Description": "allow Laravel to connect to efs filesystem",
-        "FromPort": 2049,
-        "GroupId": Object {
-          "Fn::GetAtt": Array [
-            "LaravelNginxDemoFileSystemEfsSecurityGroup1917DC5B",
-            "GroupId",
-          ],
-        },
-        "IpProtocol": "tcp",
-        "SourceSecurityGroupId": Object {
-          "Fn::GetAtt": Array [
-            "LaravelNginxDemoALBFargateServiceLaravelServiceSecurityGroupEDE8E27C",
-            "GroupId",
-          ],
-        },
-        "ToPort": 2049,
-      },
-      "Type": "AWS::EC2::SecurityGroupIngress",
-    },
     "LaravelNginxDemoLogGroupB4AF6364": Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
@@ -2117,13 +1872,6 @@ Object {
                 "awslogs-stream-prefix": "Laravel-fargate",
               },
             },
-            "MountPoints": Array [
-              Object {
-                "ContainerPath": "/efsmount",
-                "ReadOnly": false,
-                "SourceVolume": "efs",
-              },
-            ],
             "Name": "Laravel",
             "PortMappings": Array [
               Object {
@@ -2196,16 +1944,6 @@ Object {
             "Arn",
           ],
         },
-        "Volumes": Array [
-          Object {
-            "EfsVolumeConfiguration": Object {
-              "FileSystemId": Object {
-                "Ref": "LaravelNginxDemoFileSystem1CB94528",
-              },
-            },
-            "Name": "efs",
-          },
-        ],
       },
       "Type": "AWS::ECS::TaskDefinition",
     },

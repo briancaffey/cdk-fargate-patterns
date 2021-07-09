@@ -83,6 +83,11 @@ export interface LaravelProps {
    */
   readonly defaultDatabaseName?: string;
 
+  /**
+   * Options to create the EFS FileSystem
+   */
+  readonly efsFileSystem?: efs.FileSystemProps;
+
 }
 
 /**
@@ -163,28 +168,28 @@ export class Laravel extends cdk.Construct {
       route53Ops: { enableLoadBalancerAlias: false },
     });
 
-    // EFS volume
-    const filesystem = new efs.FileSystem(this, 'FileSystem', {
-      vpc: this.vpc,
-      encrypted: true,
-    });
+    if (props.efsFileSystem) {
+      // EFS volume
+      const filesystem = new efs.FileSystem(this, 'FileSystem', props.efsFileSystem);
 
-    const volumeName = 'efs';
-    this.svc.service[0].taskDefinition.addVolume({
-      name: volumeName,
-      efsVolumeConfiguration: {
-        fileSystemId: filesystem.fileSystemId,
-      },
-    });
+      const volumeName = 'efs';
+      this.svc.service[0].taskDefinition.addVolume({
+        name: volumeName,
+        efsVolumeConfiguration: {
+          fileSystemId: filesystem.fileSystemId,
+        },
+      });
 
-    // fix me - tentatively mount to /efsmount
-    this.svc.service[0].taskDefinition.defaultContainer?.addMountPoints({
-      containerPath: '/efsmount',
-      readOnly: false,
-      sourceVolume: volumeName,
-    });
+      // fix me - tentatively mount to /efsmount
+      this.svc.service[0].taskDefinition.defaultContainer?.addMountPoints({
+        containerPath: '/efsmount',
+        readOnly: false,
+        sourceVolume: volumeName,
+      });
 
-    filesystem.connections.allowFrom(new ec2.Connections({ securityGroups: this.svc.service[0].connections.securityGroups }), ec2.Port.tcp(2049), 'allow Laravel to connect to efs filesystem');
+      filesystem.connections.allowFrom(new ec2.Connections({ securityGroups: this.svc.service[0].connections.securityGroups }), ec2.Port.tcp(2049), 'allow Laravel to connect to efs filesystem');
+    }
+
 
     this.db.connections.allowFrom(this.svc.service[0], this.db.connections.defaultPort!, `allow ${this.svc.service[0].serviceName} to connect to database`);
 
