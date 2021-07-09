@@ -34,9 +34,9 @@ new DualAlbFargateService(stack, 'Service', {
     { task: productTask, desiredCount: 2, internal: { port: 9090 } },
   ],
   route53Ops: {
-    zoneName, // svc.local
-    externalAlbRecordName, // external.svc.local
-    internalAlbRecordName, // internal.svc.local
+    zoneName: 'svc.local',
+    externalAlbRecordName: 'external',
+    internalAlbRecordName: 'internal',
   },
 });
 ```
@@ -98,9 +98,6 @@ new DualAlbFargateService(stack, 'Service', {
     ],
   });
 ```
-
-Please note if all tasks are defined as `INTERNAL_ONLY`, no external ALB will be created. Similarly, no internal ALB
-will be created if all defined as `EXTERNAL_ONLY`.
 
 ## VPC Subnets
 
