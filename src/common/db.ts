@@ -118,6 +118,7 @@ export class Database extends cdk.Construct {
     const dbInstance = new rds.DatabaseInstance(this, 'DBInstance', {
       vpc: props.vpc,
       vpcSubnets: props.databaseSubnets,
+      databaseName: props.defaultDatabaseName,
       engine: props.instanceEngine ?? rds.DatabaseInstanceEngine.mysql({
         version: rds.MysqlEngineVersion.VER_8_0_23,
       }),
