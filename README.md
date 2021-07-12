@@ -21,7 +21,7 @@ new DualAlbFargateService(stack, 'Service', {
     {
       task: orderTask,
       desiredCount: 2,
-      internal: { port: 443, cert },
+      internal: { port: 443, certificate },
       external: { port: 80 },
       // customize the service autoscaling policy
       scalingPolicy: {
@@ -84,7 +84,7 @@ ECS deployment circuit breaker automatically rolls back unhealthy service deploy
 
 Specify the `internal` or `external` property to expose your service internally, externally or both.
 
-The `cert` property implies `HTTPS` protocol.
+The `certificate` property implies `HTTPS` protocol.
 
 ```ts
 new DualAlbFargateService(stack, 'Service', {
@@ -96,7 +96,7 @@ new DualAlbFargateService(stack, 'Service', {
       // this task is both external(HTTPS) and internal(HTTP) facing
       { 
         task: task3,
-        external: { port: 443, cert: myAcmCert },
+        external: { port: 443, certificate: myAcmCert },
         internal: { port: 8888 },
       },
     ],
