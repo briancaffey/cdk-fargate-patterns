@@ -22,13 +22,13 @@ services:
     build:
       context: ./golang/CommonService
       dockerfile: Dockerfile
-    container_name: product
+    container_name: customer
     ports:
       - 8080:8080
     environment: 
       - PRODUCT_SVC_URL='http://golang-product:8080'
       - CUSTOMER_SVC_URL='http://golang-customer:8080'
-      - serviceName=product
+      - serviceName=customer
       - versionNum=1.0
     networks:
       - default
@@ -36,13 +36,13 @@ services:
     build:
       context: ./golang/CommonService
       dockerfile: Dockerfile
-    container_name: customer
+    container_name: product
     ports:
       - 9090:8080
     environment: 
       - PRODUCT_SVC_URL='http://golang-product:8080'
       - CUSTOMER_SVC_URL='http://golang-customer:8080'
-      - serviceName=customer
+      - serviceName=product
       - versionNum=1.0
     networks:
       - default
