@@ -146,6 +146,71 @@ test('DualAlbFargateService - minimal setup both internal and external ALB', () 
   });
 });
 
+test('DualAlbFargateService - circuit breaker enabled by default', () => {
+  // GIVEN
+  // WHEN
+  const task = new ecs.FargateTaskDefinition(stack, 'task', {
+    cpu: 256,
+    memoryLimitMiB: 512,
+  });
+
+  task.addContainer('nginx', {
+    image: ecs.ContainerImage.fromRegistry('nginx'),
+    portMappings: [{ containerPort: 80 }],
+  });
+
+  new DualAlbFargateService(stack, 'Service', {
+    tasks: [
+      { task, internal: { port: 80 }, external: { port: 80 } },
+    ],
+  });
+
+  // THEN
+  // We should have fargate service with circuit breaker enabled
+  expect(stack).toHaveResource('AWS::ECS::Service', {
+    LaunchType: 'FARGATE',
+    DeploymentConfiguration: {
+      DeploymentCircuitBreaker: {
+        Enable: true,
+        Rollback: true,
+      },
+      MaximumPercent: 200,
+      MinimumHealthyPercent: 50,
+    },
+  });
+});
+
+test('DualAlbFargateService - circuit breaker disabled', () => {
+  // GIVEN
+  // WHEN
+  const task = new ecs.FargateTaskDefinition(stack, 'task', {
+    cpu: 256,
+    memoryLimitMiB: 512,
+  });
+
+  task.addContainer('nginx', {
+    image: ecs.ContainerImage.fromRegistry('nginx'),
+    portMappings: [{ containerPort: 80 }],
+  });
+
+  new DualAlbFargateService(stack, 'Service', {
+    tasks: [
+      { task, internal: { port: 80 }, external: { port: 80 } },
+    ],
+    circuitBreaker: false,
+  });
+
+  // THEN
+  // We should have fargate service with circuit breaker enabled
+  expect(stack).toHaveResource('AWS::ECS::Service', {
+    LaunchType: 'FARGATE',
+    DeploymentConfiguration: {
+      MaximumPercent: 200,
+      MinimumHealthyPercent: 50,
+    },
+  });
+});
+
 test('DualAlbFargateService - internal only', () => {
   // GIVEN
   // WHEN

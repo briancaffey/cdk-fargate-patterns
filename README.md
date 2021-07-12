@@ -76,6 +76,10 @@ The custom capacity provider strategy will be applied if `capacityProviderStrete
 
 Simply turn on the `enableExecuteCommand` property to enable the [ECS Exec](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html) support for all services.
 
+## ECS deployment circuit breaker
+
+ECS deployment circuit breaker automatically rolls back unhealthy service deployments without the need for manual intervention. By default this feature is enabled, you can opt out with `circuitBreaker: false`. Read the [docummentation](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-type-ecs.html) or [blog post](https://aws.amazon.com/tw/blogs/containers/announcing-amazon-ecs-deployment-circuit-breaker/) for more details.
+
 ## Internal, External or Both
 
 Specify the `internal` or `external` property to expose your service internally, externally or both.

@@ -894,8 +894,15 @@ Object {
           "Ref": "ServiceCluster572F72F1",
         },
         "DeploymentConfiguration": Object {
+          "DeploymentCircuitBreaker": Object {
+            "Enable": true,
+            "Rollback": true,
+          },
           "MaximumPercent": 200,
           "MinimumHealthyPercent": 50,
+        },
+        "DeploymentController": Object {
+          "Type": "ECS",
         },
         "DesiredCount": 2,
         "EnableECSManagedTags": false,
@@ -1147,8 +1154,15 @@ Object {
           "Ref": "ServiceCluster572F72F1",
         },
         "DeploymentConfiguration": Object {
+          "DeploymentCircuitBreaker": Object {
+            "Enable": true,
+            "Rollback": true,
+          },
           "MaximumPercent": 200,
           "MinimumHealthyPercent": 50,
+        },
+        "DeploymentController": Object {
+          "Type": "ECS",
         },
         "DesiredCount": 2,
         "EnableECSManagedTags": false,
@@ -1487,8 +1501,15 @@ Object {
           "Ref": "ServiceCluster572F72F1",
         },
         "DeploymentConfiguration": Object {
+          "DeploymentCircuitBreaker": Object {
+            "Enable": true,
+            "Rollback": true,
+          },
           "MaximumPercent": 200,
           "MinimumHealthyPercent": 50,
+        },
+        "DeploymentController": Object {
+          "Type": "ECS",
         },
         "DesiredCount": 2,
         "EnableECSManagedTags": false,

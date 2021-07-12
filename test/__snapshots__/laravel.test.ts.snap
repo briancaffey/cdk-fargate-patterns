@@ -217,8 +217,15 @@ Object {
           "Ref": "LaravelBitnamiDemoALBFargateServiceClusterAE361F3E",
         },
         "DeploymentConfiguration": Object {
+          "DeploymentCircuitBreaker": Object {
+            "Enable": true,
+            "Rollback": true,
+          },
           "MaximumPercent": 200,
           "MinimumHealthyPercent": 50,
+        },
+        "DeploymentController": Object {
+          "Type": "ECS",
         },
         "EnableECSManagedTags": false,
         "EnableExecuteCommand": true,
@@ -1448,8 +1455,15 @@ Object {
           "Ref": "LaravelNginxDemoALBFargateServiceCluster0AF9F109",
         },
         "DeploymentConfiguration": Object {
+          "DeploymentCircuitBreaker": Object {
+            "Enable": true,
+            "Rollback": true,
+          },
           "MaximumPercent": 200,
           "MinimumHealthyPercent": 50,
+        },
+        "DeploymentController": Object {
+          "Type": "ECS",
         },
         "EnableECSManagedTags": false,
         "EnableExecuteCommand": true,

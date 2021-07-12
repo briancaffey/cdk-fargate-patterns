@@ -398,6 +398,17 @@ const dualAlbFargateServiceProps: DualAlbFargateServiceProps = { ... }
 
 ---
 
+##### `circuitBreaker`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualAlbFargateServiceProps.circuitBreaker"></a>
+
+- *Type:* `boolean`
+- *Default:* true
+
+Enable the ECS service circuit breaker.
+
+> - https://aws.amazon.com/tw/blogs/containers/announcing-amazon-ecs-deployment-circuit-breaker/
+
+---
+
 ##### `enableExecuteCommand`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualAlbFargateServiceProps.enableExecuteCommand"></a>
 
 - *Type:* `boolean`

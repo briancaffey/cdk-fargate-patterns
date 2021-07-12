@@ -30,6 +30,12 @@ export interface DualAlbFargateServiceProps {
    * }
    */
   readonly vpcSubnets?: ec2.SubnetSelection;
+  /**
+   * Enable the ECS service circuit breaker
+   * @see - https://aws.amazon.com/tw/blogs/containers/announcing-amazon-ecs-deployment-circuit-breaker/
+   * @default true
+   */
+  readonly circuitBreaker?: boolean;
 }
 
 /**
@@ -215,6 +221,9 @@ export class DualAlbFargateService extends cdk.Construct {
         enableExecuteCommand: props.enableExecuteCommand ?? false,
         vpcSubnets: this.vpcSubnets,
         assignPublicIp: this.isPublicSubnets,
+        circuitBreaker: props.circuitBreaker != false ? {
+          rollback: true,
+        } : undefined,
       });
       this.service.push(svc);
 
