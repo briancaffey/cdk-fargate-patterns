@@ -180,6 +180,19 @@ apachePHP.addContainer('apachephp', {
   ],
 });
 
+// python-flask service
+const flaskTask = new ecs.FargateTaskDefinition(stack, 'flaskTask', {
+  cpu: 256,
+  memoryLimitMiB: 512,
+});
+
+flaskTask.addContainer('flask', {
+  image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/python-flask')),
+  portMappings: [
+    { containerPort: 80 },
+  ],
+});
+
 const certArn = stack.node.tryGetContext('ACM_CERT_ARN');
 const cert = certArn ? acm.Certificate.fromCertificateArn(stack, 'Cert', certArn) : undefined;
 
@@ -279,6 +292,13 @@ const svc = new DualAlbFargateService(stack, 'Service', {
       desiredCount: 1,
       internal: { port: 9098 },
       external: { port: 9098 },
+    },
+    // python-flask(external/internal)
+    {
+      task: flaskTask,
+      desiredCount: 1,
+      internal: { port: 9099 },
+      external: { port: 9099 },
     },
   ],
   route53Ops: {

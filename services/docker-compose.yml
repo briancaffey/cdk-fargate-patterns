@@ -116,3 +116,12 @@ services:
       - 9098:80
     networks:
       - default 
+  python-flask:
+    build:
+      context: ./python-flask
+      dockerfile: Dockerfile
+    container_name: flask
+    ports:
+      - 9099:80
+    networks:
+      - default
