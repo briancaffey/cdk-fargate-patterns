@@ -106,4 +106,13 @@ services:
     ports:
       - 9097:8080
     networks:
+      - default
+  apache-php:
+    build:
+      context: ./apache-php
+      dockerfile: Dockerfile
+    container_name: apache-php
+    ports:
+      - 9098:80
+    networks:
       - default 

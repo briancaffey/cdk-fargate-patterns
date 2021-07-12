@@ -167,6 +167,19 @@ javaTask.addContainer('java', {
   ],
 });
 
+// apache-php service
+const apachePHP = new ecs.FargateTaskDefinition(stack, 'apachephpTask', {
+  cpu: 256,
+  memoryLimitMiB: 512,
+});
+
+apachePHP.addContainer('apachephp', {
+  image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/apache-php')),
+  portMappings: [
+    { containerPort: 80 },
+  ],
+});
+
 const certArn = stack.node.tryGetContext('ACM_CERT_ARN');
 const cert = certArn ? acm.Certificate.fromCertificateArn(stack, 'Cert', certArn) : undefined;
 
@@ -259,6 +272,13 @@ const svc = new DualAlbFargateService(stack, 'Service', {
       internal: { port: 9097 },
       external: { port: 9097 },
       healthCheck: { path: '/hello-world' },
+    },
+    // apache-php(external/internal)
+    {
+      task: apachePHP,
+      desiredCount: 1,
+      internal: { port: 9098 },
+      external: { port: 9098 },
     },
   ],
   route53Ops: {
