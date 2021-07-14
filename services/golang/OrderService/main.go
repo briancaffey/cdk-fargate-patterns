@@ -43,6 +43,12 @@ func fetchServices() []string {
 		microservices = append(microservices, CUSTOMER_SVC_URL)
 		// go HttpGet(CUSTOMER_SVC_URL, ch)
 	}
+	if v, ok := os.LookupEnv("WAREHOUSE_SVC_URL"); ok {
+		fmt.Println("got WAREHOUSE_SVC_URL")
+		WAREHOUSE_SVC_URL := v
+		microservices = append(microservices, WAREHOUSE_SVC_URL)
+		// go HttpGet(WAREHOUSE_SVC_URL, ch)
+	}
 
 	for _, url := range microservices {
 		fmt.Printf("fetching %s\n", url)

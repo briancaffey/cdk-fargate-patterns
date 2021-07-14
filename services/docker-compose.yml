@@ -14,6 +14,7 @@ services:
     environment: 
       - PRODUCT_SVC_URL=http://golang-product:8080
       - CUSTOMER_SVC_URL=http://golang-customer:8080
+      - WAREHOUSE_SVC_URL=http://nginx-php:80/api.php
       - serviceName=order
       - versionNum=1.0
     networks:
@@ -60,6 +61,9 @@ services:
     container_name: php
     ports:
       - 9092:80
+    environment: 
+      - serviceName=warehouse
+      - versionNum=0.1
     networks:
       - default 
   nuxt:

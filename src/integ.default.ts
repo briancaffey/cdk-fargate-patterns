@@ -33,6 +33,7 @@ orderTask.addContainer('order', {
   environment: {
     PRODUCT_SVC_URL: `${internalALBEndpoint}:9090`,
     CUSTOMER_SVC_URL: `${internalALBEndpoint}:8080`,
+    WAREHOUSE_SVC_URL: `${internalALBEndpoint}:9092/api.php`,
     serviceName: 'order',
     versionNum: '1.0',
   },
@@ -100,6 +101,10 @@ phpTask.addContainer('php', {
   portMappings: [
     { containerPort: 80 },
   ],
+  environment: {
+    serviceName: 'warehouse',
+    versionNum: '0.1',
+  },
 });
 
 // laravel-nginx-php-fpm service
