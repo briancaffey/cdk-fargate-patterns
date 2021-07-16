@@ -1,5 +1,6 @@
 import '@aws-cdk/assert/jest';
 import * as path from 'path';
+import { ResourcePart } from '@aws-cdk/assert/lib/assertions/have-resource';
 import * as ec2 from '@aws-cdk/aws-ec2';
 import * as ecs from '@aws-cdk/aws-ecs';
 import * as cdk from '@aws-cdk/core';
@@ -141,9 +142,17 @@ test('DualAlbFargateService - minimal setup both internal and external ALB', () 
     Type: 'application',
   });
   // We should have fargate service
-  expect(stack).toHaveResource('AWS::ECS::Service', {
-    LaunchType: 'FARGATE',
-  });
+  expect(stack).toHaveResourceLike('AWS::ECS::Service', {
+    Properties: {
+      LaunchType: 'FARGATE',
+    },
+    DependsOn: [
+      'ServiceCluster2E988025',
+      'ServiceCluster572F72F1',
+      'ServiceExtAlbListener80CF2B8C01',
+      'ServiceIntAlbListener80DD49BDE2',
+    ],
+  }, ResourcePart.CompleteDefinition);
 });
 
 test('DualAlbFargateService - circuit breaker enabled by default', () => {

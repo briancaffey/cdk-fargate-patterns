@@ -198,6 +198,8 @@ Object {
     },
     "LaravelBitnamiDemoALBFargateServiceLaravelService5240B951": Object {
       "DependsOn": Array [
+        "LaravelBitnamiDemoALBFargateServiceClusterD4F81F10",
+        "LaravelBitnamiDemoALBFargateServiceClusterAE361F3E",
         "LaravelBitnamiDemoALBFargateServiceExtAlbListener80CF871428",
       ],
       "Properties": Object {
@@ -270,6 +272,10 @@ Object {
       "Type": "AWS::ECS::Service",
     },
     "LaravelBitnamiDemoALBFargateServiceLaravelServiceSecurityGroupC4CEAE89": Object {
+      "DependsOn": Array [
+        "LaravelBitnamiDemoALBFargateServiceClusterD4F81F10",
+        "LaravelBitnamiDemoALBFargateServiceClusterAE361F3E",
+      ],
       "Properties": Object {
         "GroupDescription": "demo-stack/LaravelBitnamiDemo/ALBFargateService/LaravelService/SecurityGroup",
         "SecurityGroupEgress": Array [
@@ -286,6 +292,10 @@ Object {
       "Type": "AWS::EC2::SecurityGroup",
     },
     "LaravelBitnamiDemoALBFargateServiceLaravelServiceSecurityGroupfromdemostackLaravelBitnamiDemoALBFargateServiceExternalAlbSecurityGroup1219BACC300049A51F81": Object {
+      "DependsOn": Array [
+        "LaravelBitnamiDemoALBFargateServiceClusterD4F81F10",
+        "LaravelBitnamiDemoALBFargateServiceClusterAE361F3E",
+      ],
       "Properties": Object {
         "Description": "Load balancer to target",
         "FromPort": 3000,
@@ -307,6 +317,10 @@ Object {
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
     "LaravelBitnamiDemoALBFargateServiceLaravelServiceTaskCountTarget61D75BF1": Object {
+      "DependsOn": Array [
+        "LaravelBitnamiDemoALBFargateServiceClusterD4F81F10",
+        "LaravelBitnamiDemoALBFargateServiceClusterAE361F3E",
+      ],
       "Properties": Object {
         "MaxCapacity": 10,
         "MinCapacity": 1,
@@ -346,6 +360,10 @@ Object {
       "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
     },
     "LaravelBitnamiDemoALBFargateServiceLaravelServiceTaskCountTargetCpuScaling7EBDDC48": Object {
+      "DependsOn": Array [
+        "LaravelBitnamiDemoALBFargateServiceClusterD4F81F10",
+        "LaravelBitnamiDemoALBFargateServiceClusterAE361F3E",
+      ],
       "Properties": Object {
         "PolicyName": "demostackLaravelBitnamiDemoALBFargateServiceLaravelServiceTaskCountTargetCpuScaling2AD23CD4",
         "PolicyType": "TargetTrackingScaling",
@@ -362,6 +380,10 @@ Object {
       "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
     },
     "LaravelBitnamiDemoALBFargateServiceLaravelServiceTaskCountTargetRequestScaling02B82B2E": Object {
+      "DependsOn": Array [
+        "LaravelBitnamiDemoALBFargateServiceClusterD4F81F10",
+        "LaravelBitnamiDemoALBFargateServiceClusterAE361F3E",
+      ],
       "Properties": Object {
         "PolicyName": "demostackLaravelBitnamiDemoALBFargateServiceLaravelServiceTaskCountTargetRequestScaling3D016A7B",
         "PolicyType": "TargetTrackingScaling",
@@ -1577,6 +1599,8 @@ Object {
     },
     "LaravelNginxDemoALBFargateServiceLaravelServiceDC6604F2": Object {
       "DependsOn": Array [
+        "LaravelNginxDemoALBFargateServiceClusterD339A31A",
+        "LaravelNginxDemoALBFargateServiceCluster0AF9F109",
         "LaravelNginxDemoALBFargateServiceExtAlbListener8034DA48AB",
       ],
       "Properties": Object {
@@ -1649,6 +1673,10 @@ Object {
       "Type": "AWS::ECS::Service",
     },
     "LaravelNginxDemoALBFargateServiceLaravelServiceSecurityGroupEDE8E27C": Object {
+      "DependsOn": Array [
+        "LaravelNginxDemoALBFargateServiceClusterD339A31A",
+        "LaravelNginxDemoALBFargateServiceCluster0AF9F109",
+      ],
       "Properties": Object {
         "GroupDescription": "demo-stack/LaravelNginxDemo/ALBFargateService/LaravelService/SecurityGroup",
         "SecurityGroupEgress": Array [
@@ -1665,6 +1693,10 @@ Object {
       "Type": "AWS::EC2::SecurityGroup",
     },
     "LaravelNginxDemoALBFargateServiceLaravelServiceSecurityGroupfromdemostackLaravelNginxDemoALBFargateServiceExternalAlbSecurityGroup6E21961B807E4A3082": Object {
+      "DependsOn": Array [
+        "LaravelNginxDemoALBFargateServiceClusterD339A31A",
+        "LaravelNginxDemoALBFargateServiceCluster0AF9F109",
+      ],
       "Properties": Object {
         "Description": "Load balancer to target",
         "FromPort": 80,
@@ -1686,6 +1718,10 @@ Object {
       "Type": "AWS::EC2::SecurityGroupIngress",
     },
     "LaravelNginxDemoALBFargateServiceLaravelServiceTaskCountTargetCpuScaling7B5C2E1F": Object {
+      "DependsOn": Array [
+        "LaravelNginxDemoALBFargateServiceClusterD339A31A",
+        "LaravelNginxDemoALBFargateServiceCluster0AF9F109",
+      ],
       "Properties": Object {
         "PolicyName": "demostackLaravelNginxDemoALBFargateServiceLaravelServiceTaskCountTargetCpuScaling890CA931",
         "PolicyType": "TargetTrackingScaling",
@@ -1702,6 +1738,10 @@ Object {
       "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
     },
     "LaravelNginxDemoALBFargateServiceLaravelServiceTaskCountTargetD918B9F3": Object {
+      "DependsOn": Array [
+        "LaravelNginxDemoALBFargateServiceClusterD339A31A",
+        "LaravelNginxDemoALBFargateServiceCluster0AF9F109",
+      ],
       "Properties": Object {
         "MaxCapacity": 10,
         "MinCapacity": 1,
@@ -1741,6 +1781,10 @@ Object {
       "Type": "AWS::ApplicationAutoScaling::ScalableTarget",
     },
     "LaravelNginxDemoALBFargateServiceLaravelServiceTaskCountTargetRequestScaling753CFDD1": Object {
+      "DependsOn": Array [
+        "LaravelNginxDemoALBFargateServiceClusterD339A31A",
+        "LaravelNginxDemoALBFargateServiceCluster0AF9F109",
+      ],
       "Properties": Object {
         "PolicyName": "demostackLaravelNginxDemoALBFargateServiceLaravelServiceTaskCountTargetRequestScaling6A388F8B",
         "PolicyType": "TargetTrackingScaling",

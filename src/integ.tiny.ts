@@ -13,7 +13,7 @@ const env = {
 
 const stack = new cdk.Stack(app, 'demo-stack-tiny', { env });
 
-const zoneName = 'svc.local';
+const zoneName = stack.stackName;
 const internalAlbRecordName = 'internal';
 const internalALBEndpoint = `http://${internalAlbRecordName}.${zoneName}`;
 
@@ -119,4 +119,7 @@ new DualAlbFargateService(stack, 'Service', {
       internal: { port: 9090 },
     },
   ],
+  route53Ops: {
+    zoneName,
+  },
 });

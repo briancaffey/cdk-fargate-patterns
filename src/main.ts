@@ -308,6 +308,12 @@ export class DualAlbFargateService extends cdk.Construct {
       }
     });
 
+    // ensure the dependency
+    const cp = this.node.tryFindChild('Cluster') as ecs.CfnClusterCapacityProviderAssociations;
+    this.service.forEach(s => {
+      s.node.addDependency(cp);
+    });
+
     // Route53
     const zoneName = props.route53Ops?.zoneName ?? 'svc.local';
     const externalAlbRecordName = props.route53Ops?.externalAlbRecordName ?? 'external';
