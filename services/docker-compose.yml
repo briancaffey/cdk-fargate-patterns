@@ -129,3 +129,15 @@ services:
       - 9099:80
     networks:
       - default
+  gorilla-mux:
+    build:
+      context: ./golang/gorilla-mux
+      dockerfile: Dockerfile
+    container_name: mux
+    ports:
+      - 9100:8080
+    environment: 
+      - serviceName=mux
+      - versionNum=1.0
+    networks:
+      - default

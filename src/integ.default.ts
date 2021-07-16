@@ -198,6 +198,19 @@ flaskTask.addContainer('flask', {
   ],
 });
 
+// gorilla-mux
+const muxTask = new ecs.FargateTaskDefinition(stack, 'muxTask', {
+  cpu: 256,
+  memoryLimitMiB: 512,
+});
+
+muxTask.addContainer('mux', {
+  image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/golang/gorilla-mux')),
+  portMappings: [
+    { containerPort: 8080 },
+  ],
+});
+
 const certArn = stack.node.tryGetContext('ACM_CERT_ARN');
 const cert = certArn ? acm.Certificate.fromCertificateArn(stack, 'Cert', certArn) : undefined;
 
@@ -304,6 +317,13 @@ const svc = new DualAlbFargateService(stack, 'Service', {
       desiredCount: 1,
       internal: { port: 9099 },
       external: { port: 9099 },
+    },
+    // gorilla-mux(external/internal)
+    {
+      task: muxTask,
+      desiredCount: 1,
+      internal: { port: 9100 },
+      external: { port: 9100 },
     },
   ],
   route53Ops: {
