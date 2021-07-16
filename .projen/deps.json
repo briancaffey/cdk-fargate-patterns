@@ -115,7 +115,22 @@
       "type": "peer"
     },
     {
+      "name": "@aws-cdk/aws-events-targets",
+      "version": "^1.95.2",
+      "type": "peer"
+    },
+    {
+      "name": "@aws-cdk/aws-events",
+      "version": "^1.95.2",
+      "type": "peer"
+    },
+    {
       "name": "@aws-cdk/aws-iam",
+      "version": "^1.95.2",
+      "type": "peer"
+    },
+    {
+      "name": "@aws-cdk/aws-lambda",
       "version": "^1.95.2",
       "type": "peer"
     },
@@ -180,7 +195,22 @@
       "type": "runtime"
     },
     {
+      "name": "@aws-cdk/aws-events-targets",
+      "version": "^1.95.2",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-cdk/aws-events",
+      "version": "^1.95.2",
+      "type": "runtime"
+    },
+    {
       "name": "@aws-cdk/aws-iam",
+      "version": "^1.95.2",
+      "type": "runtime"
+    },
+    {
+      "name": "@aws-cdk/aws-lambda",
       "version": "^1.95.2",
       "type": "runtime"
     },

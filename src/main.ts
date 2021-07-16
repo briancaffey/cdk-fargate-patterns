@@ -1,7 +1,12 @@
+import * as path from 'path';
 import * as acm from '@aws-cdk/aws-certificatemanager';
 import * as ec2 from '@aws-cdk/aws-ec2';
 import * as ecs from '@aws-cdk/aws-ecs';
 import * as elbv2 from '@aws-cdk/aws-elasticloadbalancingv2';
+import * as events from '@aws-cdk/aws-events';
+import * as event_targets from '@aws-cdk/aws-events-targets';
+import * as iam from '@aws-cdk/aws-iam';
+import * as lambda from '@aws-cdk/aws-lambda';
 import * as route53 from '@aws-cdk/aws-route53';
 import * as targets from '@aws-cdk/aws-route53-targets';
 import * as cdk from '@aws-cdk/core';
@@ -16,6 +21,12 @@ export interface DualAlbFargateServiceProps {
    * @default false
    */
   readonly spot?: boolean;
+  /**
+   * Enable the fargate spot termination handler
+   * @see https://docs.aws.amazon.com/AmazonECS/latest/developerguide/fargate-capacity-providers.html#fargate-capacity-providers-termination
+   * @default true
+   */
+  readonly spotTerminationHandler?: boolean;
   /**
    * Whether to enable ECS Exec support
    * @see https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html
@@ -152,6 +163,7 @@ export class DualAlbFargateService extends cdk.Construct {
   private hasInternalLoadBalancer: boolean = false;
   private vpcSubnets: ec2.SubnetSelection = { subnetType: ec2.SubnetType.PRIVATE };
   private enableLoadBalancerAlias: boolean;
+  private hasSpotCapacity: boolean = false;
   /**
    * determine if vpcSubnets are all public ones
    */
@@ -211,6 +223,8 @@ export class DualAlbFargateService extends cdk.Construct {
       },
     ];
 
+    if (props.spot == true) this.hasSpotCapacity = true;
+
     props.tasks.forEach(t => {
       const defaultContainerName = t.task.defaultContainer?.containerName;
       const svc = new ecs.FargateService(this, `${defaultContainerName}Service`, {
@@ -226,6 +240,19 @@ export class DualAlbFargateService extends cdk.Construct {
         } : undefined,
       });
       this.service.push(svc);
+
+      /**
+       * determine if we have spot capacity in this cluster
+       * scenario 1: FARGATE_SPOT with weight > 0
+       * scenario 2: FARGATE_SPOT with base > 0
+       * scenario 3: props.spot = true
+       */
+      t.capacityProviderStrategy?.forEach(s => {
+        if (s.capacityProvider == 'FARGATE_SPOT' && ((s.weight && s.weight > 0)
+          || (s.base && s.base > 0))) {
+          this.hasSpotCapacity = true;
+        }
+      });
 
       // default scaling policy
       const scaling = svc.autoScaleTaskCount({ maxCapacity: t.scalingPolicy?.maxCapacity ?? 10 });
@@ -286,6 +313,12 @@ export class DualAlbFargateService extends cdk.Construct {
     const externalAlbRecordName = props.route53Ops?.externalAlbRecordName ?? 'external';
     const internalAlbRecordName = props.route53Ops?.internalAlbRecordName ?? 'internal';
 
+    // spot termination handler by default
+    if (this.hasSpotCapacity && props.spotTerminationHandler !== false) {
+      this.createSpotTerminationHandler(cluster);
+    }
+
+
     if (this.enableLoadBalancerAlias) {
       const zone = new route53.PrivateHostedZone(this, 'HostedZone', {
         zoneName,
@@ -324,6 +357,33 @@ export class DualAlbFargateService extends cdk.Construct {
         new cdk.CfnOutput(this, 'InternalEndpoint', { value: `http://${this.internalAlb!.loadBalancerDnsName}` });
       }
     }
+  }
+
+  private createSpotTerminationHandler(cluster: ecs.ICluster) {
+    // create the handler
+    const handler = new lambda.DockerImageFunction(this, 'SpotTermHandler', {
+      code: lambda.DockerImageCode.fromImageAsset(path.join(__dirname, '../lambda/spot-term-handler')),
+      timeout: cdk.Duration.seconds(20),
+    });
+    // create event rule
+    const rule = new events.Rule(this, 'OnTaskStateChangeEvent', {
+      eventPattern: {
+        source: ['aws.ecs'],
+        detailType: ['ECS Task State Change'],
+        detail: {
+          clusterArn: [cluster.clusterArn],
+        },
+      },
+    });
+    rule.addTarget(new event_targets.LambdaFunction(handler));
+    handler.addToRolePolicy(new iam.PolicyStatement({
+      actions: [
+        'ecs:DescribeServices',
+        'elasticloadbalancing:DeregisterTargets',
+        'ec2:DescribeSubnets',
+      ],
+      resources: ['*'],
+    }));
   }
 
   private validateSubnets(vpc: ec2.IVpc, vpcSubnets: ec2.SubnetSelection) {

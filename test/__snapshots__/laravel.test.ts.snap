@@ -432,6 +432,147 @@ Object {
       },
       "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
     },
+    "LaravelBitnamiDemoALBFargateServiceOnTaskStateChangeEventAllowEventRuledemostackLaravelBitnamiDemoALBFargateServiceSpotTermHandler1657425BD6FB8AAF": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "LaravelBitnamiDemoALBFargateServiceSpotTermHandlerA4E920A7",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::GetAtt": Array [
+            "LaravelBitnamiDemoALBFargateServiceOnTaskStateChangeEventC9BBB924",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "LaravelBitnamiDemoALBFargateServiceOnTaskStateChangeEventC9BBB924": Object {
+      "Properties": Object {
+        "EventPattern": Object {
+          "detail": Object {
+            "clusterArn": Array [
+              Object {
+                "Fn::GetAtt": Array [
+                  "LaravelBitnamiDemoALBFargateServiceClusterAE361F3E",
+                  "Arn",
+                ],
+              },
+            ],
+          },
+          "detail-type": Array [
+            "ECS Task State Change",
+          ],
+          "source": Array [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": Array [
+          Object {
+            "Arn": Object {
+              "Fn::GetAtt": Array [
+                "LaravelBitnamiDemoALBFargateServiceSpotTermHandlerA4E920A7",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "LaravelBitnamiDemoALBFargateServiceSpotTermHandlerA4E920A7": Object {
+      "DependsOn": Array [
+        "LaravelBitnamiDemoALBFargateServiceSpotTermHandlerServiceRoleDefaultPolicy23218FFE",
+        "LaravelBitnamiDemoALBFargateServiceSpotTermHandlerServiceRole3E1CFB06",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "ImageUri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "123456789012.dkr.ecr.us-east-1.",
+                Object {
+                  "Ref": "AWS::URLSuffix",
+                },
+                "/aws-cdk/assets:006165fc78a55a416da8fcf74ff0c2d8600a714bb1d473455df51611a8b26e45",
+              ],
+            ],
+          },
+        },
+        "PackageType": "Image",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "LaravelBitnamiDemoALBFargateServiceSpotTermHandlerServiceRole3E1CFB06",
+            "Arn",
+          ],
+        },
+        "Timeout": 20,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "LaravelBitnamiDemoALBFargateServiceSpotTermHandlerServiceRole3E1CFB06": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LaravelBitnamiDemoALBFargateServiceSpotTermHandlerServiceRoleDefaultPolicy23218FFE": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ecs:DescribeServices",
+                "elasticloadbalancing:DeregisterTargets",
+                "ec2:DescribeSubnets",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LaravelBitnamiDemoALBFargateServiceSpotTermHandlerServiceRoleDefaultPolicy23218FFE",
+        "Roles": Array [
+          Object {
+            "Ref": "LaravelBitnamiDemoALBFargateServiceSpotTermHandlerServiceRole3E1CFB06",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "LaravelBitnamiDemoDatabaseAuroraServerlessCluster0B044319": Object {
       "DeletionPolicy": "Delete",
       "Properties": Object {
@@ -1669,6 +1810,147 @@ Object {
         },
       },
       "Type": "AWS::ApplicationAutoScaling::ScalingPolicy",
+    },
+    "LaravelNginxDemoALBFargateServiceOnTaskStateChangeEvent74600890": Object {
+      "Properties": Object {
+        "EventPattern": Object {
+          "detail": Object {
+            "clusterArn": Array [
+              Object {
+                "Fn::GetAtt": Array [
+                  "LaravelNginxDemoALBFargateServiceCluster0AF9F109",
+                  "Arn",
+                ],
+              },
+            ],
+          },
+          "detail-type": Array [
+            "ECS Task State Change",
+          ],
+          "source": Array [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": Array [
+          Object {
+            "Arn": Object {
+              "Fn::GetAtt": Array [
+                "LaravelNginxDemoALBFargateServiceSpotTermHandler4669CA35",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "LaravelNginxDemoALBFargateServiceOnTaskStateChangeEventAllowEventRuledemostackLaravelNginxDemoALBFargateServiceSpotTermHandlerFD548A2D49497B33": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "LaravelNginxDemoALBFargateServiceSpotTermHandler4669CA35",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::GetAtt": Array [
+            "LaravelNginxDemoALBFargateServiceOnTaskStateChangeEvent74600890",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "LaravelNginxDemoALBFargateServiceSpotTermHandler4669CA35": Object {
+      "DependsOn": Array [
+        "LaravelNginxDemoALBFargateServiceSpotTermHandlerServiceRoleDefaultPolicy61CE998E",
+        "LaravelNginxDemoALBFargateServiceSpotTermHandlerServiceRole557BB3AF",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "ImageUri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "123456789012.dkr.ecr.us-east-1.",
+                Object {
+                  "Ref": "AWS::URLSuffix",
+                },
+                "/aws-cdk/assets:006165fc78a55a416da8fcf74ff0c2d8600a714bb1d473455df51611a8b26e45",
+              ],
+            ],
+          },
+        },
+        "PackageType": "Image",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "LaravelNginxDemoALBFargateServiceSpotTermHandlerServiceRole557BB3AF",
+            "Arn",
+          ],
+        },
+        "Timeout": 20,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "LaravelNginxDemoALBFargateServiceSpotTermHandlerServiceRole557BB3AF": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "LaravelNginxDemoALBFargateServiceSpotTermHandlerServiceRoleDefaultPolicy61CE998E": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ecs:DescribeServices",
+                "elasticloadbalancing:DeregisterTargets",
+                "ec2:DescribeSubnets",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "LaravelNginxDemoALBFargateServiceSpotTermHandlerServiceRoleDefaultPolicy61CE998E",
+        "Roles": Array [
+          Object {
+            "Ref": "LaravelNginxDemoALBFargateServiceSpotTermHandlerServiceRole557BB3AF",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
     },
     "LaravelNginxDemoDatabaseAuroraServerlessCluster8C6C9E01": Object {
       "DeletionPolicy": "Delete",

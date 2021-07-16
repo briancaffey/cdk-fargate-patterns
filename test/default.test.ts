@@ -573,3 +573,181 @@ test('Wordpress - EFS inbound rules have Fargate Service SG', () => {
     ToPort: 2049,
   });
 });
+
+test('fargate spot termination handler - 100% spot', () => {
+  // GIVEN
+  // WHEN
+  const task = new ecs.FargateTaskDefinition(stack, 'task', {
+    cpu: 256,
+    memoryLimitMiB: 512,
+  });
+
+  task.addContainer('nginx', {
+    image: ecs.ContainerImage.fromRegistry('nginx'),
+    portMappings: [{ containerPort: 80 }],
+  });
+
+  new DualAlbFargateService(stack, 'Service', {
+    spot: true,
+    tasks: [
+      { task, internal: { port: 80 }, external: { port: 80 } },
+    ],
+  });
+
+  // THEN
+  // we should have lambda function as the termination handler
+  expect(stack).toHaveResource('AWS::Lambda::Function', {
+    Code: {
+      ImageUri: {
+        'Fn::Join': [
+          '',
+          [
+            '123456789012.dkr.ecr.us-east-1.',
+            {
+              Ref: 'AWS::URLSuffix',
+            },
+            '/aws-cdk/assets:006165fc78a55a416da8fcf74ff0c2d8600a714bb1d473455df51611a8b26e45',
+          ],
+        ],
+      },
+    },
+    Role: {
+      'Fn::GetAtt': [
+        'ServiceSpotTermHandlerServiceRole0421F335',
+        'Arn',
+      ],
+    },
+    PackageType: 'Image',
+    Timeout: 20,
+  });
+  // we should have an events rule
+  expect(stack).toHaveResource('AWS::Events::Rule', {
+    EventPattern: {
+      'source': [
+        'aws.ecs',
+      ],
+      'detail-type': [
+        'ECS Task State Change',
+      ],
+      'detail': {
+        clusterArn: [
+          {
+            'Fn::GetAtt': [
+              'ServiceCluster572F72F1',
+              'Arn',
+            ],
+          },
+        ],
+      },
+    },
+    State: 'ENABLED',
+    Targets: [
+      {
+        Arn: {
+          'Fn::GetAtt': [
+            'ServiceSpotTermHandlerE0C58E4E',
+            'Arn',
+          ],
+        },
+        Id: 'Target0',
+      },
+    ],
+  });
+});
+
+
+test('fargate spot termination handler - partial spot', () => {
+  // GIVEN
+  // WHEN
+  const task = new ecs.FargateTaskDefinition(stack, 'task', {
+    cpu: 256,
+    memoryLimitMiB: 512,
+  });
+
+  task.addContainer('nginx', {
+    image: ecs.ContainerImage.fromRegistry('nginx'),
+    portMappings: [{ containerPort: 80 }],
+  });
+
+  new DualAlbFargateService(stack, 'Service', {
+    tasks: [
+      {
+        task,
+        internal: { port: 80 },
+        external: { port: 80 },
+        capacityProviderStrategy: [
+          {
+            capacityProvider: 'FARGATE',
+            base: 1,
+            weight: 1,
+          },
+          {
+            capacityProvider: 'FARGATE_SPOT',
+            base: 0,
+            weight: 3,
+          },
+        ],
+      },
+    ],
+  });
+
+  // THEN
+  // we should have lambda function as the termination handler
+  expect(stack).toHaveResource('AWS::Lambda::Function', {
+    Code: {
+      ImageUri: {
+        'Fn::Join': [
+          '',
+          [
+            '123456789012.dkr.ecr.us-east-1.',
+            {
+              Ref: 'AWS::URLSuffix',
+            },
+            '/aws-cdk/assets:006165fc78a55a416da8fcf74ff0c2d8600a714bb1d473455df51611a8b26e45',
+          ],
+        ],
+      },
+    },
+    Role: {
+      'Fn::GetAtt': [
+        'ServiceSpotTermHandlerServiceRole0421F335',
+        'Arn',
+      ],
+    },
+    PackageType: 'Image',
+    Timeout: 20,
+  });
+  // we should have an events rule
+  expect(stack).toHaveResource('AWS::Events::Rule', {
+    EventPattern: {
+      'source': [
+        'aws.ecs',
+      ],
+      'detail-type': [
+        'ECS Task State Change',
+      ],
+      'detail': {
+        clusterArn: [
+          {
+            'Fn::GetAtt': [
+              'ServiceCluster572F72F1',
+              'Arn',
+            ],
+          },
+        ],
+      },
+    },
+    State: 'ENABLED',
+    Targets: [
+      {
+        Arn: {
+          'Fn::GetAtt': [
+            'ServiceSpotTermHandlerE0C58E4E',
+            'Arn',
+          ],
+        },
+        Id: 'Target0',
+      },
+    ],
+  });
+});

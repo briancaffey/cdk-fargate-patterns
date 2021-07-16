@@ -8,6 +8,9 @@ CDK patterns for serverless container with AWS Fargate
 
 # `DualAlbFargateService`
 
+
+![](images/DualAlbFargateService.svg)
+
 Inspired by _Vijay Menon_ from the [AWS blog post](https://aws.amazon.com/blogs/containers/how-to-use-multiple-load-balancer-target-group-support-for-amazon-ecs-to-access-internal-and-external-service-endpoint-using-the-same-dns-name/) introduced in 2019, `DualAlbFargateService` allows you to create one or many fargate services with both internet-facing ALB and internal ALB associated with all services. With this pattern, fargate services will be allowed to intercommunicat via internal ALB while external inbound traffic will be spread across the same service tasks through internet-facing ALB.
 
 
@@ -45,7 +48,8 @@ new DualAlbFargateService(stack, 'Service', {
 
 By enabling the `spot` property, 100% fargate spot tasks will be provisioned to help you save up to 70%. Check more details about [Fargate Spot](https://aws.amazon.com/about-aws/whats-new/2019/12/aws-launches-fargate-spot-save-up-to-70-for-fault-tolerant-applications/?nc1=h_ls). This is a handy catch-all flag to force all tasks to be `FARGATE_SPOT` only.
 
-To specify mixed strategy with partial `FARGATE` and partial `FARGATE_SPOT`, specify the `capacityProviderStrategy` for individual tasks like
+To specify mixed strategy with partial `FARGATE` and partial `FARGATE_SPOT`, specify the `capacityProviderStrategy` for individual tasks like.
+
 
 ```ts
 new DualAlbFargateService(stack, 'Service', {
@@ -71,6 +75,18 @@ new DualAlbFargateService(stack, 'Service', {
 });
 ```
 The custom capacity provider strategy will be applied if `capacityProviderStretegy` is specified, otherwise, 100% spot will be used when `spot: true`. The default policy is 100% Fargate on-demand.
+
+### Fargate Spot Termination Handling
+
+By default, if fargate spot capacity is available in the cluster, a fargate spot termination handler Lambda function will be created with proper IAM role policies to handle the termination event to ensure we deregister the fargate spot task from target groups gracefully. While it's a recommended feature, you may opt out with `spotTerminationHandler: false`.
+
+```ts
+new DualAlbFargateService(stack, 'Service', {
+  spot: true, // FARGATE_SPOT only cluster
+  spotTerminationHandler: false,  // opt-out
+  ...
+}
+```
 
 ## ECS Exec
 

@@ -412,6 +412,147 @@ Object {
       },
       "Type": "AWS::EC2::SecurityGroupEgress",
     },
+    "ServiceOnTaskStateChangeEventAllowEventRuledemostackServiceSpotTermHandlerE15ADAAAA26989A4": Object {
+      "Properties": Object {
+        "Action": "lambda:InvokeFunction",
+        "FunctionName": Object {
+          "Fn::GetAtt": Array [
+            "ServiceSpotTermHandlerE0C58E4E",
+            "Arn",
+          ],
+        },
+        "Principal": "events.amazonaws.com",
+        "SourceArn": Object {
+          "Fn::GetAtt": Array [
+            "ServiceOnTaskStateChangeEventFBBD0F04",
+            "Arn",
+          ],
+        },
+      },
+      "Type": "AWS::Lambda::Permission",
+    },
+    "ServiceOnTaskStateChangeEventFBBD0F04": Object {
+      "Properties": Object {
+        "EventPattern": Object {
+          "detail": Object {
+            "clusterArn": Array [
+              Object {
+                "Fn::GetAtt": Array [
+                  "ServiceCluster572F72F1",
+                  "Arn",
+                ],
+              },
+            ],
+          },
+          "detail-type": Array [
+            "ECS Task State Change",
+          ],
+          "source": Array [
+            "aws.ecs",
+          ],
+        },
+        "State": "ENABLED",
+        "Targets": Array [
+          Object {
+            "Arn": Object {
+              "Fn::GetAtt": Array [
+                "ServiceSpotTermHandlerE0C58E4E",
+                "Arn",
+              ],
+            },
+            "Id": "Target0",
+          },
+        ],
+      },
+      "Type": "AWS::Events::Rule",
+    },
+    "ServiceSpotTermHandlerE0C58E4E": Object {
+      "DependsOn": Array [
+        "ServiceSpotTermHandlerServiceRoleDefaultPolicy3FF321BB",
+        "ServiceSpotTermHandlerServiceRole0421F335",
+      ],
+      "Properties": Object {
+        "Code": Object {
+          "ImageUri": Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "123456789012.dkr.ecr.us-east-1.",
+                Object {
+                  "Ref": "AWS::URLSuffix",
+                },
+                "/aws-cdk/assets:006165fc78a55a416da8fcf74ff0c2d8600a714bb1d473455df51611a8b26e45",
+              ],
+            ],
+          },
+        },
+        "PackageType": "Image",
+        "Role": Object {
+          "Fn::GetAtt": Array [
+            "ServiceSpotTermHandlerServiceRole0421F335",
+            "Arn",
+          ],
+        },
+        "Timeout": 20,
+      },
+      "Type": "AWS::Lambda::Function",
+    },
+    "ServiceSpotTermHandlerServiceRole0421F335": Object {
+      "Properties": Object {
+        "AssumeRolePolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": Object {
+                "Service": "lambda.amazonaws.com",
+              },
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "ManagedPolicyArns": Array [
+          Object {
+            "Fn::Join": Array [
+              "",
+              Array [
+                "arn:",
+                Object {
+                  "Ref": "AWS::Partition",
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+              ],
+            ],
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Role",
+    },
+    "ServiceSpotTermHandlerServiceRoleDefaultPolicy3FF321BB": Object {
+      "Properties": Object {
+        "PolicyDocument": Object {
+          "Statement": Array [
+            Object {
+              "Action": Array [
+                "ecs:DescribeServices",
+                "elasticloadbalancing:DeregisterTargets",
+                "ec2:DescribeSubnets",
+              ],
+              "Effect": "Allow",
+              "Resource": "*",
+            },
+          ],
+          "Version": "2012-10-17",
+        },
+        "PolicyName": "ServiceSpotTermHandlerServiceRoleDefaultPolicy3FF321BB",
+        "Roles": Array [
+          Object {
+            "Ref": "ServiceSpotTermHandlerServiceRole0421F335",
+          },
+        ],
+      },
+      "Type": "AWS::IAM::Policy",
+    },
     "ServiceVpc4872DC6E": Object {
       "Properties": Object {
         "CidrBlock": "10.0.0.0/16",
