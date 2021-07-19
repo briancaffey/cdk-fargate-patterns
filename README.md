@@ -14,7 +14,7 @@ CDK patterns for serverless container with AWS Fargate
 Inspired by _Vijay Menon_ from the [AWS blog post](https://aws.amazon.com/blogs/containers/how-to-use-multiple-load-balancer-target-group-support-for-amazon-ecs-to-access-internal-and-external-service-endpoint-using-the-same-dns-name/) introduced in 2019, `DualAlbFargateService` allows you to create one or many fargate services with both internet-facing ALB and internal ALB associated with all services. With this pattern, fargate services will be allowed to intercommunicat via internal ALB while external inbound traffic will be spread across the same service tasks through internet-facing ALB.
 
 
-The sample below will create 3 fargate services associated with both external and internal ALBs. The internal ALB will have an alias(`internal.svc.local`) auto-configured from Route 53 so services can communite through the private ALB endpoint.
+The sample below will create 3 fargate services associated with both external and internal ALBs. The internal ALB will have an alias(`internal.svc.local`) auto-configured from Route 53 so services can interconnect through the private ALB endpoint.
 
 
 ```ts
@@ -24,8 +24,8 @@ new DualAlbFargateService(stack, 'Service', {
     {
       task: orderTask,
       desiredCount: 2,
-      internal: { port: 443, certificate },
-      external: { port: 80 },
+      external: { port: 443, certificate },
+      internal: { port: 80 },
       // customize the service autoscaling policy
       scalingPolicy: {
         maxCapacity: 20,
@@ -38,11 +38,32 @@ new DualAlbFargateService(stack, 'Service', {
   ],
   route53Ops: {
     zoneName: 'svc.local',
-    externalAlbRecordName: 'external',
-    internalAlbRecordName: 'internal',
+    externalElbRecordName: 'external',
+    internalElbRecordName: 'internal',
   },
 });
 ```
+
+# `DualNlbFargateService`
+
+Similar to `DualAlbFargateService`, you are allowed to deploy multiple container services with AWS Fargate as well as external NLB and internal NLB.
+
+To allowed ingress traffic, you will need to explicitly add ingress rules on the `connections`:
+
+```ts
+const nlbService = new DualNlbFargateService(stack, 'NLBService', {
+  tasks: [...],
+});
+
+// we need this to allow ingress traffic from public internet only for the order service
+nlbService.service[0].connections.allowFromAnyIpv4(ec2.Port.tcp(8080));
+// allow from VPC
+nlbService.service.forEach(s => {
+  s.connections.allowFrom(ec2.Peer.ipv4(nlbService.vpc.vpcCidrBlock), ec2.Port.tcp(8080));
+});
+
+```
+
 
 ## Fargate Spot Support
 
@@ -264,3 +285,9 @@ Response:
 {"service":"product","version":"1.0"}
 {"service":"customer","version":"1.0"}
 ```
+
+# FAQ
+
+Q: What is the difference between `cdk-fargate-patterns` and [aws-ecs-patterns](https://github.com/aws/aws-cdk/tree/master/packages/%40aws-cdk/aws-ecs-patterns)?
+
+A: `aws-ecs-patterns` comes with a few patterns around Amazon ECS with AWS Fargate or AWS EC2 and focuses on some scenarios with single service and single ELB like `ApplicationLoadBalancedFargateService` and `NetworkLoadBalancedFargateService`. However, `cdk-fargate-patterns` is trying to explore use cases on modern application which usually comes with multiple container services grouped as a deployment with inter-service connectivity as well as ingress traffic from external internet by seperating the internal ELB from the external one.

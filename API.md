@@ -165,6 +165,55 @@ The internal ALB.
 ---
 
 
+### DualNlbFargateService <a name="cdk-fargate-patterns.DualNlbFargateService"></a>
+
+#### Initializer <a name="cdk-fargate-patterns.DualNlbFargateService.Initializer"></a>
+
+```typescript
+import { DualNlbFargateService } from 'cdk-fargate-patterns'
+
+new DualNlbFargateService(scope: Construct, id: string, props: DualNlbFargateServiceProps)
+```
+
+##### `scope`<sup>Required</sup> <a name="cdk-fargate-patterns.DualNlbFargateService.parameter.scope"></a>
+
+- *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
+
+---
+
+##### `id`<sup>Required</sup> <a name="cdk-fargate-patterns.DualNlbFargateService.parameter.id"></a>
+
+- *Type:* `string`
+
+---
+
+##### `props`<sup>Required</sup> <a name="cdk-fargate-patterns.DualNlbFargateService.parameter.props"></a>
+
+- *Type:* [`cdk-fargate-patterns.DualNlbFargateServiceProps`](#cdk-fargate-patterns.DualNlbFargateServiceProps)
+
+---
+
+
+
+#### Properties <a name="Properties"></a>
+
+##### `externalNlb`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualNlbFargateService.property.externalNlb"></a>
+
+- *Type:* [`@aws-cdk/aws-elasticloadbalancingv2.NetworkLoadBalancer`](#@aws-cdk/aws-elasticloadbalancingv2.NetworkLoadBalancer)
+
+The external Nlb.
+
+---
+
+##### `internalNlb`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualNlbFargateService.property.internalNlb"></a>
+
+- *Type:* [`@aws-cdk/aws-elasticloadbalancingv2.NetworkLoadBalancer`](#@aws-cdk/aws-elasticloadbalancingv2.NetworkLoadBalancer)
+
+The internal Nlb.
+
+---
+
+
 ### Laravel <a name="cdk-fargate-patterns.Laravel"></a>
 
 Represents the Laravel service.
@@ -577,6 +626,87 @@ The subnets to associate with the service.
 
 ---
 
+### DualNlbFargateServiceProps <a name="cdk-fargate-patterns.DualNlbFargateServiceProps"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { DualNlbFargateServiceProps } from 'cdk-fargate-patterns'
+
+const dualNlbFargateServiceProps: DualNlbFargateServiceProps = { ... }
+```
+
+##### `tasks`<sup>Required</sup> <a name="cdk-fargate-patterns.DualNlbFargateServiceProps.property.tasks"></a>
+
+- *Type:* [`cdk-fargate-patterns.FargateTaskProps`](#cdk-fargate-patterns.FargateTaskProps)[]
+
+---
+
+##### `circuitBreaker`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualNlbFargateServiceProps.property.circuitBreaker"></a>
+
+- *Type:* `boolean`
+- *Default:* true
+
+Enable the ECS service circuit breaker.
+
+> - https://aws.amazon.com/tw/blogs/containers/announcing-amazon-ecs-deployment-circuit-breaker/
+
+---
+
+##### `enableExecuteCommand`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualNlbFargateServiceProps.property.enableExecuteCommand"></a>
+
+- *Type:* `boolean`
+- *Default:* false
+
+Whether to enable ECS Exec support.
+
+> https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html
+
+---
+
+##### `route53Ops`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualNlbFargateServiceProps.property.route53Ops"></a>
+
+- *Type:* [`cdk-fargate-patterns.Route53Options`](#cdk-fargate-patterns.Route53Options)
+
+---
+
+##### `spot`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualNlbFargateServiceProps.property.spot"></a>
+
+- *Type:* `boolean`
+- *Default:* false
+
+create a FARGATE_SPOT only cluster.
+
+---
+
+##### `spotTerminationHandler`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualNlbFargateServiceProps.property.spotTerminationHandler"></a>
+
+- *Type:* `boolean`
+- *Default:* true
+
+Enable the fargate spot termination handler.
+
+> https://docs.aws.amazon.com/AmazonECS/latest/developerguide/fargate-capacity-providers.html#fargate-capacity-providers-termination
+
+---
+
+##### `vpc`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualNlbFargateServiceProps.property.vpc"></a>
+
+- *Type:* [`@aws-cdk/aws-ec2.IVpc`](#@aws-cdk/aws-ec2.IVpc)
+
+---
+
+##### `vpcSubnets`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualNlbFargateServiceProps.property.vpcSubnets"></a>
+
+- *Type:* [`@aws-cdk/aws-ec2.SubnetSelection`](#@aws-cdk/aws-ec2.SubnetSelection)
+- *Default:* {
+subnetType: ec2.SubnetType.PRIVATE,
+}
+
+The subnets to associate with the service.
+
+---
+
 ### FargateTaskProps <a name="cdk-fargate-patterns.FargateTaskProps"></a>
 
 Task properties for the Fargate.
@@ -635,6 +765,17 @@ health check from elbv2 target group.
 - *Default:* no internal listener
 
 The internal ELB listener.
+
+---
+
+##### `protocol`<sup>Optional</sup> <a name="cdk-fargate-patterns.FargateTaskProps.property.protocol"></a>
+
+- *Type:* [`@aws-cdk/aws-elasticloadbalancingv2.Protocol`](#@aws-cdk/aws-elasticloadbalancingv2.Protocol)
+- *Default:* TCP
+
+The target group protocol for NLB.
+
+For ALB, this option will be ignored and always set to HTTP.
 
 ---
 

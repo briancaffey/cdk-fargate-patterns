@@ -97,6 +97,12 @@ export interface FargateTaskProps {
    * health check from elbv2 target group
   */
   readonly healthCheck?: elbv2.HealthCheck;
+  /**
+   * The target group protocol for NLB. For ALB, this option will be ignored and always set to HTTP.
+   *
+   * @default - TCP
+   */
+  readonly protocol?: elbv2.Protocol;
 }
 
 
