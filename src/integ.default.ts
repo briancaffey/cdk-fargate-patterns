@@ -328,8 +328,8 @@ const svc = new DualAlbFargateService(stack, 'Service', {
   ],
   route53Ops: {
     zoneName, // svc.local
-    externalAlbRecordName, // external.svc.local
-    internalAlbRecordName, // internal.svc.local
+    externalElbRecordName: externalAlbRecordName, // external.svc.local
+    internalElbRecordName: internalAlbRecordName, // internal.svc.local
   },
 });
 

@@ -2,6 +2,55 @@
 
 ## Constructs <a name="Constructs"></a>
 
+### BaseFargateService <a name="cdk-fargate-patterns.BaseFargateService"></a>
+
+#### Initializer <a name="cdk-fargate-patterns.BaseFargateService.Initializer"></a>
+
+```typescript
+import { BaseFargateService } from 'cdk-fargate-patterns'
+
+new BaseFargateService(scope: Construct, id: string, props: BaseFargateServiceProps)
+```
+
+##### `scope`<sup>Required</sup> <a name="cdk-fargate-patterns.BaseFargateService.parameter.scope"></a>
+
+- *Type:* [`@aws-cdk/core.Construct`](#@aws-cdk/core.Construct)
+
+---
+
+##### `id`<sup>Required</sup> <a name="cdk-fargate-patterns.BaseFargateService.parameter.id"></a>
+
+- *Type:* `string`
+
+---
+
+##### `props`<sup>Required</sup> <a name="cdk-fargate-patterns.BaseFargateService.parameter.props"></a>
+
+- *Type:* [`cdk-fargate-patterns.BaseFargateServiceProps`](#cdk-fargate-patterns.BaseFargateServiceProps)
+
+---
+
+
+
+#### Properties <a name="Properties"></a>
+
+##### `service`<sup>Required</sup> <a name="cdk-fargate-patterns.BaseFargateService.property.service"></a>
+
+- *Type:* [`@aws-cdk/aws-ecs.FargateService`](#@aws-cdk/aws-ecs.FargateService)[]
+
+The service(s) created from the task(s).
+
+---
+
+##### `vpc`<sup>Required</sup> <a name="cdk-fargate-patterns.BaseFargateService.property.vpc"></a>
+
+- *Type:* [`@aws-cdk/aws-ec2.IVpc`](#@aws-cdk/aws-ec2.IVpc)
+
+The VPC.
+
+---
+
+
 ### Database <a name="cdk-fargate-patterns.Database"></a>
 
 Represents the database instance or database cluster.
@@ -98,22 +147,6 @@ new DualAlbFargateService(scope: Construct, id: string, props: DualAlbFargateSer
 
 
 #### Properties <a name="Properties"></a>
-
-##### `service`<sup>Required</sup> <a name="cdk-fargate-patterns.DualAlbFargateService.property.service"></a>
-
-- *Type:* [`@aws-cdk/aws-ecs.FargateService`](#@aws-cdk/aws-ecs.FargateService)[]
-
-The service(s) created from the task(s).
-
----
-
-##### `vpc`<sup>Required</sup> <a name="cdk-fargate-patterns.DualAlbFargateService.property.vpc"></a>
-
-- *Type:* [`@aws-cdk/aws-ec2.IVpc`](#@aws-cdk/aws-ec2.IVpc)
-
-The VPC.
-
----
 
 ##### `externalAlb`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualAlbFargateService.property.externalAlb"></a>
 
@@ -237,6 +270,87 @@ new WordPress(scope: Construct, id: string, props?: WordPressProps)
 
 
 ## Structs <a name="Structs"></a>
+
+### BaseFargateServiceProps <a name="cdk-fargate-patterns.BaseFargateServiceProps"></a>
+
+#### Initializer <a name="[object Object].Initializer"></a>
+
+```typescript
+import { BaseFargateServiceProps } from 'cdk-fargate-patterns'
+
+const baseFargateServiceProps: BaseFargateServiceProps = { ... }
+```
+
+##### `tasks`<sup>Required</sup> <a name="cdk-fargate-patterns.BaseFargateServiceProps.property.tasks"></a>
+
+- *Type:* [`cdk-fargate-patterns.FargateTaskProps`](#cdk-fargate-patterns.FargateTaskProps)[]
+
+---
+
+##### `circuitBreaker`<sup>Optional</sup> <a name="cdk-fargate-patterns.BaseFargateServiceProps.property.circuitBreaker"></a>
+
+- *Type:* `boolean`
+- *Default:* true
+
+Enable the ECS service circuit breaker.
+
+> - https://aws.amazon.com/tw/blogs/containers/announcing-amazon-ecs-deployment-circuit-breaker/
+
+---
+
+##### `enableExecuteCommand`<sup>Optional</sup> <a name="cdk-fargate-patterns.BaseFargateServiceProps.property.enableExecuteCommand"></a>
+
+- *Type:* `boolean`
+- *Default:* false
+
+Whether to enable ECS Exec support.
+
+> https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-exec.html
+
+---
+
+##### `route53Ops`<sup>Optional</sup> <a name="cdk-fargate-patterns.BaseFargateServiceProps.property.route53Ops"></a>
+
+- *Type:* [`cdk-fargate-patterns.Route53Options`](#cdk-fargate-patterns.Route53Options)
+
+---
+
+##### `spot`<sup>Optional</sup> <a name="cdk-fargate-patterns.BaseFargateServiceProps.property.spot"></a>
+
+- *Type:* `boolean`
+- *Default:* false
+
+create a FARGATE_SPOT only cluster.
+
+---
+
+##### `spotTerminationHandler`<sup>Optional</sup> <a name="cdk-fargate-patterns.BaseFargateServiceProps.property.spotTerminationHandler"></a>
+
+- *Type:* `boolean`
+- *Default:* true
+
+Enable the fargate spot termination handler.
+
+> https://docs.aws.amazon.com/AmazonECS/latest/developerguide/fargate-capacity-providers.html#fargate-capacity-providers-termination
+
+---
+
+##### `vpc`<sup>Optional</sup> <a name="cdk-fargate-patterns.BaseFargateServiceProps.property.vpc"></a>
+
+- *Type:* [`@aws-cdk/aws-ec2.IVpc`](#@aws-cdk/aws-ec2.IVpc)
+
+---
+
+##### `vpcSubnets`<sup>Optional</sup> <a name="cdk-fargate-patterns.BaseFargateServiceProps.property.vpcSubnets"></a>
+
+- *Type:* [`@aws-cdk/aws-ec2.SubnetSelection`](#@aws-cdk/aws-ec2.SubnetSelection)
+- *Default:* {
+subnetType: ec2.SubnetType.PRIVATE,
+}
+
+The subnets to associate with the service.
+
+---
 
 ### DatabaseCofig <a name="cdk-fargate-patterns.DatabaseCofig"></a>
 
@@ -503,7 +617,7 @@ desired number of tasks for the service.
 - *Type:* [`cdk-fargate-patterns.LoadBalancerAccessibility`](#cdk-fargate-patterns.LoadBalancerAccessibility)
 - *Default:* no external listener
 
-The external ALB listener.
+The external ELB listener.
 
 ---
 
@@ -520,7 +634,7 @@ health check from elbv2 target group.
 - *Type:* [`cdk-fargate-patterns.LoadBalancerAccessibility`](#cdk-fargate-patterns.LoadBalancerAccessibility)
 - *Default:* no internal listener
 
-The internal ALB listener.
+The internal ELB listener.
 
 ---
 
@@ -731,21 +845,21 @@ Whether to configure the ALIAS for the LB.
 
 ---
 
-##### `externalAlbRecordName`<sup>Optional</sup> <a name="cdk-fargate-patterns.Route53Options.property.externalAlbRecordName"></a>
+##### `externalElbRecordName`<sup>Optional</sup> <a name="cdk-fargate-patterns.Route53Options.property.externalElbRecordName"></a>
 
 - *Type:* `string`
 - *Default:* external
 
-the external ALB record name.
+the external ELB record name.
 
 ---
 
-##### `internalAlbRecordName`<sup>Optional</sup> <a name="cdk-fargate-patterns.Route53Options.property.internalAlbRecordName"></a>
+##### `internalElbRecordName`<sup>Optional</sup> <a name="cdk-fargate-patterns.Route53Options.property.internalElbRecordName"></a>
 
 - *Type:* `string`
 - *Default:* internal
 
-the internal ALB record name.
+the internal ELB record name.
 
 ---
 
