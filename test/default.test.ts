@@ -1,8 +1,10 @@
 import '@aws-cdk/assert/jest';
 import * as path from 'path';
 import { ResourcePart } from '@aws-cdk/assert/lib/assertions/have-resource';
+import * as acm from '@aws-cdk/aws-certificatemanager';
 import * as ec2 from '@aws-cdk/aws-ec2';
 import * as ecs from '@aws-cdk/aws-ecs';
+import * as elbv2 from '@aws-cdk/aws-elasticloadbalancingv2';
 import * as cdk from '@aws-cdk/core';
 import { DualAlbFargateService, DualNlbFargateService } from '../src/index';
 import { WordPress } from '../src/wordpress';
@@ -891,4 +893,82 @@ test('DualNlbFargateService - minimal setup both internal and external NLB', () 
       'ServiceIntNlbListener8090EABD03',
     ],
   }, ResourcePart.CompleteDefinition);
+});
+
+
+test('DualAlbFargateService - Support gRPC application', () => {
+  // GIVEN
+  // WHEN
+  const task = new ecs.FargateTaskDefinition(stack, 'grpcTask', {
+    cpu: 256,
+    memoryLimitMiB: 512,
+  });
+
+  task.addContainer('go-grpc', {
+    image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/go-grpc')),
+    portMappings: [{ containerPort: 50051 }],
+  });
+  const cert = acm.Certificate.fromCertificateArn(stack, 'Cert', 'arn:aws:acm:region:account-id:certificate/zzzzzzz-2222-3333-4444-3edc4rfv5t');
+  new DualAlbFargateService(stack, 'Service', {
+    tasks: [
+      {
+        task: task,
+        desiredCount: 1,
+        internal: { port: 50051, certificate: [cert] },
+        external: { port: 50051, certificate: [cert] },
+        protocolVersion: elbv2.ApplicationProtocolVersion.GRPC,
+        healthCheck: {
+          healthyGrpcCodes: '12',
+        },
+      },
+    ],
+  });
+
+  // THEN
+  // We should have two ALBs
+  // the external one
+  expect(stack).toHaveResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {
+    Scheme: 'internet-facing',
+    Type: 'application',
+  });
+  // the internal one
+  expect(stack).toHaveResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {
+    Scheme: 'internal',
+    Type: 'application',
+  });
+  // We should have fargate service
+  expect(stack).toHaveResourceLike('AWS::ECS::Service', {
+    Properties: {
+      LaunchType: 'FARGATE',
+    },
+    DependsOn: [
+      'ServiceCluster2E988025',
+      'ServiceCluster572F72F1',
+      'ServiceExtAlbListener50051E7DF4764',
+      'ServiceIntAlbListener50051394E374D',
+    ],
+  }, ResourcePart.CompleteDefinition);
+
+  // TargetGroup need setting GRPC.
+  expect(stack).toHaveResource( 'AWS::ElasticLoadBalancingV2::TargetGroup', {
+    Matcher: {
+      GrpcCode: '12',
+    },
+    Port: 50051,
+    Protocol: 'HTTP',
+    ProtocolVersion: 'GRPC',
+    TargetType: 'ip',
+  });
+
+  // Listener need to setting Certificates and Protocol HTTPS.
+  expect(stack).toHaveResource( 'AWS::ElasticLoadBalancingV2::Listener', {
+    Certificates: [
+      {
+        CertificateArn: 'arn:aws:acm:region:account-id:certificate/zzzzzzz-2222-3333-4444-3edc4rfv5t',
+      },
+    ],
+    Port: 50051,
+    Protocol: 'HTTPS',
+  });
+
 });

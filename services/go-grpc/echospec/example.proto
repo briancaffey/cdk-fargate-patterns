@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package echo;
+
+// define EchoServer
+service Echo {
+    rpc Echo (EchoRequest) returns(EchoReply){}
+}
+
+// define Echo Server EchoRequest
+message EchoRequest {
+    string msg = 1;
+}
+
+// define Echo Response
+// return unixtime
+message EchoReply {
+    string msg = 1;
+    int64 unixtime = 2;
+}

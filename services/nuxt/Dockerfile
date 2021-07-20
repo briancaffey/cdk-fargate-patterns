@@ -13,6 +13,3 @@ ENV NUXT_PORT 80
 EXPOSE $NUXT_PORT
 
 CMD ["yarn", "start"]
-
-
-

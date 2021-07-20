@@ -779,6 +779,14 @@ For ALB, this option will be ignored and always set to HTTP.
 
 ---
 
+##### `protocolVersion`<sup>Optional</sup> <a name="cdk-fargate-patterns.FargateTaskProps.property.protocolVersion"></a>
+
+- *Type:* [`@aws-cdk/aws-elasticloadbalancingv2.ApplicationProtocolVersion`](#@aws-cdk/aws-elasticloadbalancingv2.ApplicationProtocolVersion)
+
+The protocol version to use.
+
+---
+
 ##### `scalingPolicy`<sup>Optional</sup> <a name="cdk-fargate-patterns.FargateTaskProps.property.scalingPolicy"></a>
 
 - *Type:* [`cdk-fargate-patterns.ServiceScalingPolicy`](#cdk-fargate-patterns.ServiceScalingPolicy)

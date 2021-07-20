@@ -2,6 +2,7 @@ import * as path from 'path';
 import * as acm from '@aws-cdk/aws-certificatemanager';
 import * as ec2 from '@aws-cdk/aws-ec2';
 import * as ecs from '@aws-cdk/aws-ecs';
+import * as elbv2 from '@aws-cdk/aws-elasticloadbalancingv2';
 import * as cdk from '@aws-cdk/core';
 import { DualAlbFargateService } from './index';
 
@@ -211,6 +212,19 @@ muxTask.addContainer('mux', {
   ],
 });
 
+// go-grpc
+const gogrpc = new ecs.FargateTaskDefinition(stack, 'gogrpcTask', {
+  cpu: 256,
+  memoryLimitMiB: 512,
+});
+
+gogrpc.addContainer('gogrpc', {
+  image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/go-grpc')),
+  portMappings: [
+    { containerPort: 50051 },
+  ],
+});
+
 const certArn = stack.node.tryGetContext('ACM_CERT_ARN');
 const cert = certArn ? acm.Certificate.fromCertificateArn(stack, 'Cert', certArn) : undefined;
 
@@ -324,6 +338,17 @@ const svc = new DualAlbFargateService(stack, 'Service', {
       desiredCount: 1,
       internal: { port: 9100 },
       external: { port: 9100 },
+    },
+    // go-grpc(external/internal)
+    {
+      task: gogrpc,
+      desiredCount: 1,
+      internal: cert ? { port: 50051, certificate: [cert] } : { port: 80 },
+      external: cert ? { port: 50051, certificate: [cert] } : { port: 80 },
+      protocolVersion: elbv2.ApplicationProtocolVersion.GRPC,
+      healthCheck: {
+        healthyGrpcCodes: '12',
+      },
     },
   ],
   route53Ops: {

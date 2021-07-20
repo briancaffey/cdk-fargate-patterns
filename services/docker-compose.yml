@@ -141,3 +141,15 @@ services:
       - versionNum=1.0
     networks:
       - default
+  go-grpc:
+    build:
+      context: ./golang/go-grpc
+      dockerfile: Dockerfile
+    container_name: go-grpc
+    ports:
+      - 50051:50051
+    environment: 
+      - SERVER_PORT=50051
+      - AWS_EXECUTION_ENV=LocalDev
+    networks:
+      - default

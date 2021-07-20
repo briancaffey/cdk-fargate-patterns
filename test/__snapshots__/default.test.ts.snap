@@ -1005,7 +1005,7 @@ Object {
     },
     "ServicecustomerIntTG0D7967D6": Object {
       "Properties": Object {
-        "Port": 80,
+        "Port": 8080,
         "Protocol": "HTTP",
         "TargetType": "ip",
         "VpcId": Object {
@@ -1664,7 +1664,7 @@ Object {
     },
     "ServiceproductIntTGD6EBD86F": Object {
       "Properties": Object {
-        "Port": 80,
+        "Port": 9090,
         "Protocol": "HTTP",
         "TargetType": "ip",
         "VpcId": Object {
@@ -1963,7 +1963,7 @@ Object {
                   Object {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/aws-cdk/assets:418c7b317826ebc69184320b27ea0c368e3d4200c9f48bfdd31a8a4be2050557",
+                  "/aws-cdk/assets:65c95fadd99a35181344e8c80eee8ff81b738131a49f451d4a37946070f625ea",
                 ],
               ],
             },
@@ -2245,7 +2245,7 @@ Object {
                   Object {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/aws-cdk/assets:418c7b317826ebc69184320b27ea0c368e3d4200c9f48bfdd31a8a4be2050557",
+                  "/aws-cdk/assets:65c95fadd99a35181344e8c80eee8ff81b738131a49f451d4a37946070f625ea",
                 ],
               ],
             },
@@ -3772,7 +3772,7 @@ Object {
                   Object {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/aws-cdk/assets:418c7b317826ebc69184320b27ea0c368e3d4200c9f48bfdd31a8a4be2050557",
+                  "/aws-cdk/assets:65c95fadd99a35181344e8c80eee8ff81b738131a49f451d4a37946070f625ea",
                 ],
               ],
             },
@@ -4054,7 +4054,7 @@ Object {
                   Object {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/aws-cdk/assets:418c7b317826ebc69184320b27ea0c368e3d4200c9f48bfdd31a8a4be2050557",
+                  "/aws-cdk/assets:65c95fadd99a35181344e8c80eee8ff81b738131a49f451d4a37946070f625ea",
                 ],
               ],
             },

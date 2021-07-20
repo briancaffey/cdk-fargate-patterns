@@ -45,7 +45,9 @@ export class DualAlbFargateService extends BaseFargateService {
       if (t.external) {
         const exttg = new elbv2.ApplicationTargetGroup(this, `${defaultContainerName}ExtTG`, {
           protocol: elbv2.ApplicationProtocol.HTTP,
+          port: t.external.port,
           vpc: this.vpc,
+          protocolVersion: t.protocolVersion,
           healthCheck: t.healthCheck,
         });
         // listener for the external ALB
@@ -67,7 +69,9 @@ export class DualAlbFargateService extends BaseFargateService {
       if (t.internal) {
         const inttg = new elbv2.ApplicationTargetGroup(this, `${defaultContainerName}IntTG`, {
           protocol: elbv2.ApplicationProtocol.HTTP,
+          port: t.internal.port,
           vpc: this.vpc,
+          protocolVersion: t.protocolVersion,
           healthCheck: t.healthCheck,
         });
 

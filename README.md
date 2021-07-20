@@ -35,6 +35,21 @@ new DualAlbFargateService(stack, 'Service', {
     },
     { task: customerTask, desiredCount: 2, internal: { port: 8080 } },
     { task: productTask, desiredCount: 2, internal: { port: 9090 } },
+    
+    // support gRPC application.
+    // you can use protocolVersion to setting gRPC for your application. 
+    // you need to specify acm and grpc port.
+    // and don't forget to setting healthCheck.healthyGrpcCodes.  
+    {
+        task: task,
+        desiredCount: 1,
+        internal: { port: 50051, certificate: [cert] },
+        external: { port: 50051, certificate: [cert] },
+        protocolVersion: elbv2.ApplicationProtocolVersion.GRPC,
+        healthCheck: {
+          healthyGrpcCodes: '12',
+        },
+      },
   ],
   route53Ops: {
     zoneName: 'svc.local',

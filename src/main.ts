@@ -103,6 +103,10 @@ export interface FargateTaskProps {
    * @default - TCP
    */
   readonly protocol?: elbv2.Protocol;
+  /**
+   * The protocol version to use.
+   */
+  readonly protocolVersion?: elbv2.ApplicationProtocolVersion;
 }
 
 
