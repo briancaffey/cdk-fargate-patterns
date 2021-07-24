@@ -13,7 +13,8 @@
       "contributions": [
         "bug"
        ]
-     },
+    },
+    {
       "login": "plarsson",
       "name": "Peter Larsson",
       "avatar_url": "https://avatars.githubusercontent.com/u/903607?v=4",
@@ -22,6 +23,7 @@
         "ideas"
       ]
      },
+     {
       "login": "dwchiang",
       "name": "Ernest Chiang",
       "avatar_url": "https://avatars.githubusercontent.com/u/251263?v=4",
@@ -33,6 +35,7 @@
         "example"
        ]
      },
+     {
       "login": "clarencetw",
       "name": "Clarence",
       "avatar_url": "https://avatars.githubusercontent.com/u/5698291?v=4",
@@ -42,6 +45,7 @@
         "code"
       ]
     },
+    {
       "login": "neilkuan",
       "name": "Neil Kuan",
       "avatar_url": "https://avatars.githubusercontent.com/u/46012524?v=4",
