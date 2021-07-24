@@ -6,21 +6,15 @@
   "commit": false,
   "contributors": [
     {
-      "login": "paper5487",
-      "name": "paper5487",
-      "avatar_url": "https://avatars.githubusercontent.com/u/15643225?v=4",
-      "profile": "https://github.com/paper5487",
+      "login": "neilkuan",
+      "name": "Neil Kuan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/46012524?v=4",
+      "profile": "https://blog.neilkuan.net",
       "contributions": [
-        "bug"
-      ]
-    },
-    {
-      "login": "plarsson",
-      "name": "Peter Larsson",
-      "avatar_url": "https://avatars.githubusercontent.com/u/903607?v=4",
-      "profile": "https://github.com/plarsson",
-      "contributions": [
-        "ideas"
+        "design",
+        "code",
+        "test",
+        "example"
       ]
     },
     {
@@ -46,15 +40,21 @@
       ]
     },
     {
-      "login": "neilkuan",
-      "name": "Neil Kuan",
-      "avatar_url": "https://avatars.githubusercontent.com/u/46012524?v=4",
-      "profile": "https://blog.neilkuan.net",
+      "login": "paper5487",
+      "name": "paper5487",
+      "avatar_url": "https://avatars.githubusercontent.com/u/15643225?v=4",
+      "profile": "https://github.com/paper5487",
       "contributions": [
-        "design",
-        "code",
-        "test",
-        "example"
+        "bug"
+      ]
+    },
+    {
+      "login": "plarsson",
+      "name": "Peter Larsson",
+      "avatar_url": "https://avatars.githubusercontent.com/u/903607?v=4",
+      "profile": "https://github.com/plarsson",
+      "contributions": [
+        "ideas"
       ]
     },
     {
