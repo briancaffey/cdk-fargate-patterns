@@ -1,0 +1,25 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "neilkuan",
+      "name": "Neil Kuan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/46012524?v=4",
+      "profile": "https://blog.neilkuan.net",
+      "contributions": [
+        "design",
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "cdk-fargate-patterns",
+  "projectOwner": "pahud",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}

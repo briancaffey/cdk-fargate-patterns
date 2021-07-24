@@ -1,4 +1,7 @@
 [![NPM version](https://badge.fury.io/js/cdk-fargate-patterns.svg)](https://badge.fury.io/js/cdk-fargate-patterns)
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
 [![PyPI version](https://badge.fury.io/py/cdk-fargate-patterns.svg)](https://badge.fury.io/py/cdk-fargate-patterns)
 [![Release](https://github.com/pahud/cdk-fargate-patterns/actions/workflows/release.yml/badge.svg)](https://github.com/pahud/cdk-fargate-patterns/actions/workflows/release.yml)
 
@@ -306,3 +309,23 @@ Response:
 Q: What is the difference between `cdk-fargate-patterns` and [aws-ecs-patterns](https://github.com/aws/aws-cdk/tree/master/packages/%40aws-cdk/aws-ecs-patterns)?
 
 A: `aws-ecs-patterns` comes with a few patterns around Amazon ECS with AWS Fargate or AWS EC2 and focuses on some scenarios with single service and single ELB like `ApplicationLoadBalancedFargateService` and `NetworkLoadBalancedFargateService`. However, `cdk-fargate-patterns` is trying to explore use cases on modern application which usually comes with multiple container services grouped as a deployment with inter-service connectivity as well as ingress traffic from external internet by seperating the internal ELB from the external one.
+
+## Contributors ✨
+
+Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tr>
+    <td align="center"><a href="https://blog.neilkuan.net"><img src="https://avatars.githubusercontent.com/u/46012524?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Neil Kuan</b></sub></a><br /><a href="#design-neilkuan" title="Design">🎨</a> <a href="https://github.com/pahud/cdk-fargate-patterns/commits?author=neilkuan" title="Code">💻</a></td>
+  </tr>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
