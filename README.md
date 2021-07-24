@@ -319,8 +319,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://clarence.tw"><img src="https://avatars.githubusercontent.com/u/5698291?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Clarence</b></sub></a><br /><a href="#example-clarencetw" title="Examples">💡</a> <a href="https://github.com/pahud/cdk-fargate-patterns/commits?author=clarencetw" title="Code">💻</a></td>
     <td align="center"><a href="https://blog.neilkuan.net"><img src="https://avatars.githubusercontent.com/u/46012524?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Neil Kuan</b></sub></a><br /><a href="#design-neilkuan" title="Design">🎨</a> <a href="https://github.com/pahud/cdk-fargate-patterns/commits?author=neilkuan" title="Code">💻</a></td>
+    <td align="center"><a href="https://www.ernestchiang.com"><img src="https://avatars.githubusercontent.com/u/251263?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ernest Chiang</b></sub></a><br /><a href="#ideas-dwchiang" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/pahud/cdk-fargate-patterns/commits?author=dwchiang" title="Tests">⚠️</a> <a href="https://github.com/pahud/cdk-fargate-patterns/commits?author=dwchiang" title="Code">💻</a></td>
+    <td align="center"><a href="https://clarence.tw"><img src="https://avatars.githubusercontent.com/u/5698291?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Clarence</b></sub></a><br /><a href="#example-clarencetw" title="Examples">💡</a> <a href="https://github.com/pahud/cdk-fargate-patterns/commits?author=clarencetw" title="Code">💻</a></td>
   </tr>
 </table>
 

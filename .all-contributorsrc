@@ -6,6 +6,17 @@
   "commit": false,
   "contributors": [
     {
+      "login": "dwchiang",
+      "name": "Ernest Chiang",
+      "avatar_url": "https://avatars.githubusercontent.com/u/251263?v=4",
+      "profile": "https://www.ernestchiang.com",
+      "contributions": [
+        "ideas",
+        "test",
+        "code",
+        "example"
+       ]
+     },
       "login": "clarencetw",
       "name": "Clarence",
       "avatar_url": "https://avatars.githubusercontent.com/u/5698291?v=4",
@@ -21,7 +32,9 @@
       "profile": "https://blog.neilkuan.net",
       "contributions": [
         "design",
-        "code"
+        "code",
+        "test",
+        "example"
       ]
     }
   ],
