@@ -12,7 +12,7 @@
       "profile": "https://github.com/paper5487",
       "contributions": [
         "bug"
-       ]
+      ]
     },
     {
       "login": "plarsson",
@@ -22,8 +22,8 @@
       "contributions": [
         "ideas"
       ]
-     },
-     {
+    },
+    {
       "login": "dwchiang",
       "name": "Ernest Chiang",
       "avatar_url": "https://avatars.githubusercontent.com/u/251263?v=4",
@@ -33,9 +33,9 @@
         "test",
         "code",
         "example"
-       ]
-     },
-     {
+      ]
+    },
+    {
       "login": "clarencetw",
       "name": "Clarence",
       "avatar_url": "https://avatars.githubusercontent.com/u/5698291?v=4",
@@ -55,6 +55,15 @@
         "code",
         "test",
         "example"
+      ]
+    },
+    {
+      "login": "LeoChien-SC",
+      "name": "LeoChien-SC",
+      "avatar_url": "https://avatars.githubusercontent.com/u/81736089?v=4",
+      "profile": "https://github.com/LeoChien-SC",
+      "contributions": [
+        "bug"
       ]
     }
   ],

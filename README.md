@@ -2,7 +2,7 @@
 [![PyPI version](https://badge.fury.io/py/cdk-fargate-patterns.svg)](https://badge.fury.io/py/cdk-fargate-patterns)
 [![Release](https://github.com/pahud/cdk-fargate-patterns/actions/workflows/release.yml/badge.svg)](https://github.com/pahud/cdk-fargate-patterns/actions/workflows/release.yml)
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-5-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-6-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 # cdk-fargate-patterns
@@ -319,11 +319,12 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://blog.neilkuan.net"><img src="https://avatars.githubusercontent.com/u/46012524?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Neil Kuan</b></sub></a><br /><a href="#design-neilkuan" title="Design">🎨</a> <a href="https://github.com/pahud/cdk-fargate-patterns/commits?author=neilkuan" title="Code">💻</a></td>
-    <td align="center"><a href="https://www.ernestchiang.com"><img src="https://avatars.githubusercontent.com/u/251263?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ernest Chiang</b></sub></a><br /><a href="#ideas-dwchiang" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/pahud/cdk-fargate-patterns/commits?author=dwchiang" title="Tests">⚠️</a> <a href="https://github.com/pahud/cdk-fargate-patterns/commits?author=dwchiang" title="Code">💻</a></td>
-    <td align="center"><a href="https://clarence.tw"><img src="https://avatars.githubusercontent.com/u/5698291?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Clarence</b></sub></a><br /><a href="#example-clarencetw" title="Examples">💡</a> <a href="https://github.com/pahud/cdk-fargate-patterns/commits?author=clarencetw" title="Code">💻</a></td>
-    <td align="center"><a href="https://github.com/plarsson"><img src="https://avatars.githubusercontent.com/u/903607?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Peter Larsson</b></sub></a><br /><a href="#ideas-plarsson" title="Ideas, Planning, & Feedback">🤔</a></td>
     <td align="center"><a href="https://github.com/paper5487"><img src="https://avatars.githubusercontent.com/u/15643225?v=4?s=100" width="100px;" alt=""/><br /><sub><b>paper5487</b></sub></a><br /><a href="https://github.com/pahud/cdk-fargate-patterns/issues?q=author%3Apaper5487" title="Bug reports">🐛</a></td>
+    <td align="center"><a href="https://github.com/plarsson"><img src="https://avatars.githubusercontent.com/u/903607?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Peter Larsson</b></sub></a><br /><a href="#ideas-plarsson" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://www.ernestchiang.com"><img src="https://avatars.githubusercontent.com/u/251263?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ernest Chiang</b></sub></a><br /><a href="#ideas-dwchiang" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/pahud/cdk-fargate-patterns/commits?author=dwchiang" title="Tests">⚠️</a> <a href="https://github.com/pahud/cdk-fargate-patterns/commits?author=dwchiang" title="Code">💻</a> <a href="#example-dwchiang" title="Examples">💡</a></td>
+    <td align="center"><a href="https://clarence.tw"><img src="https://avatars.githubusercontent.com/u/5698291?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Clarence</b></sub></a><br /><a href="#example-clarencetw" title="Examples">💡</a> <a href="https://github.com/pahud/cdk-fargate-patterns/commits?author=clarencetw" title="Code">💻</a></td>
+    <td align="center"><a href="https://blog.neilkuan.net"><img src="https://avatars.githubusercontent.com/u/46012524?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Neil Kuan</b></sub></a><br /><a href="#design-neilkuan" title="Design">🎨</a> <a href="https://github.com/pahud/cdk-fargate-patterns/commits?author=neilkuan" title="Code">💻</a> <a href="https://github.com/pahud/cdk-fargate-patterns/commits?author=neilkuan" title="Tests">⚠️</a> <a href="#example-neilkuan" title="Examples">💡</a></td>
+    <td align="center"><a href="https://github.com/LeoChien-SC"><img src="https://avatars.githubusercontent.com/u/81736089?v=4?s=100" width="100px;" alt=""/><br /><sub><b>LeoChien-SC</b></sub></a><br /><a href="https://github.com/pahud/cdk-fargate-patterns/issues?q=author%3ALeoChien-SC" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
