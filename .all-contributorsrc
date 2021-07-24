@@ -6,6 +6,15 @@
   "commit": false,
   "contributors": [
     {
+      "login": "clarencetw",
+      "name": "Clarence",
+      "avatar_url": "https://avatars.githubusercontent.com/u/5698291?v=4",
+      "profile": "https://clarence.tw",
+      "contributions": [
+        "example",
+        "code"
+      ]
+    },
       "login": "neilkuan",
       "name": "Neil Kuan",
       "avatar_url": "https://avatars.githubusercontent.com/u/46012524?v=4",
