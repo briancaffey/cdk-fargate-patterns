@@ -323,6 +323,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://www.ernestchiang.com"><img src="https://avatars.githubusercontent.com/u/251263?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Ernest Chiang</b></sub></a><br /><a href="#ideas-dwchiang" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/pahud/cdk-fargate-patterns/commits?author=dwchiang" title="Tests">⚠️</a> <a href="https://github.com/pahud/cdk-fargate-patterns/commits?author=dwchiang" title="Code">💻</a></td>
     <td align="center"><a href="https://clarence.tw"><img src="https://avatars.githubusercontent.com/u/5698291?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Clarence</b></sub></a><br /><a href="#example-clarencetw" title="Examples">💡</a> <a href="https://github.com/pahud/cdk-fargate-patterns/commits?author=clarencetw" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/plarsson"><img src="https://avatars.githubusercontent.com/u/903607?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Peter Larsson</b></sub></a><br /><a href="#ideas-plarsson" title="Ideas, Planning, & Feedback">🤔</a></td>
+    <td align="center"><a href="https://github.com/paper5487"><img src="https://avatars.githubusercontent.com/u/15643225?v=4?s=100" width="100px;" alt=""/><br /><sub><b>paper5487</b></sub></a><br /><a href="https://github.com/pahud/cdk-fargate-patterns/issues?q=author%3Apaper5487" title="Bug reports">🐛</a></td>
   </tr>
 </table>
 
