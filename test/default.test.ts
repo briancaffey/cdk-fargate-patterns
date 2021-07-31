@@ -972,3 +972,134 @@ test('DualAlbFargateService - Support gRPC application', () => {
   });
 
 });
+
+test('DualAlbFargateService - Allowed to import an existing ECS Cluster', () => {
+  // GIVEN
+  // WHEN
+  const task = new ecs.FargateTaskDefinition(stack, 'testTask', {
+    cpu: 256,
+    memoryLimitMiB: 512,
+  });
+
+  task.addContainer('nginx', {
+    image: ecs.ContainerImage.fromRegistry('nginx'),
+    portMappings: [{ containerPort: 80 }],
+  });
+  new DualAlbFargateService(stack, 'Service', {
+    cluster: new ecs.Cluster(stack, 'Cluster', { clusterName: 'myexistCluster' }),
+    tasks: [
+      {
+        task: task,
+        desiredCount: 1,
+        external: { port: 80 },
+      },
+    ],
+  });
+
+  // THEN
+  // We should have two ALBs
+  // the external one
+  expect(stack).toHaveResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {
+    Scheme: 'internet-facing',
+    Type: 'application',
+  });
+
+  // Use exist the ECS Cluster.
+  expect(stack).toHaveResource('AWS::ECS::Cluster', {
+    ClusterName: 'myexistCluster',
+  });
+
+  // check not have ClusterCapacityProviderAssociations Resource.
+  expect(stack).not.toHaveResource('AWS::ECS::ClusterCapacityProviderAssociations');
+
+});
+
+test('DualAlbFargateService - Support Setting Service Name and Setting ClusterName', () => {
+  // GIVEN
+  // WHEN
+  const task = new ecs.FargateTaskDefinition(stack, 'testTask', {
+    cpu: 256,
+    memoryLimitMiB: 512,
+  });
+
+  task.addContainer('nginx', {
+    image: ecs.ContainerImage.fromRegistry('nginx'),
+    portMappings: [{ containerPort: 80 }],
+  });
+  new DualAlbFargateService(stack, 'Service', {
+    clusterProps: {
+      clusterName: 'myCustomClusterName',
+    },
+    tasks: [
+      {
+        task: task,
+        desiredCount: 1,
+        external: { port: 80 },
+        serviceName: 'nginxService',
+      },
+    ],
+  });
+
+  // THEN
+  // We should have two ALBs
+  // the external one
+  expect(stack).toHaveResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {
+    Scheme: 'internet-facing',
+    Type: 'application',
+  });
+
+  // Create the new ECS Cluster.
+  expect(stack).toHaveResource('AWS::ECS::Cluster', {
+    ClusterName: 'myCustomClusterName',
+  });
+
+  // Check Service Name.
+  expect(stack).toHaveResource('AWS::ECS::Service', {
+    ServiceName: 'nginxService',
+  });
+});
+
+test('DualAlbFargateService - Testing cannot specify vpc and cluster at the same time', () => {
+  // GIVEN
+  // WHEN
+  const task = new ecs.FargateTaskDefinition(stack, 'testTask', {
+    cpu: 256,
+    memoryLimitMiB: 512,
+  });
+
+  task.addContainer('nginx', {
+    image: ecs.ContainerImage.fromRegistry('nginx'),
+    portMappings: [{ containerPort: 80 }],
+  });
+
+  expect(()=>{
+    new DualAlbFargateService(stack, 'Service', {
+      cluster: new ecs.Cluster(stack, 'Cluster', { clusterName: 'myexistCluster' }),
+      vpc: new ec2.Vpc(stack, 'VPC'),
+      tasks: [
+        {
+          task: task,
+          desiredCount: 1,
+          external: { port: 80 },
+          serviceName: 'nginxService',
+        },
+      ],
+    });
+  }).toThrowError(/Cannot specify vpc and cluster at the same time/);
+  expect(()=>{
+    new DualAlbFargateService(stack, 'Service2', {
+      cluster: new ecs.Cluster(stack, 'Cluster2', { clusterName: 'myexistCluster' }),
+      clusterProps: { clusterName: 'settingClustername' },
+      tasks: [
+        {
+          task: task,
+          desiredCount: 1,
+          external: { port: 80 },
+          serviceName: 'nginxService',
+        },
+      ],
+    });
+  }).toThrowError(/Cannot specify clusterProps and cluster at the same time/);
+});
+
+

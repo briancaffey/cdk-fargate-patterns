@@ -347,6 +347,24 @@ Enable the ECS service circuit breaker.
 
 ---
 
+##### `cluster`<sup>Optional</sup> <a name="cdk-fargate-patterns.BaseFargateServiceProps.property.cluster"></a>
+
+- *Type:* [`@aws-cdk/aws-ecs.ICluster`](#@aws-cdk/aws-ecs.ICluster)
+- *Default:* create a new ECS Cluster.
+
+Use existing ECS Cluster.
+
+---
+
+##### `clusterProps`<sup>Optional</sup> <a name="cdk-fargate-patterns.BaseFargateServiceProps.property.clusterProps"></a>
+
+- *Type:* [`@aws-cdk/aws-ecs.ClusterProps`](#@aws-cdk/aws-ecs.ClusterProps)
+- *Default:* Create vpc and enable Fargate Capacity Providers.
+
+The properties used to define an ECS cluster.
+
+---
+
 ##### `enableExecuteCommand`<sup>Optional</sup> <a name="cdk-fargate-patterns.BaseFargateServiceProps.property.enableExecuteCommand"></a>
 
 - *Type:* `boolean`
@@ -572,6 +590,24 @@ Enable the ECS service circuit breaker.
 
 ---
 
+##### `cluster`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualAlbFargateServiceProps.property.cluster"></a>
+
+- *Type:* [`@aws-cdk/aws-ecs.ICluster`](#@aws-cdk/aws-ecs.ICluster)
+- *Default:* create a new ECS Cluster.
+
+Use existing ECS Cluster.
+
+---
+
+##### `clusterProps`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualAlbFargateServiceProps.property.clusterProps"></a>
+
+- *Type:* [`@aws-cdk/aws-ecs.ClusterProps`](#@aws-cdk/aws-ecs.ClusterProps)
+- *Default:* Create vpc and enable Fargate Capacity Providers.
+
+The properties used to define an ECS cluster.
+
+---
+
 ##### `enableExecuteCommand`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualAlbFargateServiceProps.property.enableExecuteCommand"></a>
 
 - *Type:* `boolean`
@@ -650,6 +686,24 @@ const dualNlbFargateServiceProps: DualNlbFargateServiceProps = { ... }
 Enable the ECS service circuit breaker.
 
 > - https://aws.amazon.com/tw/blogs/containers/announcing-amazon-ecs-deployment-circuit-breaker/
+
+---
+
+##### `cluster`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualNlbFargateServiceProps.property.cluster"></a>
+
+- *Type:* [`@aws-cdk/aws-ecs.ICluster`](#@aws-cdk/aws-ecs.ICluster)
+- *Default:* create a new ECS Cluster.
+
+Use existing ECS Cluster.
+
+---
+
+##### `clusterProps`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualNlbFargateServiceProps.property.clusterProps"></a>
+
+- *Type:* [`@aws-cdk/aws-ecs.ClusterProps`](#@aws-cdk/aws-ecs.ClusterProps)
+- *Default:* Create vpc and enable Fargate Capacity Providers.
+
+The properties used to define an ECS cluster.
 
 ---
 
@@ -793,6 +847,15 @@ The protocol version to use.
 - *Default:* { maxCapacity: 10, targetCpuUtilization: 50, requestsPerTarget: 1000 }
 
 service autoscaling policy.
+
+---
+
+##### `serviceName`<sup>Optional</sup> <a name="cdk-fargate-patterns.FargateTaskProps.property.serviceName"></a>
+
+- *Type:* `string`
+- *Default:* auto-generated
+
+The serviceName.
 
 ---
 

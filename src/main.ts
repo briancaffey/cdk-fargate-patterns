@@ -12,6 +12,17 @@ import { getOrCreateVpc } from './common/common-functions';
 
 
 export interface BaseFargateServiceProps {
+  /**
+   * The properties used to define an ECS cluster.
+   *
+   * @default - Create vpc and enable Fargate Capacity Providers.
+   */
+  readonly clusterProps?: ecs.ClusterProps;
+  /**
+   * Use existing ECS Cluster.
+   * @default - create a new ECS Cluster.
+   */
+  readonly cluster?: ecs.ICluster;
   readonly vpc?: ec2.IVpc;
   readonly tasks: FargateTaskProps[];
   readonly route53Ops?: Route53Options;
@@ -107,8 +118,13 @@ export interface FargateTaskProps {
    * The protocol version to use.
    */
   readonly protocolVersion?: elbv2.ApplicationProtocolVersion;
+  /**
+   * The serviceName.
+   *
+   * @default - auto-generated
+   */
+  readonly serviceName?: string;
 }
-
 
 export interface ServiceScalingPolicy {
   /**
@@ -175,7 +191,13 @@ export abstract class BaseFargateService extends cdk.Construct {
     super(scope, id);
 
     this.enableLoadBalancerAlias = props.route53Ops?.enableLoadBalancerAlias != false;
-    this.vpc = props.vpc ?? getOrCreateVpc(this),
+    if (props.vpc && props.cluster) {
+      throw new Error('Cannot specify vpc and cluster at the same time');
+    }
+    if (props.clusterProps && props.cluster) {
+      throw new Error('Cannot specify clusterProps and cluster at the same time');
+    }
+    this.vpc = props.cluster ? props.cluster.vpc : props.vpc ?? getOrCreateVpc(this),
     this.service = [];
     if (props.vpcSubnets) {
       this.vpcSubnets = props.vpcSubnets;
@@ -194,9 +216,10 @@ export abstract class BaseFargateService extends cdk.Construct {
       }
     });
 
-    const cluster = new ecs.Cluster(this, 'Cluster', {
+    const cluster = props.cluster ?? new ecs.Cluster(this, 'Cluster', {
       vpc: this.vpc,
       enableFargateCapacityProviders: true,
+      ...props.clusterProps,
     });
 
     const spotOnlyStrategy = [
@@ -219,6 +242,7 @@ export abstract class BaseFargateService extends cdk.Construct {
       const svc = new ecs.FargateService(this, `${defaultContainerName}Service`, {
         taskDefinition: t.task,
         cluster,
+        serviceName: t.serviceName,
         capacityProviderStrategies: t.capacityProviderStrategy ?? ( props.spot ? spotOnlyStrategy : undefined ),
         desiredCount: t.desiredCount,
         enableExecuteCommand: props.enableExecuteCommand ?? false,
@@ -244,10 +268,12 @@ export abstract class BaseFargateService extends cdk.Construct {
       });
     });
     // ensure the dependency
-    const cp = this.node.tryFindChild('Cluster') as ecs.CfnClusterCapacityProviderAssociations;
-    this.service.forEach(s => {
-      s.node.addDependency(cp);
-    });
+    if (!props.cluster) {
+      const cp = this.node.tryFindChild('Cluster') as ecs.CfnClusterCapacityProviderAssociations;
+      this.service.forEach(s => {
+        s.node.addDependency(cp);
+      });
+    };
 
     // Route53
     this.zoneName = props.route53Ops?.zoneName ?? 'svc.local';
