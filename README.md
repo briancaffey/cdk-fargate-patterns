@@ -194,7 +194,7 @@ new DualAlbFargateService(stack, 'Service', {
 
 ### Import an existing Cluster
 !!! Before using an existing `ECS Cluster`, please make sure you have the following:
-- see - (Adding Fargate capacity providers to an existing cluster)[https://docs.aws.amazon.com/AmazonECS/latest/developerguide/fargate-capacity-providers.html#fargate-capacity-providers-existing-cluster]
+- see : [Adding Fargate capacity providers to an existing cluster](https://docs.aws.amazon.com/AmazonECS/latest/developerguide/fargate-capacity-providers.html#fargate-capacity-providers-existing-cluster)
 ```ts
 const vpc = ec2.Vpc.fromLookup(stack, 'defVpc', { isDefault: true });
 const sg = new ec2.SecurityGroup(stack, 'demo-sg', {
@@ -208,7 +208,7 @@ const existCluster = ecs.Cluster.fromClusterAttributes(stack, 'existCluster', {
 
 new DualAlbFargateService(stack, 'Service', {
   enableExecuteCommand: true,
-  ecsCluster: existCluster,
+  cluster: existCluster,
   tasks: [
     {
       task: nginx,
