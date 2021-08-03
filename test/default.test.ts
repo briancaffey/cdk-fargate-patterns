@@ -1102,7 +1102,7 @@ test('DualAlbFargateService - Testing cannot specify vpc and cluster at the same
   }).toThrowError(/Cannot specify clusterProps and cluster at the same time/);
 });
 
-test('DualAlbFargateService - maxHealthyPercent and minHealthyPercent', () => {
+test('DualAlbFargateService - healthCheckGracePeriod, maxHealthyPercent and minHealthyPercent', () => {
   // GIVEN
   // WHEN
   const task = new ecs.FargateTaskDefinition(stack, 'testTask', {
@@ -1127,6 +1127,7 @@ test('DualAlbFargateService - maxHealthyPercent and minHealthyPercent', () => {
         },
         maxHealthyPercent: 98,
         minHealthyPercent: 97,
+        healthCheckGracePeriod: cdk.Duration.seconds(96),
       },
     ],
   });
@@ -1135,6 +1136,7 @@ test('DualAlbFargateService - maxHealthyPercent and minHealthyPercent', () => {
   // The interval time should be 99 seconds.
   // The maxHealthyPercent should be 98.
   // The minHealthyPercent should be 97.
+  // The healthCheckGracePeriod should be 96.
   expect(stack).toHaveResource('AWS::ECS::Service', {
     DeploymentConfiguration: {
       DeploymentCircuitBreaker: {
@@ -1144,6 +1146,7 @@ test('DualAlbFargateService - maxHealthyPercent and minHealthyPercent', () => {
       MaximumPercent: 98,
       MinimumHealthyPercent: 97,
     },
+    HealthCheckGracePeriodSeconds: 96,
   });
   // Check target group setting HealthCheckIntervalSeconds 99.
   expect(stack).toHaveResource('AWS::ElasticLoadBalancingV2::TargetGroup', {
@@ -1152,4 +1155,49 @@ test('DualAlbFargateService - maxHealthyPercent and minHealthyPercent', () => {
   });
 });
 
+test('DualAlbFargateService - setting alb idletimeout', () => {
+  // GIVEN
+  // WHEN
+  const task = new ecs.FargateTaskDefinition(stack, 'testTask', {
+    cpu: 256,
+    memoryLimitMiB: 512,
+  });
 
+  task.addContainer('nginx', {
+    image: ecs.ContainerImage.fromRegistry('nginx'),
+    portMappings: [{ containerPort: 80 }],
+  });
+
+  new DualAlbFargateService(stack, 'Service', {
+    idleTimeout: cdk.Duration.seconds(900),
+    tasks: [
+      {
+        task: task,
+        desiredCount: 1,
+        external: { port: 80 },
+        serviceName: 'nginxService',
+        healthCheck: {
+          interval: cdk.Duration.seconds(99),
+        },
+        maxHealthyPercent: 98,
+        minHealthyPercent: 97,
+        healthCheckGracePeriod: cdk.Duration.seconds(96),
+      },
+    ],
+  });
+
+  // THEN
+  // The alb idle time out should be 900 seconds.
+  expect(stack).toHaveResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {
+    LoadBalancerAttributes: [
+      {
+        Key: 'deletion_protection.enabled',
+        Value: 'false',
+      },
+      {
+        Key: 'idle_timeout.timeout_seconds',
+        Value: '900',
+      },
+    ],
+  });
+});

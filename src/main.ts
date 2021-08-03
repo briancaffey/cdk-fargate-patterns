@@ -147,6 +147,13 @@ export interface FargateTaskProps {
    * @default 50
   */
   readonly minHealthyPercent?: number;
+
+  /**
+   * The period of time, in seconds,
+   * that the Amazon ECS service scheduler ignores unhealthy Elastic Load Balancing target health checks after a task has first started.
+   * @default cdk.Duration.seconds(60),
+  */
+  readonly healthCheckGracePeriod?: cdk.Duration;
 }
 
 export interface ServiceScalingPolicy {
@@ -276,6 +283,7 @@ export abstract class BaseFargateService extends cdk.Construct {
         } : undefined,
         maxHealthyPercent: t.maxHealthyPercent,
         minHealthyPercent: t.minHealthyPercent,
+        healthCheckGracePeriod: t.healthCheckGracePeriod,
       });
       this.service.push(svc);
 

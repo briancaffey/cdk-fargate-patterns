@@ -5,7 +5,13 @@ import * as cdk from '@aws-cdk/core';
 import { BaseFargateService, BaseFargateServiceProps } from './main';
 
 
-export interface DualAlbFargateServiceProps extends BaseFargateServiceProps {};
+export interface DualAlbFargateServiceProps extends BaseFargateServiceProps {
+  /**
+   * The load balancer idle timeout, in seconds.
+   * @default - 60.
+  */
+  readonly idleTimeout?: cdk.Duration;
+};
 
 export class DualAlbFargateService extends BaseFargateService {
   /**
@@ -24,6 +30,7 @@ export class DualAlbFargateService extends BaseFargateService {
       this.externalAlb = new elbv2.ApplicationLoadBalancer(this, 'ExternalAlb', {
         vpc: this.vpc,
         internetFacing: true,
+        idleTimeout: props.idleTimeout,
       });
     }
 
@@ -31,6 +38,7 @@ export class DualAlbFargateService extends BaseFargateService {
       this.internalAlb = new elbv2.ApplicationLoadBalancer(this, 'InternalAlb', {
         vpc: this.vpc,
         internetFacing: false,
+        idleTimeout: props.idleTimeout,
       });
     }
 

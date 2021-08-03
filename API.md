@@ -662,6 +662,15 @@ The subnets to associate with the service.
 
 ---
 
+##### `idleTimeout`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualAlbFargateServiceProps.property.idleTimeout"></a>
+
+- *Type:* [`@aws-cdk/core.Duration`](#@aws-cdk/core.Duration)
+- *Default:* 60.
+
+The load balancer idle timeout, in seconds.
+
+---
+
 ### DualNlbFargateServiceProps <a name="cdk-fargate-patterns.DualNlbFargateServiceProps"></a>
 
 #### Initializer <a name="[object Object].Initializer"></a>
@@ -810,6 +819,15 @@ The external ELB listener.
 - *Type:* [`@aws-cdk/aws-elasticloadbalancingv2.HealthCheck`](#@aws-cdk/aws-elasticloadbalancingv2.HealthCheck)
 
 health check from elbv2 target group.
+
+---
+
+##### `healthCheckGracePeriod`<sup>Optional</sup> <a name="cdk-fargate-patterns.FargateTaskProps.property.healthCheckGracePeriod"></a>
+
+- *Type:* [`@aws-cdk/core.Duration`](#@aws-cdk/core.Duration)
+- *Default:* cdk.Duration.seconds(60),
+
+The period of time, in seconds, that the Amazon ECS service scheduler ignores unhealthy Elastic Load Balancing target health checks after a task has first started.
 
 ---
 
