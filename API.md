@@ -822,6 +822,24 @@ The internal ELB listener.
 
 ---
 
+##### `maxHealthyPercent`<sup>Optional</sup> <a name="cdk-fargate-patterns.FargateTaskProps.property.maxHealthyPercent"></a>
+
+- *Type:* `number`
+- *Default:* 200
+
+The maximum number of tasks, specified as a percentage of the Amazon ECS service's DesiredCount value, that can run in a service during a deployment.
+
+---
+
+##### `minHealthyPercent`<sup>Optional</sup> <a name="cdk-fargate-patterns.FargateTaskProps.property.minHealthyPercent"></a>
+
+- *Type:* `number`
+- *Default:* 50
+
+The minimum number of tasks, specified as a percentage of the Amazon ECS service's DesiredCount value, that must continue to run and remain healthy during a deployment.
+
+---
+
 ##### `protocol`<sup>Optional</sup> <a name="cdk-fargate-patterns.FargateTaskProps.property.protocol"></a>
 
 - *Type:* [`@aws-cdk/aws-elasticloadbalancingv2.Protocol`](#@aws-cdk/aws-elasticloadbalancingv2.Protocol)

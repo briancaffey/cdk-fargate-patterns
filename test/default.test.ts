@@ -1102,4 +1102,54 @@ test('DualAlbFargateService - Testing cannot specify vpc and cluster at the same
   }).toThrowError(/Cannot specify clusterProps and cluster at the same time/);
 });
 
+test('DualAlbFargateService - maxHealthyPercent and minHealthyPercent', () => {
+  // GIVEN
+  // WHEN
+  const task = new ecs.FargateTaskDefinition(stack, 'testTask', {
+    cpu: 256,
+    memoryLimitMiB: 512,
+  });
+
+  task.addContainer('nginx', {
+    image: ecs.ContainerImage.fromRegistry('nginx'),
+    portMappings: [{ containerPort: 80 }],
+  });
+
+  new DualAlbFargateService(stack, 'Service', {
+    tasks: [
+      {
+        task: task,
+        desiredCount: 1,
+        external: { port: 80 },
+        serviceName: 'nginxService',
+        healthCheck: {
+          interval: cdk.Duration.seconds(99),
+        },
+        maxHealthyPercent: 98,
+        minHealthyPercent: 97,
+      },
+    ],
+  });
+
+  // THEN
+  // The interval time should be 99 seconds.
+  // The maxHealthyPercent should be 98.
+  // The minHealthyPercent should be 97.
+  expect(stack).toHaveResource('AWS::ECS::Service', {
+    DeploymentConfiguration: {
+      DeploymentCircuitBreaker: {
+        Enable: true,
+        Rollback: true,
+      },
+      MaximumPercent: 98,
+      MinimumHealthyPercent: 97,
+    },
+  });
+  // Check target group setting HealthCheckIntervalSeconds 99.
+  expect(stack).toHaveResource('AWS::ElasticLoadBalancingV2::TargetGroup', {
+    HealthCheckIntervalSeconds: 99,
+    Port: 80,
+  });
+});
+
 

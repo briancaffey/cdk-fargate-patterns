@@ -80,50 +80,73 @@ export interface LoadBalancerAccessibility {
 export interface FargateTaskProps {
   // The Fargate task definition
   readonly task: ecs.FargateTaskDefinition;
+
   /**
    * The internal ELB listener
    * @default - no internal listener
    */
   readonly internal?: LoadBalancerAccessibility;
+
   /**
    * The external ELB listener
    * @default - no external listener
    */
   readonly external?: LoadBalancerAccessibility;
+
   /**
    * desired number of tasks for the service
    * @default 1
    */
   readonly desiredCount?: number;
+
   /**
    * service autoscaling policy
    * @default - { maxCapacity: 10, targetCpuUtilization: 50, requestsPerTarget: 1000 }
    */
   readonly scalingPolicy?: ServiceScalingPolicy;
+
   /**
    * Customized capacity provider strategy
    */
   readonly capacityProviderStrategy?: ecs.CapacityProviderStrategy[];
+
   /**
    * health check from elbv2 target group
   */
   readonly healthCheck?: elbv2.HealthCheck;
+
   /**
    * The target group protocol for NLB. For ALB, this option will be ignored and always set to HTTP.
    *
    * @default - TCP
    */
   readonly protocol?: elbv2.Protocol;
+
   /**
    * The protocol version to use.
    */
   readonly protocolVersion?: elbv2.ApplicationProtocolVersion;
+
   /**
    * The serviceName.
    *
    * @default - auto-generated
    */
   readonly serviceName?: string;
+
+  /**
+   * The maximum number of tasks, specified as a percentage of the Amazon ECS service's DesiredCount value,
+   * that can run in a service during a deployment.
+   * @default 200
+  */
+  readonly maxHealthyPercent?: number;
+
+  /**
+   * The minimum number of tasks, specified as a percentage of the Amazon ECS service's DesiredCount value,
+   * that must continue to run and remain healthy during a deployment.
+   * @default 50
+  */
+  readonly minHealthyPercent?: number;
 }
 
 export interface ServiceScalingPolicy {
@@ -251,6 +274,8 @@ export abstract class BaseFargateService extends cdk.Construct {
         circuitBreaker: props.circuitBreaker != false ? {
           rollback: true,
         } : undefined,
+        maxHealthyPercent: t.maxHealthyPercent,
+        minHealthyPercent: t.minHealthyPercent,
       });
       this.service.push(svc);
 
