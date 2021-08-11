@@ -82,6 +82,53 @@ nlbService.service.forEach(s => {
 
 ```
 
+## ALB Listener Rules Support
+
+To share the ALB listener with multiple services, use `forwardConditions` to specify custom rules.
+
+The sample below defines three services sharing a single extneral listener on HTTPS(TCP 443) with different host names while
+interconnecting internally with different listeners on the internal ALB.
+
+```ts
+new DualAlbFargateService(stack, 'ALBService', {
+  spot: true, // FARGATE_SPOT only cluster
+  enableExecuteCommand: true,
+  tasks: [
+    {
+      task: orderTask,
+      desiredCount: 2,
+      internal: { port: 80 },
+      external: {
+        port: 443,
+        certificate: [cert],
+        forwardConditions: [elbv2.ListenerCondition.hostHeaders(['order.example.com'])],
+      }
+    },
+    {
+      task: customerTask,
+      desiredCount: 1,
+      external: {
+        port: 443,
+        certificate: [cert],
+        forwardConditions: [elbv2.ListenerCondition.hostHeaders(['customer.example.com'])],
+      },
+      internal: { port: 8080 },
+    },
+    {
+      task: productTask,
+      desiredCount: 1,
+      external: {
+        port: 443,
+        certificate: [cert],
+        forwardConditions: [elbv2.ListenerCondition.hostHeaders(['product.example.com'])],
+      },
+      internal: { port: 9090 },
+    },
+  ],
+});
+```
+
+
 
 ## Fargate Spot Support
 
