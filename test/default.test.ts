@@ -1201,3 +1201,149 @@ test('DualAlbFargateService - setting alb idletimeout', () => {
     ],
   });
 });
+
+
+test('DualAlbFargateService - listener forward condition', () => {
+  // GIVEN
+  // WHEN
+  const task = new ecs.FargateTaskDefinition(stack, 'testTask', {
+    cpu: 256,
+    memoryLimitMiB: 512,
+  });
+
+  task.addContainer('nginx', {
+    image: ecs.ContainerImage.fromRegistry('nginx'),
+    portMappings: [{ containerPort: 80 }],
+  });
+
+  const task2 = new ecs.FargateTaskDefinition(stack, 'testTask2', {
+    cpu: 256,
+    memoryLimitMiB: 512,
+  });
+
+  task2.addContainer('nginx2', {
+    image: ecs.ContainerImage.fromRegistry('nginx2'),
+    portMappings: [{ containerPort: 80 }],
+  });
+
+  new DualAlbFargateService(stack, 'Service', {
+    tasks: [
+      {
+        task: task,
+        desiredCount: 1,
+        external: { port: 80, forwardConditions: [elbv2.ListenerCondition.hostHeaders(['nginx1.example.com'])] },
+        internal: { port: 8080, forwardConditions: [elbv2.ListenerCondition.hostHeaders(['nginx1-internal.example.com'])] },
+      },
+      {
+        task: task2,
+        desiredCount: 1,
+        external: { port: 80, forwardConditions: [elbv2.ListenerCondition.hostHeaders(['nginx2.example.com'])] },
+        internal: { port: 8080, forwardConditions: [elbv2.ListenerCondition.hostHeaders(['nginx2-internal.example.com'])] },
+      },
+    ],
+  });
+
+
+  // THEN
+  expect(stack).toHaveResource('AWS::ElasticLoadBalancingV2::ListenerRule', {
+    Actions: [
+      {
+        TargetGroupArn: {
+          Ref: 'ServicenginxExtTG6A9B6477',
+        },
+        Type: 'forward',
+      },
+    ],
+    Conditions: [
+      {
+        Field: 'host-header',
+        HostHeaderConfig: {
+          Values: [
+            'nginx1.example.com',
+          ],
+        },
+      },
+    ],
+    ListenerArn: {
+      Ref: 'ServiceExtAlbListener80CF2B8C01',
+    },
+    Priority: 1,
+  });
+
+  expect(stack).toHaveResource('AWS::ElasticLoadBalancingV2::ListenerRule', {
+    Actions: [
+      {
+        TargetGroupArn: {
+          Ref: 'Servicenginx2ExtTGC6C48486',
+        },
+        Type: 'forward',
+      },
+    ],
+    Conditions: [
+      {
+        Field: 'host-header',
+        HostHeaderConfig: {
+          Values: [
+            'nginx2.example.com',
+          ],
+        },
+      },
+    ],
+    ListenerArn: {
+      Ref: 'ServiceExtAlbListener80CF2B8C01',
+    },
+    Priority: 2,
+  });
+
+  expect(stack).toHaveResource('AWS::ElasticLoadBalancingV2::ListenerRule', {
+    Actions: [
+      {
+        TargetGroupArn: {
+          Ref: 'ServicenginxIntTG48E05158',
+        },
+        Type: 'forward',
+      },
+    ],
+    Conditions: [
+      {
+        Field: 'host-header',
+        HostHeaderConfig: {
+          Values: [
+            'nginx1-internal.example.com',
+          ],
+        },
+      },
+    ],
+    ListenerArn: {
+      Ref: 'ServiceIntAlbListener808027FA1497',
+    },
+    Priority: 1,
+  });
+
+  expect(stack).toHaveResource('AWS::ElasticLoadBalancingV2::ListenerRule', {
+    Actions: [
+      {
+        TargetGroupArn: {
+          Ref: 'Servicenginx2IntTG757E02FD',
+        },
+        Type: 'forward',
+      },
+    ],
+    Conditions: [
+      {
+        Field: 'host-header',
+        HostHeaderConfig: {
+          Values: [
+            'nginx2-internal.example.com',
+          ],
+        },
+      },
+    ],
+    ListenerArn: {
+      Ref: 'ServiceIntAlbListener808027FA1497',
+    },
+    Priority: 2,
+  });
+
+
+});
