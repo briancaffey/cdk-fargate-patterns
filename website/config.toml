@@ -1,0 +1,10 @@
+baseURL = "https://pahud.github.io/cdk-fargate-patterns/"
+languageCode = "en-us"
+title = "Modern Application with Serverless Containers"
+theme = "hugo-theme-learn"
+contentDir = "../docs"
+canonifyURLs = true
+
+[params]
+  themeVariant = "serverlesscontainer"
+  disableLandingPageButton = true

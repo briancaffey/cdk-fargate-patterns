@@ -19,9 +19,11 @@ cdk.context.json
 cdk.out
 dependabot.yml
 dist
+docs
 images
 junit.xml
 tsconfig.tsbuildinfo
+website
 yarn-error.log
 !.jsii
 !/lib
