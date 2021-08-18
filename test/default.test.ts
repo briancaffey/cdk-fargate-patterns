@@ -1169,12 +1169,14 @@ test('DualAlbFargateService - setting alb idletimeout', () => {
   });
 
   new DualAlbFargateService(stack, 'Service', {
-    idleTimeout: cdk.Duration.seconds(900),
+    externalAlbIdleTimeout: cdk.Duration.seconds(900),
+    internalAlbIdleTimeout: cdk.Duration.seconds(800),
     tasks: [
       {
         task: task,
         desiredCount: 1,
         external: { port: 80 },
+        internal: { port: 80 },
         serviceName: 'nginxService',
         healthCheck: {
           interval: cdk.Duration.seconds(99),
@@ -1197,6 +1199,19 @@ test('DualAlbFargateService - setting alb idletimeout', () => {
       {
         Key: 'idle_timeout.timeout_seconds',
         Value: '900',
+      },
+    ],
+  });
+
+  expect(stack).toHaveResource('AWS::ElasticLoadBalancingV2::LoadBalancer', {
+    LoadBalancerAttributes: [
+      {
+        Key: 'deletion_protection.enabled',
+        Value: 'false',
+      },
+      {
+        Key: 'idle_timeout.timeout_seconds',
+        Value: '800',
       },
     ],
   });

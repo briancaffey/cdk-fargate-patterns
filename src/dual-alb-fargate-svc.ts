@@ -7,10 +7,16 @@ import { BaseFargateService, BaseFargateServiceProps } from './main';
 
 export interface DualAlbFargateServiceProps extends BaseFargateServiceProps {
   /**
-   * The load balancer idle timeout, in seconds.
+   * The external load balancer idle timeout, in seconds.
    * @default - 60.
   */
-  readonly idleTimeout?: cdk.Duration;
+  readonly externalAlbIdleTimeout?: cdk.Duration;
+
+  /**
+   * The internal load balancer idle timeout, in seconds.
+   * @default - 60.
+  */
+  readonly internalAlbIdleTimeout?: cdk.Duration;
 };
 
 export class DualAlbFargateService extends BaseFargateService {
@@ -38,7 +44,7 @@ export class DualAlbFargateService extends BaseFargateService {
       this.externalAlb = new elbv2.ApplicationLoadBalancer(this, 'ExternalAlb', {
         vpc: this.vpc,
         internetFacing: true,
-        idleTimeout: props.idleTimeout,
+        idleTimeout: props.externalAlbIdleTimeout,
       });
     }
 
@@ -46,7 +52,7 @@ export class DualAlbFargateService extends BaseFargateService {
       this.internalAlb = new elbv2.ApplicationLoadBalancer(this, 'InternalAlb', {
         vpc: this.vpc,
         internetFacing: false,
-        idleTimeout: props.idleTimeout,
+        idleTimeout: props.internalAlbIdleTimeout,
       });
     }
 

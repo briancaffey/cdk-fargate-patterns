@@ -662,12 +662,21 @@ The subnets to associate with the service.
 
 ---
 
-##### `idleTimeout`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualAlbFargateServiceProps.property.idleTimeout"></a>
+##### `externalAlbIdleTimeout`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualAlbFargateServiceProps.property.externalAlbIdleTimeout"></a>
 
 - *Type:* [`@aws-cdk/core.Duration`](#@aws-cdk/core.Duration)
 - *Default:* 60.
 
-The load balancer idle timeout, in seconds.
+The external load balancer idle timeout, in seconds.
+
+---
+
+##### `internalAlbIdleTimeout`<sup>Optional</sup> <a name="cdk-fargate-patterns.DualAlbFargateServiceProps.property.internalAlbIdleTimeout"></a>
+
+- *Type:* [`@aws-cdk/core.Duration`](#@aws-cdk/core.Duration)
+- *Default:* 60.
+
+The internal load balancer idle timeout, in seconds.
 
 ---
 
