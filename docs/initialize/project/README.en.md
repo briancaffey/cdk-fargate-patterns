@@ -1,5 +1,5 @@
 ---
-title: Initialize
+title: Initialize the Project
 weight: 1
 ---
 
