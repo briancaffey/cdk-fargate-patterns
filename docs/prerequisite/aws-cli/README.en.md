@@ -1,17 +1,17 @@
 ---
-title: Configure AWS CLI
+title: AWS CLI
 weight: 1
 ---
 
-To configure your AWS CLI with credentials, run below command
+To configure your AWS CLI with credentials, run the following command.
 
 ```sh
-aws configure
+aws configure --profile default
 ```
 
-Type your credentials and type **us-east-1** in terms of region name
+Configure your credentials and default region.
 
-```
+```text
 AWS Access Key ID [None]: <type your access key id> 
 AWS Secret Access Key [None]: <type your secret access key> 
 Default region name [None]: us-east-1
