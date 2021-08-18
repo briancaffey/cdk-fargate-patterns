@@ -523,7 +523,7 @@ Object {
                 Object {
                   "Ref": "AWS::URLSuffix",
                 },
-                "/aws-cdk/assets:006165fc78a55a416da8fcf74ff0c2d8600a714bb1d473455df51611a8b26e45",
+                "/aws-cdk/assets:ec3135368f0a72eb451adf9e40cf23a4b80beececc1908170d08a7f81f91f59a",
               ],
             ],
           },
@@ -797,7 +797,7 @@ Object {
                   Object {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/aws-cdk/assets:c171fa1cc0efba63bf5b92d0e23e57deb8acdf61efffda740e36a83947343c6f",
+                  "/aws-cdk/assets:bd5e69079b5135b28201c740d0ed54fc418fda0cd14a4d6a4da424e9322ca697",
                 ],
               ],
             },
@@ -1924,7 +1924,7 @@ Object {
                 Object {
                   "Ref": "AWS::URLSuffix",
                 },
-                "/aws-cdk/assets:006165fc78a55a416da8fcf74ff0c2d8600a714bb1d473455df51611a8b26e45",
+                "/aws-cdk/assets:ec3135368f0a72eb451adf9e40cf23a4b80beececc1908170d08a7f81f91f59a",
               ],
             ],
           },
@@ -2198,7 +2198,7 @@ Object {
                   Object {
                     "Ref": "AWS::URLSuffix",
                   },
-                  "/aws-cdk/assets:50e79f1fa72c59b8c7442367ecf7c0501450459ade2a82eae52c4e8462362b65",
+                  "/aws-cdk/assets:f7ad7f0001c965ab07c93279ec751eba157b066f2f459375dfc9d240bd94c20e",
                 ],
               ],
             },

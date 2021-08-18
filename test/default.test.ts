@@ -617,7 +617,7 @@ test('fargate spot termination handler - 100% spot', () => {
             {
               Ref: 'AWS::URLSuffix',
             },
-            '/aws-cdk/assets:006165fc78a55a416da8fcf74ff0c2d8600a714bb1d473455df51611a8b26e45',
+            '/aws-cdk/assets:ec3135368f0a72eb451adf9e40cf23a4b80beececc1908170d08a7f81f91f59a',
           ],
         ],
       },
@@ -714,7 +714,7 @@ test('fargate spot termination handler - partial spot', () => {
             {
               Ref: 'AWS::URLSuffix',
             },
-            '/aws-cdk/assets:006165fc78a55a416da8fcf74ff0c2d8600a714bb1d473455df51611a8b26e45',
+            '/aws-cdk/assets:ec3135368f0a72eb451adf9e40cf23a4b80beececc1908170d08a7f81f91f59a',
           ],
         ],
       },
