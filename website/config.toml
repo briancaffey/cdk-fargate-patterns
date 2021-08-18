@@ -6,5 +6,5 @@ contentDir = "../docs"
 canonifyURLs = true
 
 [params]
-  themeVariant = "serverlesscontainer"
+  themeVariant = "aws"
   disableLandingPageButton = true

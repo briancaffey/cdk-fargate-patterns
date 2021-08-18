@@ -54,7 +54,7 @@ const project = new AwsCdkConstructLibrary({
   ],
 });
 
-const common_exclude = ['cdk.out', 'cdk.context.json', 'yarn-error.log', 'dependabot.yml'];
+const common_exclude = ['cdk.out', 'cdk.context.json', 'yarn-error.log', 'dependabot.yml', 'website/public'];
 project.npmignore.exclude(...common_exclude, 'images', 'docs', 'website');
 project.gitignore.exclude(...common_exclude);
 

@@ -88,6 +88,7 @@ new DualAlbFargateService(stack, 'ALBService', {
       desiredCount: 2,
       internal: { port: 80 },
       external: cert ? { port: 443, certificate: [cert] } : { port: 80 },
+      
       // customize the service autoscaling policy
       scalingPolicy: {
         maxCapacity: 20,
