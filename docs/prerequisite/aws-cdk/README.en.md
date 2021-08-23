@@ -15,19 +15,19 @@ npm install -g aws-cdk
 Run the following command to verify correct installation and print the version number of the AWS CDK.
 
 ```sh
-cdk --version
+npx cdk --version
 ```
 
 Bootstrap your environment with the AWS CDK Toolkit.
 
 ```sh
-cdk bootstrap aws://ACCOUNT-NUMBER/REGION
+npx cdk bootstrap aws://ACCOUNT-NUMBER/REGION
 ```
 
 The following examples illustrate bootstrapping an environment in **us-east-1**.
 
 ```sh
-cdk bootstrap aws://123456789012/us-east-1
+npx cdk bootstrap aws://123456789012/us-east-1
 ```
 
 {{% notice note %}}
