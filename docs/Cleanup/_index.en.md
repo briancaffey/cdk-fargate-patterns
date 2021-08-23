@@ -3,8 +3,10 @@ title: Clean up
 weight: 60
 ---
 
-To clean up this workshop, run
+Congratulations! You have completed all Labs in this workshop.
+
+To clean up all resources deployed in this workshop, run `cdk destroy`
 
 ```sh
-cdk deploy
+`npx cdk destroy`
 ```

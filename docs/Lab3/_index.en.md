@@ -3,7 +3,7 @@ title: Lab 3 - advanced topics
 weight: 50
 ---
 
-In this section, we will walk through some advanced topics including:
+In this section, we will walk through some advanced topics:
 
 - [Service Autoscaling](./service-autoscaling/readme)
 - [HTTPS with ACM Certificate](./https-with-acm/readme)
