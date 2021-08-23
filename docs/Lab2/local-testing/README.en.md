@@ -3,47 +3,83 @@ title: Local testing
 weight: 2
 ---
 
-Open VSCode with the built-in terminal. Let's create and initialize a new project.
+Now our code assets are ready at `services/golang`, we should test it locally to before we deploy it onto AWS.
+
+Create a `docker-compose.yml` unser the `services` directory:
+
+```yaml
+version: '3'
+
+networks:
+  default:
+
+services:
+  golang-order:
+    build:
+      context: ./golang/OrderService
+      dockerfile: Dockerfile
+    container_name: order
+    ports:
+      - 80:8080
+    environment: 
+      - PRODUCT_SVC_URL=http://golang-product:8080
+      - CUSTOMER_SVC_URL=http://golang-customer:8080
+      - serviceName=order
+      - versionNum=1.0
+    networks:
+      - default
+  golang-customer:
+    build:
+      context: ./golang/CommonService
+      dockerfile: Dockerfile
+    container_name: customer
+    ports:
+      - 8080:8080
+    environment: 
+      - PRODUCT_SVC_URL=http://golang-product:8080
+      - CUSTOMER_SVC_URL=http://golang-customer:8080
+      - serviceName=customer
+      - versionNum=1.0
+    networks:
+      - default
+  golang-product:
+    build:
+      context: ./golang/CommonService
+      dockerfile: Dockerfile
+    container_name: product
+    ports:
+      - 9090:8080
+    environment: 
+      - PRODUCT_SVC_URL=http://golang-product:8080
+      - CUSTOMER_SVC_URL=http://golang-customer:8080
+      - serviceName=product
+      - versionNum=1.0
+    networks:
+      - default
+
+  ```
+
+Now bring up all the services locally with `docker compose up`:
 
 ```sh
-mkdir serverless-container-demo
-cd $_
+cd services
+docker compose up
 ```
 
-Open current directory in the workspace with the `code` command.
+Open another terminal from VSCode
 
 ```sh
-code -a .
+curl http://localhost:80
 ```
 
-{{% notice note %}}
+Response
 
-If you don't have the **code** command in yoru PATH, you can [install it from VSCode command palette](https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line).
-
-{{% /notice %}} 
-
-
-Initialize the CDK application.
-
-```sh
-# in the serverless-container-demo directory
-cdk init -l typescript
+```json
+{"service":"order", "version":"1.0"}
+{"service":"customer","version":"1.0"}
+{"service":"product","version":"1.0"}
 ```
 
-Install the **cdk-fargate-patterns** construct library.
+Go back to the previous terminal and terminate it with `Ctrl-c`.
 
-```sh
-npm install cdk-fargate-patterns
-```
-
-Install `@aws-cdk/aws-ec2` and `@aws-cdk/aws-ecs` construct libraries.
-
-```sh
-npm i @aws-cdk/aws-{ec2,ecs}
-```
-
-Open the `lib/serverless-cpontainer-demo-stack.ts` in the left panel.
-
-![Initialize](/images/init-ok.png)
-
-Now we are ready to deploy our first serverless container application.
+OK the application with `Order`, `Product` and `Customer` services are working great in our local environment with docker. Let's deploy it to AWS in the next chapter.

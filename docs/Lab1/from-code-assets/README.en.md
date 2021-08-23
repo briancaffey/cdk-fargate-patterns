@@ -7,15 +7,15 @@ Now we know how to deploy existing container images from the pulic registries. H
 
 In this chapter, we will build a simple Golang app locally, make sure it works in our local environment and then just deploy it to AWS Fargate.
 
-In `serverless-container-demo` directory, create the `src/service` directory.
+In `serverless-container-demo` directory, create the `services/gorilla-mux` directory.
 
 ```sh
 # in serverless-container-demo
-mkdir -p src/service
+mkdir -p services/gorilla-mux
 cd $_
 ```
 
-Download the code assets into the `service` directory.
+Download the code assets into the `gorilla-mux` directory.
 
 ```sh
 curl https://raw.githubusercontent.com/pahud/cdk-fargate-patterns/main/services/golang/gorilla-mux/{main.go,go.sum,go.mod,Dockerfile} -o "#1"
@@ -66,7 +66,7 @@ export class ServerlessContainerDemoStack extends cdk.Stack {
       memoryLimitMiB: 512
     })
     mytask.addContainer('nyancat', {
-      image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../src/service')),
+      image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/gorilla-mux')),
       portMappings: [
         {
           containerPort: 8080,

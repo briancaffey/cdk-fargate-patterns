@@ -3,47 +3,19 @@ title: Prepare the code
 weight: 1
 ---
 
-Open VSCode with the built-in terminal. Let's create and initialize a new project.
+Now we are going to deploy **3 services** in a single deployment with all the services inter-communicate internally. Considering the following architecture diagram. The `Order` service listening on the external ALB receives requests from client, sending requests asynchonously to `Product` and `Customer` services internally, aggregating the responses and return to the client.
+
+![](/images/DualAlbFargateService.svg)
+
+
+Let's delete everything under the `services` directory and download our application.
 
 ```sh
-mkdir serverless-container-demo
-cd $_
+# in serverless-container-demo directory
+# delete everything under services/
+rm -rf services/*
+curl -L -o sample.zip https://github.com/pahud/cdk-fargate-patterns/archive/refs/heads/main.zip
+unzip sample.zip
+mv cdk-fargate-patterns-main/services/golang services
+rm -rf cdk-fargate-patterns-main
 ```
-
-Open current directory in the workspace with the `code` command.
-
-```sh
-code -a .
-```
-
-{{% notice note %}}
-
-If you don't have the **code** command in yoru PATH, you can [install it from VSCode command palette](https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line).
-
-{{% /notice %}} 
-
-
-Initialize the CDK application.
-
-```sh
-# in the serverless-container-demo directory
-cdk init -l typescript
-```
-
-Install the **cdk-fargate-patterns** construct library.
-
-```sh
-npm install cdk-fargate-patterns
-```
-
-Install `@aws-cdk/aws-ec2` and `@aws-cdk/aws-ecs` construct libraries.
-
-```sh
-npm i @aws-cdk/aws-{ec2,ecs}
-```
-
-Open the `lib/serverless-cpontainer-demo-stack.ts` in the left panel.
-
-![Initialize](/images/init-ok.png)
-
-Now we are ready to deploy our first serverless container application.

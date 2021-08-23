@@ -7,6 +7,5 @@ Now let's deploy multiple container services in a single deployment.
 
 - [Prepare the code](./prepare-the-code/readme)
 - [Local testing](./local-testing/readme)
-- [Build with CDK](./build-with-cdk/readme)
 - [Deploy it](./deploy/readme)
 
