@@ -9,5 +9,6 @@ Before getting started with this workshop, make sure you have installed the foll
 - [AWS CLI](./aws-cli/readme)
 - [AWS CDK](./aws-cdk/readme)
 - [VSCode](./vscode/readme)
+- [Docker Desktop](./docker/readme)
 
 
