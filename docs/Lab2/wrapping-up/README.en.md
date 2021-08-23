@@ -9,3 +9,5 @@ With this pattern, you are allowed to deploy any of your applications or service
 
 In the next Lab, we will go through some advanced topics in real world production environment. Let's go to the next Lab.
 
+![](/images/DualAlbFargateService.svg)
+
