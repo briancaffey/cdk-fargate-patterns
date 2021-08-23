@@ -3,47 +3,114 @@ title: From code assets
 weight: 4
 ---
 
-Open VSCode with the built-in terminal. Let's create and initialize a new project.
+Now we know how to deploy existing container images from the pulic registries. However, as a developer, we tend build, test and run our development locally and, if everything is working great, deploy it straight from our IDE to the AWS environment.
+
+In this chapter, we will build a simple Golang app locally, make sure it works in our local environment and then just deploy it to AWS Fargate.
+
+In `serverless-container-demo` directory, create the `src/service` directory.
 
 ```sh
-mkdir serverless-container-demo
+# in serverless-container-demo
+mkdir -p src/service
 cd $_
 ```
 
-Open current directory in the workspace with the `code` command.
+Download the code assets into the `service` directory.
 
 ```sh
-code -a .
+curl https://raw.githubusercontent.com/pahud/cdk-fargate-patterns/main/services/golang/gorilla-mux/{main.go,go.sum,go.mod,Dockerfile} -o "#1"
+```
+
+Build the docker image locally.
+
+```sh
+docker build -t gorilla-demo .
+```
+
+Bring up the conainer locally and listen on `localhost:8080`.
+
+```sh
+docker run -p 8080:8080 gorilla-demo
+```
+
+Open a seperate terminal in VSCode and test it with curl.
+
+```sh
+curl localhost:8080
+```
+
+And you should see the output.
+
+```json
+{"serviceName":"mux","versionNum":"1.0"}
+```
+
+Go back to previous terminal and terminate the running docker container with `Ctrl-c`.
+
+Now the code should be working in our local environment, let's deploy it.
+
+edit `lib/serverless-container-demo-stack.ts`. 
+
+```ts
+import * as cdk from '@aws-cdk/core';
+import { DualAlbFargateService } from 'cdk-fargate-patterns';
+import * as ecs from '@aws-cdk/aws-ecs';
+import * as path from 'path';
+
+export class ServerlessContainerDemoStack extends cdk.Stack {
+  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+    super(scope, id, props);
+
+    const mytask = new ecs.FargateTaskDefinition(this, 'Task', {
+      cpu: 256,
+      memoryLimitMiB: 512
+    })
+    mytask.addContainer('nyancat', {
+      image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../src/service')),
+      portMappings: [
+        {
+          containerPort: 8080,
+        }
+      ]
+    })
+
+    new DualAlbFargateService(this, 'NyanCatService', {
+      tasks: [
+        {
+          task: mytask,
+          external: { port: 80 }
+        }
+      ],
+      route53Ops: {
+        enableLoadBalancerAlias: false,
+      }
+    })
+  }
+}
 ```
 
 {{% notice note %}}
 
-If you don't have the **code** command in yoru PATH, you can [install it from VSCode command palette](https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line).
+We just modified the `image` property by specifying the path to the code assets and update the container port from `80` to `8080`.
 
 {{% /notice %}} 
 
 
-Initialize the CDK application.
+
+Go to `serverless-container-demo` directory and run:
+
 
 ```sh
-# in the serverless-container-demo directory
-cdk init -l typescript
+# see the changes first.
+npx cdk diff 
+# deploy it
+npx cdk deploy
 ```
 
-Install the **cdk-fargate-patterns** construct library.
+On deploy completed, click the URL returned and you should see exactly the same response.
 
-```sh
-npm install cdk-fargate-patterns
+Make sure you reload the page.
+
+```json
+{"serviceName":"mux","versionNum":"1.0"}
 ```
-
-Install `@aws-cdk/aws-ec2` and `@aws-cdk/aws-ecs` construct libraries.
-
-```sh
-npm i @aws-cdk/aws-{ec2,ecs}
-```
-
-Open the `lib/serverless-cpontainer-demo-stack.ts` in the left panel.
-
-![Initialize](/images/init-ok.png)
-
-Now we are ready to deploy our first serverless container application.

@@ -3,47 +3,5 @@ title: Wrapping up
 weight: 4
 ---
 
-Open VSCode with the built-in terminal. Let's create and initialize a new project.
+Congratulations! Now we've learned how to deploy services from any public container images or from out local code assets straight from the VSCode IDE. In the next Lab, we will deploy multiple services with the `DualAlbFargateService` construct and allow all the services to inter-connect internally with service discovery.
 
-```sh
-mkdir serverless-container-demo
-cd $_
-```
-
-Open current directory in the workspace with the `code` command.
-
-```sh
-code -a .
-```
-
-{{% notice note %}}
-
-If you don't have the **code** command in yoru PATH, you can [install it from VSCode command palette](https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line).
-
-{{% /notice %}} 
-
-
-Initialize the CDK application.
-
-```sh
-# in the serverless-container-demo directory
-cdk init -l typescript
-```
-
-Install the **cdk-fargate-patterns** construct library.
-
-```sh
-npm install cdk-fargate-patterns
-```
-
-Install `@aws-cdk/aws-ec2` and `@aws-cdk/aws-ecs` construct libraries.
-
-```sh
-npm i @aws-cdk/aws-{ec2,ecs}
-```
-
-Open the `lib/serverless-cpontainer-demo-stack.ts` in the left panel.
-
-![Initialize](/images/init-ok.png)
-
-Now we are ready to deploy our first serverless container application.

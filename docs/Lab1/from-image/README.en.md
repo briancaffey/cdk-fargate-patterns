@@ -3,47 +3,72 @@ title: From container image
 weight: 2
 ---
 
-Open VSCode with the built-in terminal. Let's create and initialize a new project.
+Let's deploy a service running the [Nyan Cat animation](https://youtu.be/QH2-TGUlwu4). We will use the public container image at
 
-```sh
-mkdir serverless-container-demo
-cd $_
+```
+public.ecr.aws/pahudnet/nyancat-docker-image:latest
 ```
 
-Open current directory in the workspace with the `code` command.
+edit `lib/serverless-container-demo-stack.ts`
 
-```sh
-code -a .
+```ts
+import * as cdk from '@aws-cdk/core';
+import { DualAlbFargateService } from 'cdk-fargate-patterns';
+import * as ecs from '@aws-cdk/aws-ecs';
+
+export class ServerlessContainerDemoStack extends cdk.Stack {
+  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+    super(scope, id, props);
+
+    const mytask = new ecs.FargateTaskDefinition(this, 'Task', {
+      cpu: 256,
+      memoryLimitMiB: 512
+    })
+    mytask.addContainer('nyancat', {
+      image: ecs.ContainerImage.fromRegistry('public.ecr.aws/pahudnet/nyancat-docker-image:latest'),
+      portMappings: [
+        {
+          containerPort: 80,
+        }
+      ]
+    })
+
+    new DualAlbFargateService(this, 'NyanCatService', {
+      tasks: [
+        {
+          task: mytask,
+          external: { port: 80 }
+        }
+      ],
+      route53Ops: {
+        enableLoadBalancerAlias: false,
+      }
+    })
+  }
+}
 ```
 
-{{% notice note %}}
-
-If you don't have the **code** command in yoru PATH, you can [install it from VSCode command palette](https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line).
-
-{{% /notice %}} 
-
-
-Initialize the CDK application.
+Run `npx cdk diff` to see the changes.
 
 ```sh
-# in the serverless-container-demo directory
-cdk init -l typescript
+npx cdk diff
 ```
 
-Install the **cdk-fargate-patterns** construct library.
+Run `npx cdk deploy` to deploy.
 
 ```sh
-npm install cdk-fargate-patterns
+npx cdk deploy
 ```
 
-Install `@aws-cdk/aws-ec2` and `@aws-cdk/aws-ecs` construct libraries.
+On deploy completed, click the URL in the **Outputs** like
 
-```sh
-npm i @aws-cdk/aws-{ec2,ecs}
+```
+Outputs:
+ServerlessContainerDemoStack.NyanCatServiceExternalEndpoint0F7E5BAB = http://Serve-NyanC-12T2Y6PNZS60G-50811448.ap-northeast-1.elb.amazonaws.com
 ```
 
-Open the `lib/serverless-cpontainer-demo-stack.ts` in the left panel.
+The **Nycan Cat** is running. Behind the scene, a serverless container service running with **AWS Fargate** was deployed with the **ALB(Application Load Balancer)**.
 
-![Initialize](/images/init-ok.png)
+![Nyan Cat](/images/nyancat.png)
 
-Now we are ready to deploy our first serverless container application.
+Now let's go to the next section. We will deploy the code assets from the development environment all the way to AWS Fargate.
