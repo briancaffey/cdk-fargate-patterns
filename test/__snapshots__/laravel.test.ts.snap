@@ -2,6 +2,7 @@
 
 exports[`Snapshot 1`] = `
 Object {
+  "Description": "(SO8030) - AWS CDK stack with cdk-fargate-patterns",
   "Outputs": Object {
     "LaravelBitnamiDemoALBFargateServiceExternalEndpointBD496529": Object {
       "Value": Object {

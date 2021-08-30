@@ -2,6 +2,7 @@
 
 exports[`Snapshot - DualAlbFargateService 1`] = `
 Object {
+  "Description": "(SO8030) - AWS CDK stack with cdk-fargate-patterns",
   "Outputs": Object {
     "ServiceExternalEndpointCAC21CCA": Object {
       "Value": Object {
@@ -2361,6 +2362,7 @@ Object {
 
 exports[`Snapshot - DualNlbFargateService 1`] = `
 Object {
+  "Description": "(SO8030) - AWS CDK stack with cdk-fargate-patterns",
   "Outputs": Object {
     "ServiceExternalEndpointCAC21CCA": Object {
       "Value": Object {

@@ -321,6 +321,11 @@ export abstract class BaseFargateService extends cdk.Construct {
     if (this.hasSpotCapacity && props.spotTerminationHandler !== false) {
       this.createSpotTerminationHandler(cluster);
     }
+
+    // add solution ID for the stack
+    if (!cdk.Stack.of(this).templateOptions.description) {
+      cdk.Stack.of(this).templateOptions.description = '(SO8030) - AWS CDK stack with cdk-fargate-patterns';
+    }
   }
   private createSpotTerminationHandler(cluster: ecs.ICluster) {
   // create the handler
