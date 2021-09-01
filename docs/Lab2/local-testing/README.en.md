@@ -3,9 +3,9 @@ title: Local testing
 weight: 2
 ---
 
-Now our code assets are ready at `services/golang`, we should test it locally to before we deploy it onto AWS.
+Now our code assets are ready at `./services`, we should test it locally to before we deploy it onto AWS.
 
-Create a `docker-compose.yml` unser the `services` directory:
+Create a `docker-compose.yml` under the `./services` directory:
 
 ```yaml
 version: '3'
@@ -16,7 +16,7 @@ networks:
 services:
   golang-order:
     build:
-      context: ./golang/OrderService
+      context: ./OrderService
       dockerfile: Dockerfile
     container_name: order
     ports:
@@ -30,7 +30,7 @@ services:
       - default
   golang-customer:
     build:
-      context: ./golang/CommonService
+      context: ./CommonService
       dockerfile: Dockerfile
     container_name: customer
     ports:
@@ -44,7 +44,7 @@ services:
       - default
   golang-product:
     build:
-      context: ./golang/CommonService
+      context: ./CommonService
       dockerfile: Dockerfile
     container_name: product
     ports:
