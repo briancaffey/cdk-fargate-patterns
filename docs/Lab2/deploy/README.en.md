@@ -29,7 +29,7 @@ export class ServerlessContainerDemoStack extends cdk.Stack {
     });
 
     orderTask.addContainer('order', {
-      image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/golang/OrderService')),
+      image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/OrderService')),
       portMappings: [
         { containerPort: 8080 },
       ],
@@ -48,7 +48,7 @@ export class ServerlessContainerDemoStack extends cdk.Stack {
     });
 
     customerTask.addContainer('customer', {
-      image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/golang/CommonService')),
+      image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/CommonService')),
       portMappings: [
         { containerPort: 8080 },
       ],
@@ -67,7 +67,7 @@ export class ServerlessContainerDemoStack extends cdk.Stack {
     });
 
     productTask.addContainer('product', {
-      image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/golang/CommonService')),
+      image: ecs.ContainerImage.fromAsset(path.join(__dirname, '../services/CommonService')),
       portMappings: [
         { containerPort: 8080 },
       ],
