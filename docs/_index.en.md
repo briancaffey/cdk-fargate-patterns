@@ -12,3 +12,10 @@ In this workshop, we'll walk you through building the following patterns with si
 
 ![Dual ALB Fargate](/images/DualAlbFargateService.svg)
 
+## Walkthrough Video(Mandarin)
+
+Watch the full walkthrough video to help you get it started.
+
+{{< youtube kvg_EB8rYeY >}}
+
+
