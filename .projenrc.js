@@ -27,6 +27,7 @@ const project = new AwsCdkConstructLibrary({
     '@aws-cdk/aws-certificatemanager',
     '@aws-cdk/aws-elasticloadbalancingv2',
   ],
+  minNodeVersion: '12.20.0',
   depsUpgrade: DependenciesUpgradeMechanism.githubWorkflow({
     ignoreProjen: false,
     workflowOptions: {
