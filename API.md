@@ -4,7 +4,7 @@
 
 ### BaseFargateService <a name="cdk-fargate-patterns.BaseFargateService"></a>
 
-#### Initializer <a name="cdk-fargate-patterns.BaseFargateService.Initializer"></a>
+#### Initializers <a name="cdk-fargate-patterns.BaseFargateService.Initializer"></a>
 
 ```typescript
 import { BaseFargateService } from 'cdk-fargate-patterns'
@@ -55,7 +55,7 @@ The VPC.
 
 Represents the database instance or database cluster.
 
-#### Initializer <a name="cdk-fargate-patterns.Database.Initializer"></a>
+#### Initializers <a name="cdk-fargate-patterns.Database.Initializer"></a>
 
 ```typescript
 import { Database } from 'cdk-fargate-patterns'
@@ -118,7 +118,7 @@ new Database(scope: Construct, id: string, props: DatabaseProps)
 
 ### DualAlbFargateService <a name="cdk-fargate-patterns.DualAlbFargateService"></a>
 
-#### Initializer <a name="cdk-fargate-patterns.DualAlbFargateService.Initializer"></a>
+#### Initializers <a name="cdk-fargate-patterns.DualAlbFargateService.Initializer"></a>
 
 ```typescript
 import { DualAlbFargateService } from 'cdk-fargate-patterns'
@@ -167,7 +167,7 @@ The internal ALB.
 
 ### DualNlbFargateService <a name="cdk-fargate-patterns.DualNlbFargateService"></a>
 
-#### Initializer <a name="cdk-fargate-patterns.DualNlbFargateService.Initializer"></a>
+#### Initializers <a name="cdk-fargate-patterns.DualNlbFargateService.Initializer"></a>
 
 ```typescript
 import { DualNlbFargateService } from 'cdk-fargate-patterns'
@@ -218,7 +218,7 @@ The internal Nlb.
 
 Represents the Laravel service.
 
-#### Initializer <a name="cdk-fargate-patterns.Laravel.Initializer"></a>
+#### Initializers <a name="cdk-fargate-patterns.Laravel.Initializer"></a>
 
 ```typescript
 import { Laravel } from 'cdk-fargate-patterns'
@@ -269,7 +269,7 @@ new Laravel(scope: Construct, id: string, props: LaravelProps)
 
 ### WordPress <a name="cdk-fargate-patterns.WordPress"></a>
 
-#### Initializer <a name="cdk-fargate-patterns.WordPress.Initializer"></a>
+#### Initializers <a name="cdk-fargate-patterns.WordPress.Initializer"></a>
 
 ```typescript
 import { WordPress } from 'cdk-fargate-patterns'
