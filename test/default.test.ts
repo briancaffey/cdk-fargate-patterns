@@ -1246,14 +1246,14 @@ test('DualAlbFargateService - listener forward condition', () => {
       {
         task: task,
         desiredCount: 1,
-        external: { port: 80, forwardConditions: [elbv2.ListenerCondition.hostHeaders(['nginx1.example.com'])] },
-        internal: { port: 8080, forwardConditions: [elbv2.ListenerCondition.hostHeaders(['nginx1-internal.example.com'])] },
+        external: { port: 80, forwardConditions: [[elbv2.ListenerCondition.hostHeaders(['nginx1.example.com'])]] },
+        internal: { port: 8080, forwardConditions: [[elbv2.ListenerCondition.hostHeaders(['nginx1-internal.example.com'])]] },
       },
       {
         task: task2,
         desiredCount: 1,
-        external: { port: 80, forwardConditions: [elbv2.ListenerCondition.hostHeaders(['nginx2.example.com'])] },
-        internal: { port: 8080, forwardConditions: [elbv2.ListenerCondition.hostHeaders(['nginx2-internal.example.com'])] },
+        external: { port: 80, forwardConditions: [[elbv2.ListenerCondition.hostHeaders(['nginx2.example.com'])]] },
+        internal: { port: 8080, forwardConditions: [[elbv2.ListenerCondition.hostHeaders(['nginx2-internal.example.com'])]] },
       },
     ],
   });

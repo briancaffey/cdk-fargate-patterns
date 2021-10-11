@@ -22,7 +22,7 @@ new DualAlbFargateService(stack, 'ALBService', {
       external: {
         port: 443,
         certificate: [cert],
-        forwardConditions: [elbv2.ListenerCondition.hostHeaders(['order.example.com'])],
+        forwardConditions: [[elbv2.ListenerCondition.hostHeaders(['order.example.com'])]],
       }
     },
     {
@@ -31,7 +31,7 @@ new DualAlbFargateService(stack, 'ALBService', {
       external: {
         port: 443,
         certificate: [cert],
-        forwardConditions: [elbv2.ListenerCondition.hostHeaders(['customer.example.com'])],
+        forwardConditions: [[elbv2.ListenerCondition.hostHeaders(['customer.example.com'])]],
       },
       internal: { port: 8080 },
     },
@@ -41,7 +41,7 @@ new DualAlbFargateService(stack, 'ALBService', {
       external: {
         port: 443,
         certificate: [cert],
-        forwardConditions: [elbv2.ListenerCondition.hostHeaders(['product.example.com'])],
+        forwardConditions: [[elbv2.ListenerCondition.hostHeaders(['product.example.com'])]],
       },
       internal: { port: 9090 },
     },

@@ -77,7 +77,7 @@ export interface LoadBalancerAccessibility {
   * Listener forward conditions.
   * @default - no forward conditions.
   */
-  readonly forwardConditions?: elbv2.ListenerCondition[];
+  readonly forwardConditions?: elbv2.ListenerCondition[][];
 }
 
 /**

@@ -56,6 +56,9 @@ export class DualAlbFargateService extends BaseFargateService {
       });
     }
 
+    let extAlbListenerRulePrio = 0;
+    let intAlbListenerRulePrio = 0;
+
     props.tasks.forEach((t, index) => {
       const defaultContainerName = t.task.defaultContainer?.containerName;
       // default scaling policy
@@ -88,11 +91,15 @@ export class DualAlbFargateService extends BaseFargateService {
         }
 
         if (t.external.forwardConditions) {
-          new elbv2.ApplicationListenerRule(this, `ExtAlbListener${t.external.port}Rule${index}`, {
-            priority: index + 1,
-            conditions: t.external.forwardConditions,
-            listener,
-            action: elbv2.ListenerAction.forward([exttg]),
+          const externalPort = t.external.port;
+          t.external.forwardConditions.forEach((forwardCondition) => {
+            extAlbListenerRulePrio++;
+            new elbv2.ApplicationListenerRule(this, `ExtAlbListener${externalPort}-Rule${extAlbListenerRulePrio}`, {
+              priority: extAlbListenerRulePrio,
+              conditions: forwardCondition,
+              listener,
+              action: elbv2.ListenerAction.forward([exttg]),
+            });
           });
         }
 
@@ -128,11 +135,15 @@ export class DualAlbFargateService extends BaseFargateService {
         }
 
         if (t.internal.forwardConditions) {
-          new elbv2.ApplicationListenerRule(this, `IntAlbListener${t.internal.port}Rule${index}`, {
-            priority: index + 1,
-            conditions: t.internal.forwardConditions,
-            listener,
-            action: elbv2.ListenerAction.forward([inttg]),
+          const internalPort = t.internal.port;
+          t.internal.forwardConditions.forEach((forwardCondition) => {
+            intAlbListenerRulePrio++;
+            new elbv2.ApplicationListenerRule(this, `IntAlbListener${internalPort}-Rule${intAlbListenerRulePrio}`, {
+              priority: intAlbListenerRulePrio,
+              conditions: forwardCondition,
+              listener,
+              action: elbv2.ListenerAction.forward([inttg]),
+            });
           });
         }
 

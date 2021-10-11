@@ -1462,10 +1462,10 @@ The ACM certificate for the HTTPS listener.
 ##### `forwardConditions`<sup>Optional</sup> <a name="cdk-fargate-patterns.LoadBalancerAccessibility.property.forwardConditions"></a>
 
 ```typescript
-public readonly forwardConditions: ListenerCondition[];
+public readonly forwardConditions: ListenerCondition[][];
 ```
 
-- *Type:* [`@aws-cdk/aws-elasticloadbalancingv2.ListenerCondition`](#@aws-cdk/aws-elasticloadbalancingv2.ListenerCondition)[]
+- *Type:* [`@aws-cdk/aws-elasticloadbalancingv2.ListenerCondition`](#@aws-cdk/aws-elasticloadbalancingv2.ListenerCondition)[][]
 - *Default:* no forward conditions.
 
 Listener forward conditions.
